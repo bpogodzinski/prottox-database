@@ -210,14 +210,14 @@ pip-selfcheck.json
 # http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
 
 ### VisualStudioCode ###
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+.vscode
 
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
 .history
+
+### My files
+prottox/migrations
+database_model.png
 
 # End of https://www.gitignore.io/api/venv,linux,python,django,visualstudiocode
