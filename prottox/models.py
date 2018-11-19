@@ -1,41 +1,69 @@
 from django.db import models
-from django.db import migrations
 
-class Family_rank_1(models.Model):
+
+class Protein_type(models.Model):
     name = models.CharField(max_length=10)
 
     def __str__(self):
         return self.name
+
+
+class Family_rank_1(models.Model):
+    name = models.CharField(max_length=10)
+    protein_type = models.ForeignKey(Protein_type, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "{}{}".format(self.protein_type.name,
+                             self.name)
+
 
 class Family_rank_2(models.Model):
     name = models.CharField(max_length=10)
     family_rank_1 = models.ForeignKey(Family_rank_1, on_delete=models.CASCADE)
+
     def __str__(self):
-        return self.name
+        return "{}{}{}".format(self.family_rank_1.protein_type.name,
+                               self.family_rank_1.name,
+                               self.name)
+
 
 class Family_rank_3(models.Model):
     name = models.CharField(max_length=10)
     family_rank_2 = models.ForeignKey(Family_rank_2, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return "{}{}{}{}".format(self.family_rank_2.family_rank_1.protein_type.name,
+                                 self.family_rank_2.family_rank_1.name,
+                                 self.family_rank_2.name,
+                                 self.name)
+
 
 class Family_rank_4(models.Model):
-    name = models.CharField(max_length=10)
+    name = models.CharField(max_length=10, blank=True)
     family_rank_3 = models.ForeignKey(Family_rank_3, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return "{}{}{}{}{}".format(self.family_rank_3.family_rank_2.family_rank_1.protein_type.name,
+                                   self.family_rank_3.family_rank_2.family_rank_1.name,
+                                   self.family_rank_3.family_rank_2.name,
+                                   self.family_rank_3.name,
+                                   self.name)
+
 
 class Author(models.Model):
     name = models.CharField(max_length=50)
-    surname = models.CharField(max_length=50, unique=True)
+    surname = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.name + self.surname
+        return "{} {}".format(self.name, self.surname)
+
 
 class Toxin_form(models.Model):
     form = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.form
+
 
 class Publication(models.Model):
     date = models.DateField()
@@ -43,18 +71,38 @@ class Publication(models.Model):
     pubmed_id = models.CharField(max_length=50, blank=True)
     article_link = models.CharField(max_length=200, blank=True)
 
+    def __str__(self):
+        all_authors = ", ".join(str(author) for author in self.authors.all())
+        return "{} | {}".format(self.date, all_authors)
+
 
 class Target_organism_name(models.Model):
     name = models.CharField(max_length=100)
 
+    def __str__(self):
+        return self.name
+
+
 class Toxin_source(models.Model):
     source = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.source
+
 
 class Toxin_isolation_source(models.Model):
     isolation_source = models.CharField(max_length=40)
 
+    def __str__(self):
+        return self.isolation_source
+
+
 class Toxin_expression_host(models.Model):
     host = models.CharField(max_length=40)
+
+    def __str__(self):
+        return self.host
+
 
 class Toxin(models.Model):
     CULTURE = 'C'
@@ -67,24 +115,28 @@ class Toxin(models.Model):
     PURIFIED_PROTEINS = 'PP'
 
     POSSIBLE_TOXIN_PREPARATION = (
-        (CULTURE,'Culture'),
-        (SPORES_CRYSTALS,'Spores + crystals'),
-        (PURIFIED_CRYSTALS,'Purified crystals'),
-        (CELL_LYSATE,'Cell lysate'),
-        (CELL_LYSATE_PARTIAL_PURIFICATION,'Cell lysate with partial purification'),
-        (INCLUSION_BODIES,'Inclusion bodies'),
-        (INCLUSION_BODIES_SOLUBILIZED,'Inclusion bodies solubilized'),
-        (PURIFIED_PROTEINS,'Purified proteins')
+        (CULTURE, 'Culture'),
+        (SPORES_CRYSTALS, 'Spores + crystals'),
+        (PURIFIED_CRYSTALS, 'Purified crystals'),
+        (CELL_LYSATE, 'Cell lysate'),
+        (CELL_LYSATE_PARTIAL_PURIFICATION, 'Cell lysate with partial purification'),
+        (INCLUSION_BODIES, 'Inclusion bodies'),
+        (INCLUSION_BODIES_SOLUBILIZED, 'Inclusion bodies solubilized'),
+        (PURIFIED_PROTEINS, 'Purified proteins')
     )
 
     family_rank_4 = models.ForeignKey(Family_rank_4, on_delete=models.CASCADE)
     toxin_source = models.ForeignKey(Toxin_source, on_delete=models.CASCADE)
     NCBI_accession_number = models.CharField(max_length=20, blank=True)
     toxin_form = models.ForeignKey(Toxin_form, on_delete=models.CASCADE)
-    isolation_source = models.ForeignKey(Toxin_isolation_source, on_delete=models.CASCADE, blank=True)
+    isolation_source = models.ForeignKey(
+        Toxin_isolation_source, on_delete=models.CASCADE, blank=True, null=True)
     modification_description = models.TextField(blank=True)
-    toxin_expression_host = models.ForeignKey(Toxin_expression_host, on_delete=models.CASCADE)
-    kDa = models.IntegerField(blank=True, null=True)
+    toxin_expression_host = models.ForeignKey(
+        Toxin_expression_host, on_delete=models.CASCADE)
+    chimeric_protein = models.ManyToManyField('self', blank=True)
+    kDa = models.DecimalField(
+        decimal_places=3, max_digits=7, blank=True, null=True)
     preparation = models.CharField(
         max_length=5,
         choices=POSSIBLE_TOXIN_PREPARATION,
@@ -93,10 +145,22 @@ class Toxin(models.Model):
     )
 
     def __str__(self):
-        return "{}{}{}{}".format(self.family_rank_1.name, self.family_rank_2.name, self.family_rank_3.name, self.family_rank_4.name)
+        chimeric = ", ".join(str(toxin)
+                             for toxin in self.chimeric_protein.all())
+        return "{}{}{}{}{}{}".format(self.family_rank_4.family_rank_3.family_rank_2.family_rank_1.protein_type.name,
+                                     self.family_rank_4.family_rank_3.family_rank_2.family_rank_1.name,
+                                     self.family_rank_4.family_rank_3.family_rank_2.name,
+                                     self.family_rank_4.family_rank_3.name,
+                                     self.family_rank_4.name,
+                                     '' if not chimeric else ' | ' + chimeric)
+
 
 class Larvae_stage(models.Model):
     stage = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.stage
+
 
 class Toxin_distribution(models.Model):
     SURFACE_CONTAMINATION = 'SC'
@@ -116,20 +180,30 @@ class Toxin_distribution(models.Model):
         default=SURFACE_CONTAMINATION,
     )
 
+    def __str__(self):
+        return self.get_distribution_choice_display()
+
+
 class Target(models.Model):
-    target_organism_name = models.ForeignKey(Target_organism_name, on_delete=models.CASCADE)
-    larvae_stage = models.ForeignKey(Larvae_stage, on_delete=models.CASCADE)
+    target_organism_name = models.ForeignKey(
+        Target_organism_name, on_delete=models.CASCADE)
+    larvae_stage = models.ForeignKey(
+        Larvae_stage, on_delete=models.CASCADE, blank=True)
     toxin_resistance = models.ManyToManyField(Toxin, blank=True)
 
     def __str__(self):
-        return self.target_organism_name
+        resistances = ", ".join(str(toxin)
+                                for toxin in self.toxin_resistance.all())
+        return "{} | {}{}".format(self.target_organism_name.name, self.larvae_stage.stage, '' if not resistances else ' | ' + resistances)
+
 
 class Measurement(models.Model):
-    measurement_unit_weight = models.CharField(max_length=5)
-    measurement_unit_area = models.CharField(max_length=5)
+    measurement_unit_1 = models.CharField(max_length=5)
+    measurement_unit_2 = models.CharField(max_length=5)
 
     def __str__(self):
-        return "{}/{}".format(self.measurement_unit_weight, self.measurement_unit_area)
+        return "{}/{}".format(self.measurement_unit_1, self.measurement_unit_2)
+
 
 class Toxin_quantity(models.Model):
     BY_WEIGHT = 'BW'
@@ -144,12 +218,21 @@ class Toxin_quantity(models.Model):
         default=BY_PROPORTION
     )
     values = models.CharField(max_length=50)
-    units = models.ForeignKey(Measurement, on_delete=models.CASCADE, blank=True, null=True)
+    units = models.ForeignKey(
+        Measurement, on_delete=models.CASCADE, blank=True, null=True)
+
+    def __str__(self):
+        return '{} | {}{}'.format(self.get_measurement_type_display(), self.values, '' if self.units is None else ' ' + self.units.__str__())
+
 
 class Bioassay_type(models.Model):
     bioassay_type = models.CharField(max_length=20)
 
-class Results(models.Model):
+    def __str__(self):
+        return self.bioassay_type
+
+
+class Result(models.Model):
     SYNERGISM = 'SYN'
     ANTAGONISM = 'ANT'
     INDEPENDENT = 'INT'
@@ -160,7 +243,8 @@ class Results(models.Model):
     )
     bioassay_type = models.ForeignKey(Bioassay_type, on_delete=models.CASCADE)
     bioassay_result = models.CharField(max_length=20)
-    bioassay_unit = models.ForeignKey(Measurement, on_delete=models.CASCADE, blank=True)
+    bioassay_unit = models.ForeignKey(
+        Measurement, on_delete=models.CASCADE, blank=True, null=True)
     LC95min = models.CharField(max_length=50, blank=True)
     LC95max = models.CharField(max_length=50, blank=True)
     expected = models.CharField(max_length=20, blank=True)
@@ -169,16 +253,27 @@ class Results(models.Model):
         choices=POSSIBLE_INTERACTIONS,
         blank=True
     )
-    synergism_factor = models.DecimalField(max_digits=7, decimal_places=3, blank=True)
-    antagonism_factor = models.DecimalField(max_digits=7, decimal_places=3, blank=True)    
+    synergism_factor = models.DecimalField(
+        max_digits=7, decimal_places=3, blank=True, null=True)
+    antagonism_factor = models.DecimalField(
+        max_digits=7, decimal_places=3, blank=True, null=True)
+
+    def __str__(self):
+        return '{} {}{} {}{} {} {}'.format(self.bioassay_type.bioassay_type, self.bioassay_result, '%' if self.bioassay_unit is None else ' ' + self.bioassay_unit.__str__(),
+                                          '' if not self.LC95max else 'LC95 max: ' + self.LC95max, '' if not self.LC95min else ' LC95 min: ' + self.LC95min, self.get_interaction_display(), self.synergism_factor if self.synergism_factor is not None else self.antagonism_factor)
+
 
 class Toxin_research(models.Model):
     toxin = models.ManyToManyField(Toxin)
     publication = models.ForeignKey(Publication, on_delete=models.CASCADE)
     target = models.ForeignKey(Target, on_delete=models.CASCADE)
     days_of_observation = models.IntegerField()
-    toxin_distribution = models.ForeignKey(Toxin_distribution, on_delete=models.CASCADE)
+    toxin_distribution = models.ForeignKey(
+        Toxin_distribution, on_delete=models.CASCADE)
     quantity = models.ForeignKey(Toxin_quantity, on_delete=models.CASCADE)
-    results = models.ForeignKey(Results, on_delete=models.CASCADE)
-    
+    results = models.ForeignKey(Result, on_delete=models.CASCADE)
 
+    def __str__(self):
+        toxins = ', '.join(str(tox) for tox in self.toxin.all())
+        return 'Toxin(s): {} | Publication: {} | Target: {} | Days of observation: {} | Toxin distribution: {} | Toxin quantity: {} | Results: {}'.format(toxins,
+         self.publication.__str__(), self.target.__str__(), self.days_of_observation, self.toxin_distribution.__str__(), self.quantity.__str__(), self.results.__str__())
