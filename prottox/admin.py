@@ -1,7 +1,7 @@
 from django.contrib import admin
 from prottox.models import *
 
-admin.site.register(Toxin)
+admin.site.register(Active_factor)
 admin.site.register(Target)
 admin.site.register(Target_organism_name)
 admin.site.register(Toxin_research)
@@ -17,8 +17,4 @@ admin.site.register(Measurement)
 admin.site.register(Bioassay_type)
 admin.site.register(Result)
 admin.site.register(Toxin_quantity)
-admin.site.register(Protein_type)
-admin.site.register(Family_rank_1)
-admin.site.register(Family_rank_2)
-admin.site.register(Family_rank_3)
-admin.site.register(Family_rank_4)
+admin.site.register(Taxonomy)

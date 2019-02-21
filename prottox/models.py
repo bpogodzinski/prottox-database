@@ -1,61 +1,17 @@
 from django.db import models
 
 
-class Protein_type(models.Model):
-    name = models.CharField(max_length=10)
-
-    def __str__(self):
-        return self.name
-
-
-class Family_rank_1(models.Model):
-    name = models.CharField(max_length=10)
-    protein_type = models.ForeignKey(Protein_type, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return "{}{}".format(self.protein_type.name,
-                             self.name)
-
-
-class Family_rank_2(models.Model):
-    name = models.CharField(max_length=10)
-    family_rank_1 = models.ForeignKey(Family_rank_1, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return "{}{}{}".format(self.family_rank_1.protein_type.name,
-                               self.family_rank_1.name,
-                               self.name)
-
-
-class Family_rank_3(models.Model):
-    name = models.CharField(max_length=10)
-    family_rank_2 = models.ForeignKey(Family_rank_2, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return "{}{}{}{}".format(self.family_rank_2.family_rank_1.protein_type.name,
-                                 self.family_rank_2.family_rank_1.name,
-                                 self.family_rank_2.name,
-                                 self.name)
-
-
-class Family_rank_4(models.Model):
-    name = models.CharField(max_length=10, blank=True)
-    family_rank_3 = models.ForeignKey(Family_rank_3, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return "{}{}{}{}{}".format(self.family_rank_3.family_rank_2.family_rank_1.protein_type.name,
-                                   self.family_rank_3.family_rank_2.family_rank_1.name,
-                                   self.family_rank_3.family_rank_2.name,
-                                   self.family_rank_3.name,
-                                   self.name)
+class Taxonomy(models.Model):
+    name = models.CharField(max_length=100)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
 
 
 class Author(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, blank=True)
     surname = models.CharField(max_length=50)
 
     def __str__(self):
-        return "{} {}".format(self.name, self.surname)
+        return "Name: {} Surname: {}".format(self.name, self.surname)
 
 
 class Toxin_form(models.Model):
@@ -104,7 +60,7 @@ class Toxin_expression_host(models.Model):
         return self.host
 
 
-class Toxin(models.Model):
+class Active_factor(models.Model):
     CULTURE = 'C'
     SPORES_CRYSTALS = 'S+C'
     PURIFIED_CRYSTALS = 'PC'
@@ -124,8 +80,7 @@ class Toxin(models.Model):
         (INCLUSION_BODIES_SOLUBILIZED, 'Inclusion bodies solubilized'),
         (PURIFIED_PROTEINS, 'Purified proteins')
     )
-
-    family_rank_4 = models.ForeignKey(Family_rank_4, on_delete=models.CASCADE)
+    is_toxin = models.BooleanField(null=False, blank=False, default=True)
     toxin_source = models.ForeignKey(Toxin_source, on_delete=models.CASCADE)
     NCBI_accession_number = models.CharField(max_length=20, blank=True)
     toxin_form = models.ForeignKey(Toxin_form, on_delete=models.CASCADE)
@@ -134,6 +89,7 @@ class Toxin(models.Model):
     modification_description = models.TextField(blank=True)
     toxin_expression_host = models.ForeignKey(
         Toxin_expression_host, on_delete=models.CASCADE)
+    is_chimeric = models.BooleanField(null=False, blank=False, default=False)
     chimeric_protein = models.ManyToManyField('self', blank=True)
     kDa = models.DecimalField(
         decimal_places=3, max_digits=7, blank=True, null=True)
@@ -143,16 +99,7 @@ class Toxin(models.Model):
         default=CELL_LYSATE,
         blank=True
     )
-
-    def __str__(self):
-        chimeric = ", ".join(str(toxin)
-                             for toxin in self.chimeric_protein.all())
-        return "{}{}{}{}{}{}".format(self.family_rank_4.family_rank_3.family_rank_2.family_rank_1.protein_type.name,
-                                     self.family_rank_4.family_rank_3.family_rank_2.family_rank_1.name,
-                                     self.family_rank_4.family_rank_3.family_rank_2.name,
-                                     self.family_rank_4.family_rank_3.name,
-                                     self.family_rank_4.name,
-                                     '' if not chimeric else ' | ' + chimeric)
+    taxonomy = models.ManyToManyField(Taxonomy)
 
 
 class Larvae_stage(models.Model):
@@ -189,7 +136,7 @@ class Target(models.Model):
         Target_organism_name, on_delete=models.CASCADE)
     larvae_stage = models.ForeignKey(
         Larvae_stage, on_delete=models.CASCADE, blank=True)
-    toxin_resistance = models.ManyToManyField(Toxin, blank=True)
+    toxin_resistance = models.ManyToManyField(Active_factor, blank=True)
 
     def __str__(self):
         resistances = ", ".join(str(toxin)
@@ -264,7 +211,7 @@ class Result(models.Model):
 
 
 class Toxin_research(models.Model):
-    toxin = models.ManyToManyField(Toxin)
+    toxin = models.ManyToManyField(Active_factor)
     publication = models.ForeignKey(Publication, on_delete=models.CASCADE)
     target = models.ForeignKey(Target, on_delete=models.CASCADE)
     days_of_observation = models.IntegerField()
