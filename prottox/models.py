@@ -5,6 +5,9 @@ class Taxonomy(models.Model):
     name = models.CharField(max_length=100)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Author(models.Model):
     name = models.CharField(max_length=50, blank=True)
@@ -14,7 +17,7 @@ class Author(models.Model):
         return "Name: {} Surname: {}".format(self.name, self.surname)
 
 
-class Toxin_form(models.Model):
+class Factor_form(models.Model):
     form = models.CharField(max_length=30)
 
     def __str__(self):
@@ -39,21 +42,21 @@ class Target_organism_name(models.Model):
         return self.name
 
 
-class Toxin_source(models.Model):
+class Factor_source(models.Model):
     source = models.CharField(max_length=50)
 
     def __str__(self):
         return self.source
 
 
-class Toxin_isolation_source(models.Model):
+class Factor_isolation_source(models.Model):
     isolation_source = models.CharField(max_length=40)
 
     def __str__(self):
         return self.isolation_source
 
 
-class Toxin_expression_host(models.Model):
+class Factor_expression_host(models.Model):
     host = models.CharField(max_length=40)
 
     def __str__(self):
@@ -61,44 +64,19 @@ class Toxin_expression_host(models.Model):
 
 
 class Active_factor(models.Model):
-    CULTURE = 'C'
-    SPORES_CRYSTALS = 'S+C'
-    PURIFIED_CRYSTALS = 'PC'
-    CELL_LYSATE = 'CL'
-    CELL_LYSATE_PARTIAL_PURIFICATION = 'CLPP'
-    INCLUSION_BODIES = 'IB'
-    INCLUSION_BODIES_SOLUBILIZED = 'IBS'
-    PURIFIED_PROTEINS = 'PP'
-
-    POSSIBLE_TOXIN_PREPARATION = (
-        (CULTURE, 'Culture'),
-        (SPORES_CRYSTALS, 'Spores + crystals'),
-        (PURIFIED_CRYSTALS, 'Purified crystals'),
-        (CELL_LYSATE, 'Cell lysate'),
-        (CELL_LYSATE_PARTIAL_PURIFICATION, 'Cell lysate with partial purification'),
-        (INCLUSION_BODIES, 'Inclusion bodies'),
-        (INCLUSION_BODIES_SOLUBILIZED, 'Inclusion bodies solubilized'),
-        (PURIFIED_PROTEINS, 'Purified proteins')
-    )
     is_toxin = models.BooleanField(null=False, blank=False, default=True)
-    toxin_source = models.ForeignKey(Toxin_source, on_delete=models.CASCADE)
+    factor_source = models.ForeignKey(Factor_source, on_delete=models.CASCADE, blank=True, null=True)
     NCBI_accession_number = models.CharField(max_length=20, blank=True)
-    toxin_form = models.ForeignKey(Toxin_form, on_delete=models.CASCADE)
+    factor_form = models.ForeignKey(Factor_form, on_delete=models.CASCADE, blank=True, null=True)
     isolation_source = models.ForeignKey(
-        Toxin_isolation_source, on_delete=models.CASCADE, blank=True, null=True)
+        Factor_isolation_source, on_delete=models.CASCADE, blank=True, null=True)
     modification_description = models.TextField(blank=True)
-    toxin_expression_host = models.ForeignKey(
-        Toxin_expression_host, on_delete=models.CASCADE)
+    factor_expression_host = models.ForeignKey(
+        Factor_expression_host, on_delete=models.CASCADE, blank=True, null=True)
     is_chimeric = models.BooleanField(null=False, blank=False, default=False)
-    chimeric_protein = models.ManyToManyField('self', blank=True)
     kDa = models.DecimalField(
         decimal_places=3, max_digits=7, blank=True, null=True)
-    preparation = models.CharField(
-        max_length=5,
-        choices=POSSIBLE_TOXIN_PREPARATION,
-        default=CELL_LYSATE,
-        blank=True
-    )
+    preparation = models.CharField(max_length=100, blank=True)
     taxonomy = models.ManyToManyField(Taxonomy)
 
 
@@ -136,11 +114,11 @@ class Target(models.Model):
         Target_organism_name, on_delete=models.CASCADE)
     larvae_stage = models.ForeignKey(
         Larvae_stage, on_delete=models.CASCADE, blank=True)
-    toxin_resistance = models.ManyToManyField(Active_factor, blank=True)
+    factor_resistance = models.ManyToManyField(Active_factor, blank=True)
 
     def __str__(self):
-        resistances = ", ".join(str(toxin)
-                                for toxin in self.toxin_resistance.all())
+        resistances = ", ".join(str(factor)
+                                for factor in self.factor_resistance.all())
         return "{} | {}{}".format(self.target_organism_name.name, self.larvae_stage.stage, '' if not resistances else ' | ' + resistances)
 
 
