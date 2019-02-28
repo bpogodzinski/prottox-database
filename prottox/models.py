@@ -79,6 +79,27 @@ class Active_factor(models.Model):
     preparation = models.CharField(max_length=100, blank=True)
     taxonomy = models.ManyToManyField(Taxonomy)
 
+    @property
+    def name(self):
+        parent = None
+        fullname = ''
+        for tax in self.taxonomy.all():
+            partial = ''
+            taxon = tax
+            parent = taxon.parent
+            partial += taxon.name
+            while parent != None:
+                taxon = parent
+                parent = taxon.parent
+                partial = taxon.name + partial
+            fullname += partial + ' '
+        return fullname
+
+    def __str__(self):
+        return self.name
+
+
+
 
 class Larvae_stage(models.Model):
     stage = models.CharField(max_length=50)
