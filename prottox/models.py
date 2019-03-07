@@ -5,8 +5,17 @@ class Taxonomy(models.Model):
     name = models.CharField(max_length=100)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
 
+    @property
+    def fullname(self):
+        full_name = self.name
+        parent = self.parent
+        while parent is not None:
+            full_name = parent.name + full_name if len(parent.name) < 5 else parent.name + " " + full_name
+            parent = parent.parent
+        return full_name.strip()
+
     def __str__(self):
-        return self.name
+        return self.fullname
 
 
 class Author(models.Model):
@@ -80,7 +89,7 @@ class Active_factor(models.Model):
     taxonomy = models.ManyToManyField(Taxonomy)
 
     @property
-    def name(self):
+    def fullname(self):
         parent = None
         fullname = ''
         for tax in self.taxonomy.all():
@@ -93,10 +102,10 @@ class Active_factor(models.Model):
                 parent = taxon.parent
                 partial = taxon.name + partial
             fullname += partial + ' '
-        return fullname
+        return fullname.strip()
 
     def __str__(self):
-        return self.name
+        return self.fullname
 
 
 
