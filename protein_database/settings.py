@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'prottox',
-    'django_extensions'
+    'django_extensions',
+    'api',
 ]
 
 MIDDLEWARE = [
