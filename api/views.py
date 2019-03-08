@@ -8,7 +8,7 @@ from prottox.models import *
 
 
 def taxonomyAPI(request):
-    queryset = Taxonomy.objects.all()
+    queryset = FactorTaxonomy.objects.all()
 
     if request.GET.get('parent'):
         queryset = __processTaxonomyQuerysetParent(request.GET.get('parent'))
@@ -39,19 +39,19 @@ def __processTaxonomyQuerysetParent(param):
     param = param.split(',') if type(param) == str else param
     if len(param) == 1:
         parent = param.pop()
-        return Taxonomy.objects.filter(parent__name__exact=parent) if parent != 'none' else Taxonomy.objects.filter(parent__isnull=True)
+        return FactorTaxonomy.objects.filter(parent__name__exact=parent) if parent != 'none' else FactorTaxonomy.objects.filter(parent__isnull=True)
     else: 
         #Create **kwargs dictionary
         filters = dict()
         baseFormat = '{}parent__name__exact'
         for parentLevel in range(len(param)):
             filters[baseFormat.format('parent__'*parentLevel)] = param.pop()
-        return Taxonomy.objects.filter(**filters)
+        return FactorTaxonomy.objects.filter(**filters)
 
 def __processTaxonomyQuerysetParentID(param):
     """Process GET request parameters for parent by ID
     """
-    return Taxonomy.objects.filter(parent__id = param) if param is not '0' else Taxonomy.objects.filter(parent__isnull=True)
+    return FactorTaxonomy.objects.filter(parent__id = param) if param is not '0' else FactorTaxonomy.objects.filter(parent__isnull=True)
     
 
 def __processTaxonomyQuerysetToJSON(queryset):

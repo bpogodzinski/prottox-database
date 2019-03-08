@@ -77,21 +77,21 @@ class Command(BaseCommand):
             firstTox = [x for x in firstTox if x is not None]
             secondTox = [x for x in secondTox if x is not None]
 
-            last_rank1, created = Taxonomy.objects.get_or_create(name=firstTox[0], parent=None)
+            last_rank1, created = FactorTaxonomy.objects.get_or_create(name=firstTox[0], parent=None)
             for i in range(1,len(firstTox)):
-                last_rank1, created = Taxonomy.objects.get_or_create(name=firstTox[i], parent=last_rank1)
+                last_rank1, created = FactorTaxonomy.objects.get_or_create(name=firstTox[i], parent=last_rank1)
             
-            last_rank2, created = Taxonomy.objects.get_or_create(name=secondTox[0], parent=None)
+            last_rank2, created = FactorTaxonomy.objects.get_or_create(name=secondTox[0], parent=None)
             for i in range(1,len(secondTox)):
-                last_rank2, created = Taxonomy.objects.get_or_create(name=secondTox[i], parent=last_rank2)
+                last_rank2, created = FactorTaxonomy.objects.get_or_create(name=secondTox[i], parent=last_rank2)
             return (last_rank1, last_rank2), toxin
         else:
             toxin = True if len(r1) == 3 else False
-            typ, created = Taxonomy.objects.get_or_create(name=r1, parent=None)
+            typ, created = FactorTaxonomy.objects.get_or_create(name=r1, parent=None)
             last_rank = typ
             for i in range(1,5):
                 if pd.notna(row.iloc[self.F1_TYPE_INDEX + offset + i]):
-                    rank, created = Taxonomy.objects.get_or_create(name=row.iloc[self.F1_TYPE_INDEX + offset + i], parent=last_rank)
+                    rank, created = FactorTaxonomy.objects.get_or_create(name=row.iloc[self.F1_TYPE_INDEX + offset + i], parent=last_rank)
                     last_rank = rank
                 else: 
                     break

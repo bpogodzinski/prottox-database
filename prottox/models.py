@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class Taxonomy(models.Model):
+class FactorTaxonomy(models.Model):
     name = models.CharField(max_length=100)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
 
@@ -86,7 +86,7 @@ class Active_factor(models.Model):
     kDa = models.DecimalField(
         decimal_places=3, max_digits=7, blank=True, null=True)
     preparation = models.CharField(max_length=100, blank=True)
-    taxonomy = models.ManyToManyField(Taxonomy)
+    taxonomy = models.ManyToManyField(FactorTaxonomy)
 
     @property
     def fullname(self):
