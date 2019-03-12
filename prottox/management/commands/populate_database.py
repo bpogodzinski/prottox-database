@@ -18,9 +18,11 @@ class Command(BaseCommand):
         info = '[INFO] {}'
         warn = '[WARNING] {}'
         data = pd.read_csv('/home/panda/Dokumenty/Development/licencjat/data/data.csv', sep=';', header=0, dtype=str)
+        taxInfo = pd.read_csv('/home/panda/Dokumenty/Development/licencjat/data/taksonomia.csv', sep=';', header=0)
         print(info.format('Created dataframe. Begin to populate ...'))
         for index, row in tqdm(data.iterrows(), total=len(data.index)):
             self.make_active_factor(row)
+            
         print(info.format(f'Created {self.factorsCreated} new Factors!'))
 
     def make_active_factor(self,row):
@@ -48,7 +50,7 @@ class Command(BaseCommand):
                 factor_expression_host=expression_host, kDa=kda, preparation=prep, is_chimeric=chimeric)
                 self.factorsCreated += 1
             except MultipleObjectsReturned:
-                #Chimeric proteins have both last ranks so filter returns same chimeric protein twice
+                #Chimeric proteins have both last ranks so get returns same chimeric protein twice
                 chimerics = Active_factor.objects.filter(is_toxin=is_toxin, NCBI_accession_number=NCBI_acc, factor_source=factor_source, isolation_source=factor_isolation_source, factor_form=factor_form, modification_description=modification, 
                 factor_expression_host=expression_host, kDa=kda, preparation=prep, is_chimeric=chimeric, taxonomy__in=taxonomyIterable)
                 #Just to be sure...

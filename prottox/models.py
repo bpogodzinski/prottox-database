@@ -1,5 +1,14 @@
 from django.db import models
 
+class SpeciesTaxonomyRank(models.Model):
+    name = models.CharField(max_length=255)
+
+class SpeciesTaxonomy(models.Model):
+    name = models.CharField(max_length=255)
+    common_name = models.CharField(max_length=255, blank=True)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
+    taxonomy_rank = models.ForeignKey(SpeciesTaxonomyRank, on_delete=models.CASCADE)
+
 
 class FactorTaxonomy(models.Model):
     name = models.CharField(max_length=100)
@@ -42,13 +51,6 @@ class Publication(models.Model):
     def __str__(self):
         all_authors = ", ".join(str(author) for author in self.authors.all())
         return "{} | {}".format(self.date, all_authors)
-
-
-class Target_organism_name(models.Model):
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
 
 
 class Factor_source(models.Model):
@@ -140,10 +142,8 @@ class Toxin_distribution(models.Model):
 
 
 class Target(models.Model):
-    target_organism_name = models.ForeignKey(
-        Target_organism_name, on_delete=models.CASCADE)
-    larvae_stage = models.ForeignKey(
-        Larvae_stage, on_delete=models.CASCADE, blank=True)
+    target_organism_taxonomy = models.ForeignKey(SpeciesTaxonomy, on_delete=models.CASCADE)
+    larvae_stage = models.ForeignKey(Larvae_stage, on_delete=models.CASCADE, blank=True)
     factor_resistance = models.ManyToManyField(Active_factor, blank=True)
 
     def __str__(self):
