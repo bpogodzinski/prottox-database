@@ -3,11 +3,18 @@ from django.db import models
 class SpeciesTaxonomyRank(models.Model):
     name = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.name   
+
 class SpeciesTaxonomy(models.Model):
+    taxID = models.PositiveIntegerField(blank=True, null=True)
     name = models.CharField(max_length=255)
     common_name = models.CharField(max_length=255, blank=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
     taxonomy_rank = models.ForeignKey(SpeciesTaxonomyRank, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
 
 
 class FactorTaxonomy(models.Model):
@@ -140,16 +147,20 @@ class Toxin_distribution(models.Model):
     def __str__(self):
         return self.get_distribution_choice_display()
 
+class TargetSpeciesStrain(models.Model):
+    strain = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.strain
 
 class Target(models.Model):
     target_organism_taxonomy = models.ForeignKey(SpeciesTaxonomy, on_delete=models.CASCADE)
     larvae_stage = models.ForeignKey(Larvae_stage, on_delete=models.CASCADE, blank=True)
-    factor_resistance = models.ManyToManyField(Active_factor, blank=True)
+    factor_resistance = models.CharField(max_length=255, null=True, blank=True)
+    target_species_strain = models.ForeignKey(TargetSpeciesStrain, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
-        resistances = ", ".join(str(factor)
-                                for factor in self.factor_resistance.all())
-        return "{} | {}{}".format(self.target_organism_name.name, self.larvae_stage.stage, '' if not resistances else ' | ' + resistances)
+        return f"{self.target_organism_taxonomy.name}"
 
 
 class Measurement(models.Model):

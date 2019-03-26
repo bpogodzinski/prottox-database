@@ -13,17 +13,16 @@ class Command(BaseCommand):
     F1_TYPE_INDEX=11
     toxinRE = re.compile(r'([A-Za-z]{3})([0-9]+)([A-Z])([a-z])(\d+)?')
     factorsCreated = 0
+    taxInfo = pd.read_csv('/home/panda/Dokumenty/Development/licencjat/data/taksonomia.csv', sep=';', header=0, index_col=0)
 
     def handle(self, *args, **options):
-        info = '[INFO] {}'
-        warn = '[WARNING] {}'
         data = pd.read_csv('/home/panda/Dokumenty/Development/licencjat/data/data.csv', sep=';', header=0, dtype=str)
-        taxInfo = pd.read_csv('/home/panda/Dokumenty/Development/licencjat/data/taksonomia.csv', sep=';', header=0)
-        print(info.format('Created dataframe. Begin to populate ...'))
+        print('Created dataframe. Begin to populate ...')
         for index, row in tqdm(data.iterrows(), total=len(data.index)):
             self.make_active_factor(row)
-            
-        print(info.format(f'Created {self.factorsCreated} new Factors!'))
+            self.createTargetSpecies(row["Target species"], row['Larvae stage'], row['Target species strain'], row['Recognised Bt toxin resistance in target species? (YES/)'])
+
+        print(f'Created {self.factorsCreated} new Factors!')
 
     def make_active_factor(self,row):
         offset = 0
@@ -62,10 +61,6 @@ class Command(BaseCommand):
             active_factor.taxonomy.add(*taxonomyIterable)
             offset += self.ACTIVE_FACTOR_OFFSET
 
-
-                
-
-
     def createRanks(self,row, offset):
         toxin = None
         last_rank = None
@@ -99,11 +94,34 @@ class Command(BaseCommand):
                     break
             return last_rank, toxin
 
+    def createTargetSpecies(self, species, larvaeStage, targetStrain, toxinResistance):
+        try:
+            targetSpecies = SpeciesTaxonomy.objects.get(name=species)
+        except ObjectDoesNotExist:
+            targetInfo = self.taxInfo.loc[species]
+            phylum = SpeciesTaxonomy.objects.get_or_create(name=targetInfo["Phylum"], taxID=targetInfo["Phylum ID"] if targetInfo["Phylum ID"] != 'xxx' else None, parent=None, taxonomy_rank=SpeciesTaxonomyRank.objects.get_or_create(name='Phylum')[0])[0]
+            order = SpeciesTaxonomy.objects.get_or_create(name=targetInfo["Order"], taxID=targetInfo["Order ID"] if targetInfo["Order ID"] != 'xxx' else None, parent=phylum, taxonomy_rank=SpeciesTaxonomyRank.objects.get_or_create(name='Order')[0])[0]
+            family = SpeciesTaxonomy.objects.get_or_create(name=targetInfo["Family"], taxID=targetInfo["Family ID"] if targetInfo["Family ID"] != 'xxx' else None, parent=order, taxonomy_rank=SpeciesTaxonomyRank.objects.get_or_create(name='Family')[0])[0]
+            targetSpecies = SpeciesTaxonomy.objects.get_or_create(name=species, taxID=targetInfo["Target ID"] if targetInfo["Target ID"] != 'xxx' else None, parent=family, taxonomy_rank=SpeciesTaxonomyRank.objects.get_or_create(name='Species')[0])[0]
+
+        stage = Larvae_stage.objects.get_or_create(stage=larvaeStage)[0]
+        strain = TargetSpeciesStrain.objects.get_or_create(strain=targetStrain)[0] if pd.notnull(targetStrain) else None
+        factors = toxinResistance if pd.notnull(toxinResistance) else None
+        target = Target.objects.get_or_create(target_organism_taxonomy=targetSpecies, larvae_stage=stage, target_species_strain=strain, factor_resistance=factors)            
+
+
+
+            
+
+
+
+
+        
 
     # def make_author(self, name):
     #     author, created = Author.objects.get_or_create(surname= name)
     #     return author
-
+    #
     # def make_publication(self, author, pmid, link, date):
     #     pmid = '' if pd.isna(pmid) else int(pmid)
     #     link = '' if pd.isna(link) else link
@@ -112,7 +130,7 @@ class Command(BaseCommand):
     #     if created:
     #         pub.authors.add(author)
     #     return pub
-
+    #
     # def make_toxin_distrib(self,choice):
     #     translate = {
     #         'Surface contamination':'SC',
@@ -122,9 +140,3 @@ class Command(BaseCommand):
     #     }
     #     toxin, created = Toxin_distribution.objects.get_or_create(distribution_choice=translate[choice])
     #     return toxin
-            
-
-
-
-
-        

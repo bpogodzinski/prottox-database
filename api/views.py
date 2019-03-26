@@ -7,25 +7,29 @@ from django.core import serializers
 from prottox.models import *
 
 
-def taxonomyAPI(request):
+def factorTaxonomyAPI(request):
     queryset = FactorTaxonomy.objects.all()
 
     if request.GET.get('parent'):
-        queryset = __processTaxonomyQuerysetParent(request.GET.get('parent'))
+        queryset = __processFactorTaxonomyQuerysetParent(request.GET.get('parent'))
     if request.GET.get('parent_id'):
-        queryset = __processTaxonomyQuerysetParentID(request.GET.get('parent_id'))
+        queryset = __processFactorTaxonomyQuerysetParentID(request.GET.get('parent_id'))
    
-    data = __processTaxonomyQuerysetToJSON(queryset)
+    queryset = natsorted(queryset, lambda x: x.fullname)
+    data = __processJSTreeTaxonomyQuerysetToJSON(queryset)
     return JsonResponse(data, safe=False)
 
-def activeFactorAPI(request):
-    pass
+def targetTaxonomyAPI(request):
+    queryset = SpeciesTaxonomy.objects.all()
+    queryset = natsorted(queryset, lambda x: x.name)
+    data = __processJSTreeTaxonomyQuerysetToJSON(queryset)
+    return JsonResponse(data, safe=False)
 
     
 
-#------------- Processing methods -----------------
+#------------- BEGIN factor processing methods -----------------
 
-def __processTaxonomyQuerysetParent(param):
+def __processFactorTaxonomyQuerysetParent(param):
     """Process GET request parameters for parent by name
 
     Parent GET request parameters are splited by "," and filtered
@@ -48,26 +52,24 @@ def __processTaxonomyQuerysetParent(param):
             filters[baseFormat.format('parent__'*parentLevel)] = param.pop()
         return FactorTaxonomy.objects.filter(**filters)
 
-def __processTaxonomyQuerysetParentID(param):
+def __processFactorTaxonomyQuerysetParentID(param):
     """Process GET request parameters for parent by ID
     """
     return FactorTaxonomy.objects.filter(parent__id = param) if param is not '0' else FactorTaxonomy.objects.filter(parent__isnull=True)
     
+#------------- END factor processing methods -----------------
 
-def __processTaxonomyQuerysetToJSON(queryset):
+def __processJSTreeTaxonomyQuerysetToJSON(queryset):
     """Changes queryset to JSON for jsTree to use
     """
     
     json_data = []
-    queryset = natsorted(queryset, lambda x: x.fullname)
     for taxonomy in queryset:
         node_id = str(taxonomy.id)
         node_parent = str(taxonomy.parent_id) if taxonomy.parent_id is not None else '#'
         node_text = str(taxonomy)
         json_data.append(dict(id=node_id, parent=node_parent, text=node_text))
     return json_data
-
-
 
 
 
