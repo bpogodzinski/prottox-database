@@ -127,25 +127,10 @@ class Larvae_stage(models.Model):
 
 
 class Toxin_distribution(models.Model):
-    SURFACE_CONTAMINATION = 'SC'
-    DIET_INCORPORATION = 'DI'
-    FORCE_FEEDING = 'FF'
-    DROPLET_FEEDING = 'DF'
-    POSSIBLE_TOXIN_DISTRIBUTIONS = (
-        (SURFACE_CONTAMINATION, 'Surface contamination'),
-        (DIET_INCORPORATION, 'Diet incorporation'),
-        (FORCE_FEEDING, 'Force feeding'),
-        (DROPLET_FEEDING, 'Droplet feeding'),
-    )
-
-    distribution_choice = models.CharField(
-        max_length=2,
-        choices=POSSIBLE_TOXIN_DISTRIBUTIONS,
-        default=SURFACE_CONTAMINATION,
-    )
+    distribution_choice = models.CharField(max_length=255)
 
     def __str__(self):
-        return self.get_distribution_choice_display()
+        return self.distribution_choice
 
 class TargetSpeciesStrain(models.Model):
     strain = models.CharField(max_length=50)
@@ -160,35 +145,16 @@ class Target(models.Model):
     target_species_strain = models.ForeignKey(TargetSpeciesStrain, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.target_organism_taxonomy.name}"
-
-
-class Measurement(models.Model):
-    measurement_unit_1 = models.CharField(max_length=5)
-    measurement_unit_2 = models.CharField(max_length=5)
-
-    def __str__(self):
-        return "{}/{}".format(self.measurement_unit_1, self.measurement_unit_2)
+        return self.target_organism_taxonomy.name
 
 
 class Toxin_quantity(models.Model):
-    BY_WEIGHT = 'BW'
-    BY_PROPORTION = 'BP'
-    POSSIBLE_MEASUREMENT_TYPE = (
-        (BY_WEIGHT, 'Weight'),
-        (BY_PROPORTION, 'Proportion')
-    )
-    measurement_type = models.CharField(
-        max_length=2,
-        choices=POSSIBLE_MEASUREMENT_TYPE,
-        default=BY_PROPORTION
-    )
+    measurement_type = models.CharField(max_length=50, blank=True)
     values = models.CharField(max_length=50)
-    units = models.ForeignKey(
-        Measurement, on_delete=models.CASCADE, blank=True, null=True)
+    units = models.values = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
-        return '{} | {}{}'.format(self.get_measurement_type_display(), self.values, '' if self.units is None else ' ' + self.units.__str__())
+        return '{} | {}{}'.format(self.measurement_type, self.values, '' if self.units is None else ' ' + self.units)
 
 
 class Bioassay_type(models.Model):
@@ -209,8 +175,7 @@ class Result(models.Model):
     )
     bioassay_type = models.ForeignKey(Bioassay_type, on_delete=models.CASCADE)
     bioassay_result = models.CharField(max_length=20)
-    bioassay_unit = models.ForeignKey(
-        Measurement, on_delete=models.CASCADE, blank=True, null=True)
+    bioassay_unit = models.CharField(max_length=20, blank=True)
     LC95min = models.CharField(max_length=50, blank=True)
     LC95max = models.CharField(max_length=50, blank=True)
     expected = models.CharField(max_length=20, blank=True)
@@ -219,24 +184,22 @@ class Result(models.Model):
         choices=POSSIBLE_INTERACTIONS,
         blank=True
     )
-    synergism_factor = models.DecimalField(
-        max_digits=7, decimal_places=3, blank=True, null=True)
-    antagonism_factor = models.DecimalField(
-        max_digits=7, decimal_places=3, blank=True, null=True)
-
-    def __str__(self):
-        return '{} {}{} {}{} {} {}'.format(self.bioassay_type.bioassay_type, self.bioassay_result, '%' if self.bioassay_unit is None else ' ' + self.bioassay_unit.__str__(),
-                                          '' if not self.LC95max else 'LC95 max: ' + self.LC95max, '' if not self.LC95min else ' LC95 min: ' + self.LC95min, self.get_interaction_display(), self.synergism_factor if self.synergism_factor is not None else self.antagonism_factor)
+    synergism_factor = models.CharField(max_length=100, blank=True)
+    antagonism_factor = models.CharField(max_length=100, blank=True)
+    estimation_method = models.CharField(max_length=100, blank=True)
+    slopeLC = models.CharField(max_length=100, blank=True)
+    slopeSE = models.CharField(max_length=100, blank=True)
+    chi_square = models.CharField(max_length=100, blank=True)
 
 
 class Toxin_research(models.Model):
     toxin = models.ManyToManyField(Active_factor)
     publication = models.ForeignKey(Publication, on_delete=models.CASCADE)
     target = models.ForeignKey(Target, on_delete=models.CASCADE)
-    days_of_observation = models.IntegerField()
+    days_of_observation = models.CharField(max_length=100)
     toxin_distribution = models.ForeignKey(
         Toxin_distribution, on_delete=models.CASCADE)
-    quantity = models.ForeignKey(Toxin_quantity, on_delete=models.CASCADE)
+    quantity = models.ForeignKey(Toxin_quantity, on_delete=models.CASCADE, null=True, blank=True)
     results = models.ForeignKey(Result, on_delete=models.CASCADE)
 
     def __str__(self):

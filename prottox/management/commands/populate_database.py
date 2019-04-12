@@ -7,24 +7,43 @@ from django.core.management.base import BaseCommand
 from prottox.models import *
 
 class Command(BaseCommand):
-
+    # ONE TIME USE CODE
+    # JUST TO POPULATE DATABASE
     help = 'Populate the database with csv file'
     ACTIVE_FACTOR_OFFSET = 14
     F1_TYPE_INDEX=11
     toxinRE = re.compile(r'([A-Za-z]{3})([0-9]+)([A-Z])([a-z])(\d+)?')
     factorsCreated = 0
+    researchCreated = 0
     taxInfo = pd.read_csv('/home/panda/Dokumenty/Development/licencjat/data/taksonomia.csv', sep=';', header=0, index_col=0)
 
     def handle(self, *args, **options):
         data = pd.read_csv('/home/panda/Dokumenty/Development/licencjat/data/data.csv', sep=';', header=0, dtype=str)
         print('Created dataframe. Begin to populate ...')
         for index, row in tqdm(data.iterrows(), total=len(data.index)):
-            self.make_active_factor(row)
-            self.createTargetSpecies(row["Target species"], row['Larvae stage'], row['Target species strain'], row['Recognised Bt toxin resistance in target species? (YES/)'])
+            factors = self.make_active_factor(row)
+            target = self.createTargetSpecies(row["Target species"], row['Larvae stage'], row['Target species strain'], row['Recognised Bt toxin resistance in target species? (YES/)'])
+            publication = self.make_publication(row['AUTHOR'], row['PMID (PubMed ID)'], row['Link (if PMID not available)'], row['PUBLICATION DATE'])
+            toxin_distrib = self.make_toxin_distrib(row['Toxin distribution'])
+            quantity = None if pd.isnull(row['Proportion_F 1']) else self.createToxinQuantity(row['Proportion_F 1':'Proportion_F 8'], row['Proportion unit'])
+            results = self.createResults(row['BIOASSAY TYPE':'Interaction estimation method'])
+            try:
+                Toxin_research.objects.get(toxin__in=factors, publication=publication, target=target, days_of_observation=row['DAYS OF OBSERVATION'], toxin_distribution=toxin_distrib, quantity=quantity, results=results)
+            except ObjectDoesNotExist:
+                toxin_research = Toxin_research.objects.create(publication=publication, target=target, days_of_observation=row['DAYS OF OBSERVATION'], toxin_distribution=toxin_distrib, quantity=quantity, results=results)
+                toxin_research.toxin.add(*factors)
+                self.researchCreated += 1
+            except MultipleObjectsReturned:
+                toxin_research = Toxin_research.objects.filter(toxin__in=factors, publication=publication, target=target, days_of_observation=row['DAYS OF OBSERVATION'], toxin_distribution=toxin_distrib, quantity=quantity, results=results)
+                primaryKey = toxin_research[0].pk
+                assert all(toxinRes.pk == primaryKey for toxinRes in toxin_research), "Something went really wrong...(different PK)"
+
 
         print(f'Created {self.factorsCreated} new Factors!')
+        print(f'Created {self.researchCreated} new Researches!')
 
     def make_active_factor(self,row):
+        factors = []
         offset = 0
         while pd.notna(row.iloc[self.F1_TYPE_INDEX + offset]):
             last_rank, is_toxin = self.createRanks(row, offset)
@@ -59,7 +78,9 @@ class Command(BaseCommand):
                 active_factor = chimerics[0]
 
             active_factor.taxonomy.add(*taxonomyIterable)
+            factors.append(active_factor)
             offset += self.ACTIVE_FACTOR_OFFSET
+        return factors
 
     def createRanks(self,row, offset):
         toxin = None
@@ -107,36 +128,64 @@ class Command(BaseCommand):
         stage = Larvae_stage.objects.get_or_create(stage=larvaeStage)[0]
         strain = TargetSpeciesStrain.objects.get_or_create(strain=targetStrain)[0] if pd.notnull(targetStrain) else None
         factors = toxinResistance if pd.notnull(toxinResistance) else None
-        target = Target.objects.get_or_create(target_organism_taxonomy=targetSpecies, larvae_stage=stage, target_species_strain=strain, factor_resistance=factors)            
+        target = Target.objects.get_or_create(target_organism_taxonomy=targetSpecies, larvae_stage=stage, target_species_strain=strain, factor_resistance=factors)[0]
+        return target            
 
+    def make_publication(self, author, pmid, link, date):
+        pmid = '' if pd.isna(pmid) else int(pmid)
+        link = '' if pd.isna(link) else link
+        date = str(date)+'-01-01'
+        author = self.make_author(author)
+        try:
+            pub = Publication.objects.get(article_link=link, pubmed_id=pmid, date=date, authors=author)
+        except ObjectDoesNotExist:
+            pub = Publication.objects.create(article_link=link, pubmed_id=pmid, date=date)
+            pub.authors.add(author)
+        return pub
+    
+    def make_author(self, surname):
+        author, created = Author.objects.get_or_create(surname=surname)
+        return author
 
+    def make_toxin_distrib(self, distrib):
+        toxin, created = Toxin_distribution.objects.get_or_create(distribution_choice=distrib)
+        return toxin
 
-            
+    def createToxinQuantity(self, proportions, proportionUnit):
+        value = ''
+        measurement = ''
+        unit = None
+        if proportions[0] == 'reference':
+            value = 'reference'
+        else:
+            value = ':'.join(proportions.dropna())
+            unit, measurement = self.createMeasurementUnit(proportionUnit)
 
+        return Toxin_quantity.objects.get_or_create(values=value, units=unit, measurement_type=measurement)[0]
 
-
-
+    def createMeasurementUnit(self, proportionUnit):
+        if pd.notna(proportionUnit):
+            measurement = 'Weight/Area'
+            unit = proportionUnit
+        else:
+            measurement = 'Proportion'
+            unit = None
         
+        return unit, measurement
+   
+    def createResults(self, resultRow):
+        bio_type = Bioassay_type.objects.get_or_create(bioassay_type=resultRow['BIOASSAY TYPE'])[0]
+        bio_result = resultRow['BIOASSAY RESULT OBSERVED']
+        lcMIN = '' if pd.isna(resultRow['LC (FL95 lower)']) else resultRow['LC (FL95 lower)']
+        lcMAX = '' if pd.isna(resultRow['LC (FL95 upper)']) else resultRow['LC (FL95 upper)']
+        unit = '' if pd.isna(resultRow['Bioassay result unit']) else resultRow['Bioassay result unit']
+        slLC = '' if pd.isna(resultRow['Slope (b) (LC)']) else resultRow['Slope (b) (LC)']
+        slSE = '' if pd.isna(resultRow['Slope (b) Standard error (LC)']) else resultRow['Slope (b) Standard error (LC)']
+        chisq = '' if pd.isna(resultRow['Chi-square']) else resultRow['Chi-square']
+        bio_expected = '' if pd.isna(resultRow['BIOASSAY RESULT EXPECTED']) else resultRow['BIOASSAY RESULT EXPECTED']
+        interaction = '' if pd.isna(resultRow['Interaction [SYN/IND/ANT](statistically significant)']) else resultRow['Interaction [SYN/IND/ANT](statistically significant)']
+        syn_factor = '' if pd.isna(resultRow['LC synergism factor (SF)']) else resultRow['LC synergism factor (SF)']
+        ant_factor = '' if pd.isna(resultRow['LC antagonism factor (AF)']) else resultRow['LC antagonism factor (AF)']
+        est_method = '' if pd.isna(resultRow['Interaction estimation method']) else resultRow['Interaction estimation method']
 
-    # def make_author(self, name):
-    #     author, created = Author.objects.get_or_create(surname= name)
-    #     return author
-    #
-    # def make_publication(self, author, pmid, link, date):
-    #     pmid = '' if pd.isna(pmid) else int(pmid)
-    #     link = '' if pd.isna(link) else link
-    #     date = str(date)+'-01-01'
-    #     pub, created = Publication.objects.get_or_create(article_link=link, pubmed_id=pmid, date=date)
-    #     if created:
-    #         pub.authors.add(author)
-    #     return pub
-    #
-    # def make_toxin_distrib(self,choice):
-    #     translate = {
-    #         'Surface contamination':'SC',
-    #         'Diet incorporation':'DI',
-    #         'Force feeding':'FF',
-    #         'Droplet feeding':'DF',
-    #     }
-    #     toxin, created = Toxin_distribution.objects.get_or_create(distribution_choice=translate[choice])
-    #     return toxin
+        return Result.objects.get_or_create(bioassay_type=bio_type, bioassay_result=bio_result, bioassay_unit=unit, LC95min=lcMIN, LC95max=lcMAX, expected=bio_expected, interaction=interaction, synergism_factor=syn_factor, antagonism_factor=ant_factor, estimation_method=est_method, slopeLC=slLC, slopeSE=slSE, chi_square=chisq)[0]
