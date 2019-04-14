@@ -1,23 +1,25 @@
-import json
 from natsort import natsorted
 
-from django.shortcuts import render
 from django.http import JsonResponse
-from django.core import serializers
-from prottox.models import *
+from prottox.models import FactorTaxonomy, SpeciesTaxonomy
 
 
 def factorTaxonomyAPI(request):
     queryset = FactorTaxonomy.objects.all()
 
-    if request.GET.get('parent'):
-        queryset = __processFactorTaxonomyQuerysetParent(request.GET.get('parent'))
-    if request.GET.get('parent_id'):
-        queryset = __processFactorTaxonomyQuerysetParentID(request.GET.get('parent_id'))
-   
+    if request.GET.get("parent"):
+        queryset = __processFactorTaxonomyQuerysetParent(
+            request.GET.get("parent")
+        )
+    if request.GET.get("parent_id"):
+        queryset = __processFactorTaxonomyQuerysetParentID(
+            request.GET.get("parent_id")
+        )
+
     queryset = natsorted(queryset, lambda x: x.fullname)
     data = __processJSTreeTaxonomyQuerysetToJSON(queryset)
     return JsonResponse(data, safe=False)
+
 
 def targetTaxonomyAPI(request):
     queryset = SpeciesTaxonomy.objects.all()
@@ -25,9 +27,9 @@ def targetTaxonomyAPI(request):
     data = __processJSTreeTaxonomyQuerysetToJSON(queryset)
     return JsonResponse(data, safe=False)
 
-    
 
-#------------- BEGIN factor processing methods -----------------
+# ------------- BEGIN factor processing methods -----------------
+
 
 def __processFactorTaxonomyQuerysetParent(param):
     """Process GET request parameters for parent by name
@@ -40,37 +42,46 @@ def __processFactorTaxonomyQuerysetParent(param):
     Returns:
         fitered queryset
     """
-    param = param.split(',') if type(param) == str else param
+    param = param.split(",") if isinstance(param, str) else param
     if len(param) == 1:
         parent = param.pop()
-        return FactorTaxonomy.objects.filter(parent__name__exact=parent) if parent != 'none' else FactorTaxonomy.objects.filter(parent__isnull=True)
-    else: 
-        #Create **kwargs dictionary
+        return (
+            FactorTaxonomy.objects.filter(parent__name__exact=parent)
+            if parent != "none"
+            else FactorTaxonomy.objects.filter(parent__isnull=True)
+        )
+    else:
+        # Create **kwargs dictionary
         filters = dict()
-        baseFormat = '{}parent__name__exact'
-        for parentLevel in range(len(param)):
-            filters[baseFormat.format('parent__'*parentLevel)] = param.pop()
+        base_format = "{}parent__name__exact"
+        for parent_level in range(len(param)):
+            filters[base_format.format("parent__" * parent_level)] = param.pop()
         return FactorTaxonomy.objects.filter(**filters)
+
 
 def __processFactorTaxonomyQuerysetParentID(param):
     """Process GET request parameters for parent by ID
     """
-    return FactorTaxonomy.objects.filter(parent__id = param) if param is not '0' else FactorTaxonomy.objects.filter(parent__isnull=True)
-    
-#------------- END factor processing methods -----------------
+    return (
+        FactorTaxonomy.objects.filter(parent__id=param)
+        if param is not "0"
+        else FactorTaxonomy.objects.filter(parent__isnull=True)
+    )
+
+
+# ------------- END factor processing methods -----------------
+
 
 def __processJSTreeTaxonomyQuerysetToJSON(queryset):
     """Changes queryset to JSON for jsTree to use
     """
-    
+
     json_data = []
     for taxonomy in queryset:
         node_id = str(taxonomy.id)
-        node_parent = str(taxonomy.parent_id) if taxonomy.parent_id is not None else '#'
+        node_parent = (
+            str(taxonomy.parent_id) if taxonomy.parent_id is not None else "#"
+        )
         node_text = str(taxonomy)
         json_data.append(dict(id=node_id, parent=node_parent, text=node_text))
     return json_data
-
-
-
-
