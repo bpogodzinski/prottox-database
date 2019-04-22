@@ -17,14 +17,14 @@ def factorTaxonomyAPI(request):
         )
 
     queryset = natsorted(queryset, lambda x: x.fullname)
-    data = __processJSTreeTaxonomyQuerysetToJSON(queryset)
+    data = __processJSTreeTaxonomyQuerysetToJSON(queryset, 'factor')
     return JsonResponse(data, safe=False)
 
 
 def targetTaxonomyAPI(request):
     queryset = SpeciesTaxonomy.objects.all()
     queryset = natsorted(queryset, lambda x: x.name)
-    data = __processJSTreeTaxonomyQuerysetToJSON(queryset)
+    data = __processJSTreeTaxonomyQuerysetToJSON(queryset, 'taxonomy')
     return JsonResponse(data, safe=False)
 
 
@@ -72,7 +72,7 @@ def __processFactorTaxonomyQuerysetParentID(param):
 # ------------- END factor processing methods -----------------
 
 
-def __processJSTreeTaxonomyQuerysetToJSON(queryset):
+def __processJSTreeTaxonomyQuerysetToJSON(queryset, table):
     """Changes queryset to JSON for jsTree to use
     """
 
@@ -83,5 +83,5 @@ def __processJSTreeTaxonomyQuerysetToJSON(queryset):
             str(taxonomy.parent_id) if taxonomy.parent_id is not None else "#"
         )
         node_text = str(taxonomy)
-        json_data.append(dict(id=node_id, parent=node_parent, text=node_text))
+        json_data.append(dict(id=node_id, parent=node_parent, text=node_text, entity=table))
     return json_data
