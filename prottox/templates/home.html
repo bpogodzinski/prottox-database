@@ -32,22 +32,26 @@
     <div class="row">
         <div class="col-lg-3">
             <div class="jumbotron">
+                    <h5 class="mt-n4">Browse options</h5>
+                    <hr class="mt-n1"/>
                 <div class="btn-group-vertical" role="group">
-                    <button onclick="initFactorTree()" type="button" class="btn btn-primary">Select factors <i class="fas fa-biohazard"></i></button>
+                    <button onclick="initFactorTree()" type="button" class="btn btn-primary"><i class="fas fa-biohazard"></i> | Search factors</button>
                     <br/>
-                    <button onclick="initTargetTree()" type="button" class="btn btn-primary">Select organisms <i class="fas fa-frog"></i></button>
+                    <button onclick="initTargetTree()" type="button" class="btn btn-primary"><i class="fas fa-frog"></i> | Search organisms </button>
                 </div>
             </div>
         </div>
         <div class="col-lg-9">
             <div class="jumbotron">
+                <h3 class="mt-n4">Item selection</h3>
+                <hr class="mt-n1"/>
                 <div id="tree"></div>
                 <br>
                 <form id="form" action="{% url 'research_browser' %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="entity" id="formEntity" value=""/>
                     <input type="hidden" name="IDs" id="formIds" value=""/>
-                    <button class="btn btn-primary" type="submit"> <i class="fas fa-paper-plane"></i> Send</button>
+                    <button class="btn btn-primary" type="submit">Search <i class="fas fa-search"></i></button>
                 </form>
             </div>
         </div>
