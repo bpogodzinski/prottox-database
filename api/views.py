@@ -1,7 +1,7 @@
 from natsort import natsorted
 
 from django.http import JsonResponse
-from prottox.models import FactorTaxonomy, SpeciesTaxonomy
+from prottox.models import FactorTaxonomy, SpeciesTaxonomy, Toxin_research
 
 
 def factorTaxonomyAPI(request):
@@ -17,15 +17,32 @@ def factorTaxonomyAPI(request):
         )
 
     queryset = natsorted(queryset, lambda x: x.fullname)
-    data = __processJSTreeTaxonomyQuerysetToJSON(queryset, 'factor')
+    data = __processJSTreeTaxonomyQuerysetToJSON(queryset, "factor")
     return JsonResponse(data, safe=False)
 
 
 def targetTaxonomyAPI(request):
     queryset = SpeciesTaxonomy.objects.all()
     queryset = natsorted(queryset, lambda x: x.name)
-    data = __processJSTreeTaxonomyQuerysetToJSON(queryset, 'taxonomy')
+    data = __processJSTreeTaxonomyQuerysetToJSON(queryset, "taxonomy")
     return JsonResponse(data, safe=False)
+
+
+def researchBrowserAPI(request):
+    ids = request.GET.get('ids').strip().split(',')
+    db = request.GET.get('db').strip()
+
+    if db == "factor":
+        queryset = Toxin_research.objects.filter(
+            toxin__taxonomy__in=ids
+        ).distinct()
+    else:
+        queryset = Toxin_research.objects.filter(
+            target__target_organism_taxonomy__in=ids
+        ).distinct()
+
+    data = __processDatatableToxinResearchToJSON(queryset)
+    return JsonResponse(data)
 
 
 # ------------- BEGIN factor processing methods -----------------
@@ -72,6 +89,9 @@ def __processFactorTaxonomyQuerysetParentID(param):
 # ------------- END factor processing methods -----------------
 
 
+
+# ------------- BEGIN JSON processing methods -----------------
+
 def __processJSTreeTaxonomyQuerysetToJSON(queryset, table):
     """Changes queryset to JSON for jsTree to use
     """
@@ -83,5 +103,42 @@ def __processJSTreeTaxonomyQuerysetToJSON(queryset, table):
             str(taxonomy.parent_id) if taxonomy.parent_id is not None else "#"
         )
         node_text = str(taxonomy)
-        json_data.append(dict(id=node_id, parent=node_parent, text=node_text, entity=table))
+        json_data.append(
+            dict(id=node_id, parent=node_parent, text=node_text, entity=table)
+        )
     return json_data
+
+def __processDatatableToxinResearchToJSON(queryset):
+    json = dict(data=[], columns=[])
+
+    for record in queryset:
+        entry = {}
+        entry['Target species'] = record.target.target_organism_taxonomy.name
+        entry['Factor'] = __getDataTableFactors(record.toxin)
+        entry['Bioassay type'] = record.results.bioassay_type.bioassay_type
+        entry['Bioassay result'] = __getDataTableBioassayResult(record.results)
+        entry['Interaction'] = record.results.interaction
+
+        json['data'].append(entry)
+
+    for name in json['data'][0].keys():
+        entry = {}
+        entry['title'] = name
+        entry['data'] = name
+
+        json['columns'].append(entry)
+
+    return json
+
+# ------------- END JSON processing methods -----------------
+
+
+# ------------- BEGIN DataTable processing methods -----------------
+
+def __getDataTableFactors(activeFactors):
+    return " + ".join(natsorted([factor.fullname for factor in activeFactors.all()]))
+
+def __getDataTableBioassayResult(results):
+    return f"{results.bioassay_result} {results.bioassay_unit}"
+
+# ------------- END DataTable processing methods -----------------

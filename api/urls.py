@@ -3,5 +3,6 @@ from . import views
 
 urlpatterns = [
     path('factortaxonomy/', views.factorTaxonomyAPI),
-    path('targettaxonomy/', views.targetTaxonomyAPI)
+    path('targettaxonomy/', views.targetTaxonomyAPI),
+    path('researchbrowser/', views.researchBrowserAPI),
 ]
