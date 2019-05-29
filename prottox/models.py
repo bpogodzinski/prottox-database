@@ -1,3 +1,5 @@
+import re
+
 from django.db import models
 
 class SpeciesTaxonomyRank(models.Model):
@@ -23,12 +25,19 @@ class FactorTaxonomy(models.Model):
 
     @property
     def fullname(self):
-        full_name = self.name
+        taxList = []
+        taxList.append(self.name)
         parent = self.parent
         while parent is not None:
-            full_name = parent.name + full_name if len(parent.name) < 5 else parent.name + " " + full_name
+            taxList.append(parent.name)
             parent = parent.parent
-        return full_name.strip()
+        
+        taxList = list(reversed(taxList))
+        name = "".join(taxList)
+        pattern = re.compile(r'^[A-Za-z]{3}[0-9A-Z]+[A-Z]*[a-z]*[\d]*$')
+
+        return name if pattern.match(name) else taxList[-1]
+        
 
     def __str__(self):
         return self.fullname
@@ -99,24 +108,11 @@ class Active_factor(models.Model):
 
     @property
     def fullname(self):
-        parent = None
-        fullname = ''
-        for tax in self.taxonomy.all():
-            partial = ''
-            taxon = tax
-            parent = taxon.parent
-            partial += taxon.name
-            while parent != None:
-                taxon = parent
-                parent = taxon.parent
-                partial = taxon.name + partial
-            fullname += partial + ' '
-        return fullname.strip()
+        nameList = [tax.fullname for tax in self.taxonomy.all()]
+        return f"({' & '.join(nameList)})" if len(nameList) > 1 else nameList[0]
 
     def __str__(self):
         return self.fullname
-
-
 
 
 class Larvae_stage(models.Model):
@@ -167,7 +163,7 @@ class Bioassay_type(models.Model):
 class Result(models.Model):
     SYNERGISM = 'SYN'
     ANTAGONISM = 'ANT'
-    INDEPENDENT = 'INT'
+    INDEPENDENT = 'IND'
     POSSIBLE_INTERACTIONS = (
         (SYNERGISM, 'Synergism'),
         (ANTAGONISM, 'Antagonism'),
