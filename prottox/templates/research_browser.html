@@ -1,34 +1,43 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block title %}Prottox database | Research browser{% endblock title %}
-
-{% block additional_css %}
-<link rel="stylesheet" href="{% static 'prottox/css/bootstrap.min.css' %}"/>
-<link rel="stylesheet" href="{% static 'prottox/css/jstreetheme/style.min.css' %}"/>
-<link rel="stylesheet" href="{% static 'prottox/css/home.css' %}"/>
+{% extends 'base.html' %} {% load static %} {% block title %}Prottox database |
+Research browser{% endblock title %} {% block additional_css %}
+<link rel="stylesheet" href="{% static 'prottox/css/bootstrap.min.css' %}" />
+<link
+  rel="stylesheet"
+  href="{% static 'prottox/css/jstreetheme/style.min.css' %}"
+/>
+<link rel="stylesheet" href="{% static 'prottox/css/home.css' %}" />
 <!-- fontawesome -->
-<link rel="stylesheet" href="{% static 'prottox/css/all.min.css' %}"/>
-<link rel="stylesheet" type="text/css" href="{% static 'prottox/DataTables/datatables.min.css' %}"/>
-{% endblock additional_css %}
-
-{% block additional_js %}
+<link rel="stylesheet" href="{% static 'prottox/css/all.min.css' %}" />
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'prottox/DataTables/datatables.min.css' %}"
+/>
+{% endblock additional_css %} {% block additional_js %}
 <script src="{% static 'prottox/js/jquery.min.js' %}"></script>
 <script src="{% static 'prottox/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'prottox/js/popper.min.js' %}"></script>
 <script src="{% static 'prottox/js/jstree.min.js' %}"></script>
-<script src="{% static 'prottox/js/home.js' %}"></script>
+<script src="{% static 'prottox/js/research_browser.js' %}"></script>
 <!-- fontawesome -->
 <script src="{% static 'prottox/js/all.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'prottox/DataTables/datatables.min.js' %}"></script>
-{% endblock additional_js %}
+<script
+type="text/javascript"
+src="{% static 'prottox/DataTables/datatables.min.js' %}"
+></script>
+{{ IDs|json_script:"IDs"}}
+{{ table|json_script:"DB"}}
+{% endblock additional_js %} {% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-3"></div>
+    <div class="col-lg-6">
+      <table id="table" class="table table-striped table-bordered" style="width:100%"></table>
+    </div>
+    <div class="col-lg-3"></div>
+  </div>
+</div>
 
+{{ data }}
 
-{% block content %}
-<p>{{ ids }} from {{ table }}</p>
-<br/>
-{% for x in data %}
-    <p>{{ x }}</p>
-{% endfor %}
-    
 {% endblock content %}
-    
