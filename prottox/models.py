@@ -6,7 +6,7 @@ class SpeciesTaxonomyRank(models.Model):
     name = models.CharField(max_length=255)
 
     def __str__(self):
-        return self.name   
+        return self.name
 
 class SpeciesTaxonomy(models.Model):
     taxID = models.PositiveIntegerField(blank=True, null=True)
@@ -47,8 +47,12 @@ class Author(models.Model):
     name = models.CharField(max_length=50, blank=True)
     surname = models.CharField(max_length=50)
 
+    @property
+    def fullname(self):
+        return f"{self.name} {self.surname}" if self.name else f"{self.surname}"
+
     def __str__(self):
-        return "Name: {} Surname: {}".format(self.name, self.surname)
+        return self.fullname
 
 
 class Factor_form(models.Model):
@@ -64,10 +68,20 @@ class Publication(models.Model):
     pubmed_id = models.CharField(max_length=50, blank=True)
     article_link = models.CharField(max_length=200, blank=True)
 
-    def __str__(self):
-        all_authors = ", ".join(str(author) for author in self.authors.all())
-        return "{} | {}".format(self.date, all_authors)
+    @property
+    def publicationInfo(self):
+        allAuthors = ", ".join(sorted([author.fullname for author in self.authors.all()]))
+        info=''
 
+        if self.pubmed_id:
+            info = f"PubMed ID: {self.pubmed_id}"
+        elif self.article_link:
+            info = f"Article link: {self.article_link}"
+       
+        return f"{self.date.year} {allAuthors} {info}"
+
+    def __str__(self):
+        return self.publicationInfo
 
 class Factor_source(models.Model):
     source = models.CharField(max_length=50)
@@ -147,7 +161,13 @@ class Target(models.Model):
 class Toxin_quantity(models.Model):
     measurement_type = models.CharField(max_length=50, blank=True)
     values = models.CharField(max_length=50)
-    units = models.values = models.CharField(max_length=50, blank=True, null=True)
+    units = models.CharField(max_length=50, blank=True, null=True)
+
+    @property
+    def quantity(self):
+        if self.values == 'reference':
+            return self.values
+        return f"{self.values} {self.units}" if self.units else f"{self.values} proportion"
 
     def __str__(self):
         return '{} | {}{}'.format(self.measurement_type, self.values, '' if self.units is None else ' ' + self.units)
