@@ -3,6 +3,9 @@ from natsort import natsorted
 from django.http import JsonResponse
 from prottox.models import FactorTaxonomy, SpeciesTaxonomy, Toxin_research
 
+PUBMED_LINK_TEMPLATE = "https://www.ncbi.nlm.nih.gov/pubmed/{ID}"
+DATATABLE_VISIBLE_COLUMNS = ['Target species', 'Factor', 'Bioassay type', 'Bioassay result', 'Interaction', 'Publication']
+    
 
 def factorTaxonomyAPI(request):
     queryset = FactorTaxonomy.objects.all()
@@ -110,14 +113,24 @@ def __processJSTreeTaxonomyQuerysetToJSON(queryset, table):
 
 def __processDatatableToxinResearchToJSON(queryset):
     json = dict(data=[], columns=[])
-
     for record in queryset:
         entry = {}
+        entry['Factor'] = __getDataTableFactors(record.toxin.all())
         entry['Target species'] = record.target.target_organism_taxonomy.name
-        entry['Factor'] = __getDataTableFactors(record.toxin)
         entry['Bioassay type'] = record.results.bioassay_type.bioassay_type
-        entry['Bioassay result'] = __getDataTableBioassayResult(record.results)
+        entry['Bioassay result'] = __getDataTableBioassayResult(record.results) if record.results.bioassay_result else None
         entry['Interaction'] = record.results.interaction
+        entry['Publication'] = __getDataTablePublication(record.publication)
+        entry['Days of observation'] = record.days_of_observation
+        entry['Toxin distribution'] = record.toxin_distribution.distribution_choice
+        entry['Toxin quantity'] = record.quantity.quantity if record.quantity else None
+        entry['Bioassay expected'] = __getDataTableBioassayResult(record.results, expected=True) if record.results.expected else None
+        entry['Synergism factor'] = record.results.synergism_factor
+        entry['Antagonism factor'] = record.results.antagonism_factor
+        entry['Estimation method'] = record.results.estimation_method
+        entry['Statistics'] = __getDataTableStatistics(record.results)
+        entry['Target factor resistance'] = record.target.factor_resistance
+        entry['Target larvae stage'] = record.target.larvae_stage.stage
 
         json['data'].append(entry)
 
@@ -125,6 +138,7 @@ def __processDatatableToxinResearchToJSON(queryset):
         entry = {}
         entry['title'] = name
         entry['data'] = name
+        #entry['visible'] = name in DATATABLE_VISIBLE_COLUMNS
 
         json['columns'].append(entry)
 
@@ -136,9 +150,32 @@ def __processDatatableToxinResearchToJSON(queryset):
 # ------------- BEGIN DataTable processing methods -----------------
 
 def __getDataTableFactors(activeFactors):
-    return " + ".join(natsorted([factor.fullname for factor in activeFactors.all()]))
+    return " + ".join(natsorted([factor.fullname for factor in activeFactors]))
 
-def __getDataTableBioassayResult(results):
-    return f"{results.bioassay_result} {results.bioassay_unit}"
+def __getDataTableBioassayResult(results, expected=False):
+    if expected:
+        return f"{results.expected} {results.bioassay_unit}" if results.expected != "reference" else "reference"
+    else:
+        return f"{results.bioassay_result} {results.bioassay_unit}" if results.bioassay_result != "reference" else "reference"
 
+def __getDataTablePublication(publication):
+    allAuthors = ", ".join(sorted([author.fullname for author in publication.authors.all()]))
+
+    if publication.pubmed_id:
+        return f"<a href={PUBMED_LINK_TEMPLATE.format(ID=publication.pubmed_id)}>{publication.date.year} {allAuthors}</a>"
+    elif publication.article_link:
+        return f"<a href={publication.article_link}>{publication.date.year} {allAuthors}</a>"
+    else:
+        return f"{publication.date.year} {allAuthors}"
+
+def __getDataTableStatistics(result):
+    statistics = ''
+    if result.slopeLC:
+        statistics += f"Slope LC: {result.slopeLC} "
+    if result.slopeSE:
+        statistics += f"Slope standard err: {result.slopeSE} "
+    if result.chi_square:
+        statistics += f"Chi-square: {result.chi_square}"
+
+    return statistics
 # ------------- END DataTable processing methods -----------------
