@@ -1,7 +1,7 @@
 from django.urls import path
-from prottox.views import home_view, research_browser
+from prottox.views import browse_view, research_browser
 
 urlpatterns = [
-    path("", home_view, name="home_view"),
-    path("research_browser/", research_browser, name="research_browser"),
+    path("", browse_view, name="browse_view"),
+    path("research_browser/", research_browser, name="research_view"),
 ]

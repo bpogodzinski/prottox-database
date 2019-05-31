@@ -1,5 +1,5 @@
-FACTOR_ROOT_URL = "api/factortaxonomy/";
-TARGET_ROOT_URL = "api/targettaxonomy/";
+FACTOR_ROOT_URL = "/api/factortaxonomy/";
+TARGET_ROOT_URL = "/api/targettaxonomy/";
 
 function initFactorTree() {
   $("#tree").jstree("destroy");

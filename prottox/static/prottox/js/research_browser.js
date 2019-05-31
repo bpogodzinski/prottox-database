@@ -1,14 +1,27 @@
+function initDataTable(json){
+    $('#table').dataTable({
+        data:json['data'],
+        columns:json['columns'],
+        colReorder: true,
+        scrollX:false,
+        scrollY:'',
+        scrollColapse:true,
+        paging:false,
+    });
+
+}
+
 $(document).ready(function () {
 
     var ids = JSON.parse(document.getElementById('IDs').textContent);
     var db = JSON.parse(document.getElementById('DB').textContent);
-
     var API_ADDR = '/api/researchbrowser?ids='+ids+'&db='+db;
+
     $.ajax( {
-        "url": API_ADDR,
-        "success": function ( json ) {
-            $('#table').dataTable( json );
+        url: API_ADDR,
+        success: function ( json ) {
+            initDataTable(json);
         },
-        "dataType": "json"
+        dataType: "json"
     } );
 })
