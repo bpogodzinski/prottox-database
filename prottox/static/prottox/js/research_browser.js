@@ -4,9 +4,7 @@ function initDataTable(json){
         columns:json['columns'],
         colReorder: true,
         scrollX:false,
-        scrollY:'',
-        scrollColapse:true,
-        paging:false,
+        paging:true,
     });
 
 }

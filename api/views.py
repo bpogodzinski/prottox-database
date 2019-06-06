@@ -117,20 +117,18 @@ def __processDatatableToxinResearchToJSON(queryset):
         entry = {}
         entry['Factor'] = __getDataTableFactors(record.toxin.all())
         entry['Target species'] = record.target.target_organism_taxonomy.name
+        entry['Target larvae stage'] = record.target.larvae_stage.stage
+        entry['Target factor resistance'] = record.target.factor_resistance
+        entry['Days of observation'] = record.days_of_observation
+        entry['Toxin quantity'] = record.quantity.quantity if record.quantity else None
+        entry['Toxin distribution'] = record.toxin_distribution.distribution_choice
         entry['Bioassay type'] = record.results.bioassay_type.bioassay_type
         entry['Bioassay result'] = __getDataTableBioassayResult(record.results) if record.results.bioassay_result else None
-        entry['Interaction'] = record.results.interaction
-        entry['Publication'] = __getDataTablePublication(record.publication)
-        entry['Days of observation'] = record.days_of_observation
-        entry['Toxin distribution'] = record.toxin_distribution.distribution_choice
-        entry['Toxin quantity'] = record.quantity.quantity if record.quantity else None
         entry['Bioassay expected'] = __getDataTableBioassayResult(record.results, expected=True) if record.results.expected else None
+        entry['Interaction'] = record.results.interaction
         entry['Synergism factor'] = record.results.synergism_factor
-        entry['Antagonism factor'] = record.results.antagonism_factor
         entry['Estimation method'] = record.results.estimation_method
-        entry['Statistics'] = __getDataTableStatistics(record.results)
-        entry['Target factor resistance'] = record.target.factor_resistance
-        entry['Target larvae stage'] = record.target.larvae_stage.stage
+        entry['Publication'] = __getDataTablePublication(record.publication)
 
         json['data'].append(entry)
 
@@ -138,7 +136,7 @@ def __processDatatableToxinResearchToJSON(queryset):
         entry = {}
         entry['title'] = name
         entry['data'] = name
-        #entry['visible'] = name in DATATABLE_VISIBLE_COLUMNS
+        entry['visible'] = name in DATATABLE_VISIBLE_COLUMNS
 
         json['columns'].append(entry)
 
@@ -168,14 +166,4 @@ def __getDataTablePublication(publication):
     else:
         return f"{publication.date.year} {allAuthors}"
 
-def __getDataTableStatistics(result):
-    statistics = ''
-    if result.slopeLC:
-        statistics += f"Slope LC: {result.slopeLC} "
-    if result.slopeSE:
-        statistics += f"Slope standard err: {result.slopeSE} "
-    if result.chi_square:
-        statistics += f"Chi-square: {result.chi_square}"
-
-    return statistics
 # ------------- END DataTable processing methods -----------------

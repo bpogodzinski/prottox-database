@@ -123,7 +123,7 @@ class Active_factor(models.Model):
     @property
     def fullname(self):
         nameList = [tax.fullname for tax in self.taxonomy.all()]
-        return f"({' & '.join(nameList)})" if len(nameList) > 1 else nameList[0]
+        return f"{'-'.join(nameList)}" if len(nameList) > 1 else nameList[0]
 
     def __str__(self):
         return self.fullname
