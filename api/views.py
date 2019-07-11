@@ -5,8 +5,10 @@ from prottox.models import FactorTaxonomy, SpeciesTaxonomy, Toxin_research
 
 PUBMED_LINK_TEMPLATE = "https://www.ncbi.nlm.nih.gov/pubmed/{ID}"
 DATATABLE_VISIBLE_COLUMNS = ['Target species', 'Factor', 'Bioassay type', 'Bioassay result', 'Interaction', 'Publication']
-    
-
+SYNERGISM_BADGE = '<span class="badge badge-success" data-toggle="tooltip" data-placement="top" title="This combination achieved synergism">SYN</span>'
+ANTAGONISM_BADGE = '<span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="This combination is antagonistic">ANT</span>'
+INTDEPENDENT_BADGE = '<span class="badge badge-dark" data-toggle="tooltip" data-placement="top" title="This combination is independent">INT</span>'
+BADGE_DICT = {'SYN': SYNERGISM_BADGE, 'ANT':ANTAGONISM_BADGE, 'IND':INTDEPENDENT_BADGE}
 def factorTaxonomyAPI(request):
     queryset = FactorTaxonomy.objects.all()
 
@@ -125,7 +127,8 @@ def __processDatatableToxinResearchToJSON(queryset):
         entry['Bioassay type'] = record.results.bioassay_type.bioassay_type
         entry['Bioassay result'] = __getDataTableBioassayResult(record.results) if record.results.bioassay_result else None
         entry['Bioassay expected'] = __getDataTableBioassayResult(record.results, expected=True) if record.results.expected else None
-        entry['Interaction'] = record.results.interaction
+        entry['95% Fiducial limits'] = __getDataTableFiducialLimits(record.results)
+        entry['Interaction'] = BADGE_DICT.get(record.results.interaction, record.results.interaction)
         entry['Synergism factor'] = record.results.synergism_factor
         entry['Estimation method'] = record.results.estimation_method
         entry['Publication'] = __getDataTablePublication(record.publication)
@@ -136,7 +139,7 @@ def __processDatatableToxinResearchToJSON(queryset):
         entry = {}
         entry['title'] = name
         entry['data'] = name
-        entry['visible'] = name in DATATABLE_VISIBLE_COLUMNS
+        #entry['visible'] = name in DATATABLE_VISIBLE_COLUMNS
 
         json['columns'].append(entry)
 
@@ -148,7 +151,7 @@ def __processDatatableToxinResearchToJSON(queryset):
 # ------------- BEGIN DataTable processing methods -----------------
 
 def __getDataTableFactors(activeFactors):
-    return " + ".join(natsorted([factor.fullname for factor in activeFactors]))
+    return " + ".join([factor.fullname for factor in activeFactors])
 
 def __getDataTableBioassayResult(results, expected=False):
     if expected:
@@ -165,5 +168,8 @@ def __getDataTablePublication(publication):
         return f"<a href={publication.article_link}>{publication.date.year} {allAuthors}</a>"
     else:
         return f"{publication.date.year} {allAuthors}"
+
+def __getDataTableFiducialLimits(results):
+    return f"{results.LC95min} - {results.LC95max}"
 
 # ------------- END DataTable processing methods -----------------
