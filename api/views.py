@@ -125,8 +125,8 @@ def __processDatatableToxinResearchToJSON(queryset):
         entry['Toxin quantity'] = record.quantity.quantity if record.quantity else None
         entry['Toxin distribution'] = record.toxin_distribution.distribution_choice
         entry['Bioassay type'] = record.results.bioassay_type.bioassay_type
-        entry['Bioassay result'] = __getDataTableBioassayResult(record.results) if record.results.bioassay_result else None
-        entry['Bioassay expected'] = __getDataTableBioassayResult(record.results, expected=True) if record.results.expected else None
+        entry['Bioassay result observed'] = __getDataTableBioassayResult(record.results) if record.results.bioassay_result else None
+        entry['Bioassay result expected'] = __getDataTableBioassayResult(record.results, expected=True) if record.results.expected else None
         entry['95% Fiducial limits'] = __getDataTableFiducialLimits(record.results)
         entry['Interaction'] = BADGE_DICT.get(record.results.interaction, record.results.interaction)
         entry['Synergism factor'] = record.results.synergism_factor
