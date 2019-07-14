@@ -1,10 +1,9 @@
 from django.shortcuts import render, redirect
-from prottox.models import Toxin_research
 
 
 def browse_view(request):
-    """Landing page view"""
-    return render(request, "browse.html", {})
+    """Browsing page view"""
+    return render(request, "browse.html", {'page_content_template_name':'factors_browser.html'})
 
 
 def research_browser(request):
@@ -26,6 +25,6 @@ def research_browser(request):
         IDs = request.POST["IDs"].strip().split(",")
         database = request.POST["entity"]
             
-        return render(request, "research_browser.html", {"IDs":IDs, "table":database})
+        return render(request, "research_browser.html", {"IDs":IDs, "table":database, 'page_content_template_name':'research_browser.html'})
     else:
         return redirect("browse_view")
