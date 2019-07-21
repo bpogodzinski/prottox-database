@@ -139,7 +139,8 @@ def __processDatatableToxinResearchToJSON(queryset):
         entry = {}
         entry['title'] = name
         entry['data'] = name
-        #entry['visible'] = name in DATATABLE_VISIBLE_COLUMNS
+        entry['visible'] = name in DATATABLE_VISIBLE_COLUMNS
+        entry['name'] = name
 
         json['columns'].append(entry)
 
