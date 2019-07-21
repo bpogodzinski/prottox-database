@@ -27,7 +27,24 @@ function initColumnsFilter(json){
     $("#columnFilter").selectpicker('refresh');
 }
 
+function initFactorFilter(json) {
+    let factors = [];
+    let factors_raw = json["data"].map(x => x.Factor);
+    for (const factor of factors_raw) {
+        let iFactor = factor.split('+');
+        for (const readyFactor of iFactor) {
+            factors.push(readyFactor.trim());
+        }
+    }
+    factors = new Set(factors);
 
+    for (const factor of factors) {
+        let options = "<option " + "value='" + factor + "'>" + factor + "</option>";
+        $("#factorFilter").append(options);
+    }
+
+    $("#factorFilter").selectpicker('refresh');
+}
   
 
 
@@ -51,12 +68,13 @@ $(document).ready(function () {
             DBdata = json;
             initDataTable(json);
             initColumnsFilter(json);
+            initFactorFilter(json);
 
         },
         complete: function(){
             KTApp.unblockPage();
+
             $('#columnFilter').on('change', function (){
-                // Get the column API object
                 let selected = [];
                 selected = $('#columnFilter').val()
                 $("#table").DataTable().columns().visible(false);
@@ -64,6 +82,19 @@ $(document).ready(function () {
                     let column = $("#table").DataTable().column(columnName+':name');
                     column.visible(true);
                 }
+            
+              });
+
+              $('#factorFilter').on('change', function (){
+                let selected = [];
+                selected = $('#factorFilter').val()
+                //$("#table").DataTable().columns().visible(false);
+                // for (const columnName of selected) {
+                //     let column = $("#table").DataTable().column(columnName+':name');
+                //     column.visible(true);
+                // }
+                console.log(selected);
+                
             
               });
         },
