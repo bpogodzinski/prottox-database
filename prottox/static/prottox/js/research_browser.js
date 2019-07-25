@@ -37,6 +37,8 @@ function initFactorFilter(json) {
         }
     }
     factors = new Set(factors);
+    let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+    factors = Array.from(factors).sort(collator.compare)
 
     for (const factor of factors) {
         let options = "<option " + "value='" + factor + "'>" + factor + "</option>";
@@ -82,21 +84,22 @@ $(document).ready(function () {
                     let column = $("#table").DataTable().column(columnName+':name');
                     column.visible(true);
                 }
-            
               });
+            
 
-              $('#factorFilter').on('change', function (){
-                let selected = [];
-                selected = $('#factorFilter').val()
-                //$("#table").DataTable().columns().visible(false);
-                // for (const columnName of selected) {
-                //     let column = $("#table").DataTable().column(columnName+':name');
-                //     column.visible(true);
-                // }
-                console.log(selected);
-                
-            
-              });
+              $("#table").DataTable().column('Factor:name').every( function () {
+                var that = this;
+         
+                $('#factorFilter').on('change', function (){
+                    let selected = [];
+                    selected = $('#factorFilter').val()
+                    if ( that.search() !== selected ) {
+                        that
+                            .search( selected.join(' ') )
+                            .draw();
+                    }
+                } );
+            } );        
         },
         dataType: "json"
     } );
