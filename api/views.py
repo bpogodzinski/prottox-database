@@ -4,11 +4,12 @@ from django.http import JsonResponse
 from prottox.models import FactorTaxonomy, SpeciesTaxonomy, Toxin_research
 
 PUBMED_LINK_TEMPLATE = "https://www.ncbi.nlm.nih.gov/pubmed/{ID}"
-DATATABLE_VISIBLE_COLUMNS = ['Target species', 'Factor', 'Bioassay type', 'Bioassay result', 'Interaction', 'Publication']
-SYNERGISM_BADGE = '<span class="badge badge-success" data-toggle="tooltip" data-placement="top" title="This combination achieved synergism">SYN</span>'
-ANTAGONISM_BADGE = '<span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="This combination is antagonistic">ANT</span>'
-INTDEPENDENT_BADGE = '<span class="badge badge-dark" data-toggle="tooltip" data-placement="top" title="This combination is independent">INT</span>'
-BADGE_DICT = {'SYN': SYNERGISM_BADGE, 'ANT':ANTAGONISM_BADGE, 'IND':INTDEPENDENT_BADGE}
+DATATABLE_VISIBLE_COLUMNS = ['Select', 'Target species', 'Factor', 'Bioassay type', 'Bioassay result', 'Interaction', 'Publication']
+DATATABLE_DATA_COLUMNS = ['Select', 'Factor', 'Target species', 'Target larvae stage', 'Target factor resistance', 'Days of observation', 'Toxin quantity', 'Toxin distribution', 'Bioassay type', 'Bioassay result observed', 'Bioassay result expected', '95% Fiducial limits', 'Interaction', 'Synergism factor', 'Estimation method', 'Publication']
+SYNERGISM_BADGE = '<span class="kt-badge kt-badge--success kt-badge--inline">Synergism</span>'
+ANTAGONISM_BADGE = '<span class="kt-badge kt-badge--danger kt-badge--inline">Antagonism</span>'
+INDEPENDENT_BADGE = '<span class="kt-badge kt-badge--dark kt-badge--inline">Independent</span>'
+BADGE_DICT = {'SYN': SYNERGISM_BADGE, 'ANT':ANTAGONISM_BADGE, 'IND':INDEPENDENT_BADGE}
 def factorTaxonomyAPI(request):
     queryset = FactorTaxonomy.objects.all()
 
@@ -45,7 +46,6 @@ def researchBrowserAPI(request):
         queryset = Toxin_research.objects.filter(
             target__target_organism_taxonomy__in=ids
         ).distinct()
-
     data = __processDatatableToxinResearchToJSON(queryset)
     return JsonResponse(data)
 
@@ -117,6 +117,7 @@ def __processDatatableToxinResearchToJSON(queryset):
     json = dict(data=[], columns=[])
     for record in queryset:
         entry = {}
+        entry['Select'] = ''
         entry['Factor'] = __getDataTableFactors(record.toxin.all())
         entry['Target species'] = record.target.target_organism_taxonomy.name
         entry['Target larvae stage'] = record.target.larvae_stage.stage
@@ -132,14 +133,14 @@ def __processDatatableToxinResearchToJSON(queryset):
         entry['Synergism factor'] = record.results.synergism_factor
         entry['Estimation method'] = record.results.estimation_method
         entry['Publication'] = __getDataTablePublication(record.publication)
-
+        entry['DT_RowId'] = record.id
         json['data'].append(entry)
 
     for name in json['data'][0].keys():
         entry = {}
         entry['title'] = name
         entry['data'] = name
-        entry['visible'] = True #name in DATATABLE_VISIBLE_COLUMNS
+        entry['visible'] = name in DATATABLE_VISIBLE_COLUMNS
         entry['name'] = name
         json['columns'].append(entry)
 

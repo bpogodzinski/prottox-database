@@ -2,19 +2,29 @@
 var DBdata = null;
 
 function initDataTable(json){
-    $('#table').DataTable({
+    let table = $('#table').DataTable({
         data:json['data'],
         columns:json['columns'],
+        rowID:'ID',
         colReorder: true,
         scrollX:false,
         paging:true,
+        columnDefs: [ {
+            orderable: false,
+            className: 'select-checkbox',
+            targets:   0
+        } ],
+        select: {
+            style:    'multi',
+            selector: 'td:first-child'
+        },
     });
-
 }
 
 function initColumnsFilter(json){
     let selected = [];
-
+    let hiddenColumns = ['DT_RowId', 'Select']
+    json['columns'] = json['columns'].filter((value) => !hiddenColumns.includes(value.title))
     for (const column of json['columns']) {
         if(column.visible === true){
             selected.push(column.title)
@@ -138,6 +148,55 @@ function initBioassayTypeFilter(json) {
     $("#bioassayTypeFilter").selectpicker('refresh');
 }
 
+function stripHTML(html)
+{
+   let tmp = document.createElement("DIV");
+   tmp.innerHTML = html;
+   return tmp.textContent || tmp.innerText || "";
+}
+
+function initInteractionFilter(json) {
+    let interaction = [];
+    let interaction_raw = json["data"].map(x => x['Interaction']);
+    for (const type of interaction_raw) {
+        if(type){
+            interaction.push(type.trim());
+        }
+    }
+    interaction = new Set(interaction);
+    interaction = Array.from(interaction).sort()
+
+    for (const type of interaction) {
+        let options = "<option " + "value='" + stripHTML(type) + "'>" + type + "</option>";
+        $("#interactionFilter").append(options);
+    }
+
+    $("#interactionFilter").selectpicker('refresh');
+}
+
+function initEstimationMethodFilter(json) {
+    let estimationMethod = [];
+    let estimationMethod_raw = json["data"].map(x => x['Estimation method']);
+    for (const type of estimationMethod_raw) {
+        if(type){
+            estimationMethod.push(type.trim());
+        }
+    }
+    estimationMethod = new Set(estimationMethod);
+    estimationMethod = Array.from(estimationMethod).sort()
+
+    for (const type of estimationMethod) {
+        let options = "<option " + "value='" + type + "'>" + type + "</option>";
+        $("#estimationMethodFilter").append(options);
+    }
+
+    $("#estimationMethodFilter").selectpicker('refresh');
+}
+
+function getSelectedIDsToForm(){
+    let data = $('#table').DataTable().rows( {selected:true} ).data().pluck('DT_RowId').toArray();
+    document.getElementById("formIds").value = data
+}
 
 $(document).ready(function () {
 
@@ -165,6 +224,8 @@ $(document).ready(function () {
             initTargetFactorResistanceFilter(json);
             initToxinDistributionFilter(json);
             initBioassayTypeFilter(json);
+            initInteractionFilter(json);
+            initEstimationMethodFilter(json);
 
         },
         complete: function(){
@@ -265,11 +326,46 @@ $(document).ready(function () {
                 } );
             } );
 
+                $("#table").DataTable().column('Interaction:name').every( function () {
+                var that = this;
+            
+                $('#interactionFilter').on('change', function (){
+                    let selected = [];
+                    selected = $('#interactionFilter').val()
+                    if ( that.search() !== selected ) {
+                        that
+                            .search( selected.join(' ') )
+                            .draw();
+                    }
+                } );
+            } );
+                $("#table").DataTable().column('Estimation method:name').every( function () {
+                var that = this;
+            
+                $('#estimationMethodFilter').on('change', function (){
+                    let selected = [];
+                    selected = $('#estimationMethodFilter').val()
+                    if ( that.search() !== selected ) {
+                        that
+                            .search( selected.join(' ') )
+                            .draw();
+                    }
+                } );
+            } );
 
-
-
-      
         },
         dataType: "json"
     } );
+
+    $('#table').on( 'select.dt deselect.dt', function ( e, dt, type, indexes ) {
+        if(type === 'row'){
+            let data = $('#table').DataTable().rows( {selected:true} ).data().count()
+            $('#compareBtn').toggleClass('disabled', data < 2)        
+        } 
+    });
+
+    $("#compareForm").submit(function() {
+        getSelectedIDsToForm()
+      });
+
 })
