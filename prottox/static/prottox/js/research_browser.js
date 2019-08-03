@@ -234,6 +234,8 @@ $(document).ready(function () {
             $('#columnFilter').on('change', function (){
                 let selected = [];
                 selected = $('#columnFilter').val()
+                //Make select always visible
+                selected.push('Select');
                 $("#table").DataTable().columns().visible(false);
                 for (const columnName of selected) {
                     let column = $("#table").DataTable().column(columnName+':name');
