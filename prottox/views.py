@@ -6,7 +6,7 @@ def browse_view(request):
     return render(request, "browse.html", {'page_content_template_name':'factors_browser.html'})
 
 
-def research_browser(request):
+def research_browser_view(request):
     """Research browser page view. This view is
     supposed to show user researches that included chosen factors/taxonomies
     in POST request
@@ -28,3 +28,8 @@ def research_browser(request):
         return render(request, "research_browser.html", {"IDs":IDs, "table":database, 'page_content_template_name':'research_browser.html'})
     else:
         return redirect("browse_view")
+
+def compare_research_view(request):
+    ids = request.GET["IDs"].split(",")
+
+    return render(request, "compare.html", {"IDs":ids, 'page_content_template_name':'compare.html'})

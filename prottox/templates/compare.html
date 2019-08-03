@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Prottox Database | Compare{% endblock title %}
+{% block additional_css %}
+
+{% endblock additional_css %}
+{% block additional_js %}
+
+{{ IDs|json_script:"IDs"}}
+{{ table|json_script:"DB"}}
+{% endblock additional_js %}
