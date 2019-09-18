@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django_extensions',
     'prottox',
     'api',
-    'landing_page',
 ]
 
 MIDDLEWARE = [
