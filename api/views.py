@@ -10,6 +10,7 @@ SYNERGISM_BADGE = '<span class="kt-badge kt-badge--success kt-badge--inline">Syn
 ANTAGONISM_BADGE = '<span class="kt-badge kt-badge--danger kt-badge--inline">Antagonism</span>'
 INDEPENDENT_BADGE = '<span class="kt-badge kt-badge--dark kt-badge--inline">Independent</span>'
 BADGE_DICT = {'SYN': SYNERGISM_BADGE, 'ANT':ANTAGONISM_BADGE, 'IND':INDEPENDENT_BADGE}
+
 def factorTaxonomyAPI(request):
     queryset = FactorTaxonomy.objects.all()
 

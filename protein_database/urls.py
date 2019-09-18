@@ -15,10 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from prottox.views import home_view
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include('landing_page.urls')),
+    path("home/", home_view, name='home_view'),
+    path("", home_view),
     path("database/", include("prottox.urls")),
     path("api/", include("api.urls")),
 ]
