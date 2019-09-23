@@ -1,0 +1,128 @@
+{% load static %}
+<div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
+    <div class="row">
+    <div class="col-12">
+    <!--begin:: Widgets/Finance Stats-->
+    <div class="kt-portlet kt-portlet--fit kt-portlet--head-lg kt-portlet--head-overlay kt-portlet--height-fluid">
+            <div class="kt-portlet__head kt-portlet__space-x">
+                <div class="kt-portlet__head-label">
+                    <h3 class="kt-portlet__head-title kt-font-light">
+                        Research #{{research.pk}}
+                    </h3>
+                </div>
+            </div>
+            <div class="kt-portlet__body">
+                <div class="kt-widget28">
+                    <div class="kt-widget28__visual" style="background-image: url({% static 'prottox/assets/media/misc/bg-4.jpg' %}); background-size: cover;"></div>
+                    <div class="kt-widget28__wrapper kt-portlet__space-x">
+
+                        <!-- begin::Nav pills -->
+                        <ul class="nav nav-pills nav-fill kt-portlet__space-x" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="pill" href="#toxin"><span><i class="fa flaticon-file-1"></i></span><span>Toxin</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="pill" href="#target"><span><i class="fa flaticon-clipboard"></i></span><span>Target</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="pill" href="#result"><span><i class="fa flaticon-clipboard"></i></span><span>Result</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="pill" href="#publication"><span><i class="fa flaticon-pie-chart"></i></span><span>Publication</span></a>
+                            </li>
+                        </ul>
+
+                        <!-- end::Nav pills -->
+
+                        <!-- begin::Tab Content -->
+                        <div class="tab-content">
+                            <div id="toxin" class="tab-pane active">
+                                <div class="kt-widget28__tab-items">
+                                    <div class="kt-widget28__tab-item">
+                                        <span>Company Name</span>
+                                        <span>SLT Back-end Solutions</span>
+                                    </div>
+                                    <div class="kt-widget28__tab-item">
+                                        <span>INE Number</span>
+                                        <span>D330-1234562546</span>
+                                    </div>
+                                    <div class="kt-widget28__tab-item">
+                                        <span>Total Charges</span>
+                                        <span>USD 1,250.000</span>
+                                    </div>
+                                    <div class="kt-widget28__tab-item">
+                                        <span>Project Description</span>
+                                        <span>Creating Back-end Components</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="target" class="tab-pane fade">
+                                <div class="kt-widget28__tab-items">
+                                    <div class="kt-widget28__tab-item">
+                                        <span>Project Description</span>
+                                        <span>Back-End Web Architecture</span>
+                                    </div>
+                                    <div class="kt-widget28__tab-item">
+                                        <span>Total Charges</span>
+                                        <span>USD 2,170.000</span>
+                                    </div>
+                                    <div class="kt-widget28__tab-item">
+                                        <span>INE Number</span>
+                                        <span>D110-1234562546</span>
+                                    </div>
+                                    <div class="kt-widget28__tab-item">
+                                        <span>Company Name</span>
+                                        <span>SLT Back-end Solutions</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="result" class="tab-pane fade">
+                                <div class="kt-widget28__tab-items">
+                                    <div class="kt-widget28__tab-item">
+                                        <span>Total Charges</span>
+                                        <span>USD 3,450.000</span>
+                                    </div>
+                                    <div class="kt-widget28__tab-item">
+                                        <span>Project Description</span>
+                                        <span>Creating Back-end Components</span>
+                                    </div>
+                                    <div class="kt-widget28__tab-item">
+                                        <span>Company Name</span>
+                                        <span>SLT Back-end Solutions</span>
+                                    </div>
+                                    <div class="kt-widget28__tab-item">
+                                        <span>INE Number</span>
+                                        <span>D510-7431562548</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="publication" class="tab-pane fade">
+                                <div class="kt-widget28__tab-items">
+                                    <div class="kt-widget28__tab-item">
+                                        <span>Author</span>
+                                        <span>{{research.publication.allAuthors}}</span>
+                                    </div>
+                                    <div class="kt-widget28__tab-item">
+                                        <span>Project Description</span>
+                                        <span>Creating Back-end Components</span>
+                                    </div>
+                                    <div class="kt-widget28__tab-item">
+                                        <span>Company Name</span>
+                                        <span>SLT Back-end Solutions</span>
+                                    </div>
+                                    <div class="kt-widget28__tab-item">
+                                        <span>INE Number</span>
+                                        <span>D510-7431562548</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- end::Tab Content -->
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+</div>
+</div>

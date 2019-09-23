@@ -56,7 +56,7 @@
                         </div>
                     </div>
                     <div class="kt-portlet__foot">
-                        <form id="form" action="{% url 'research_view' %}" method="post">
+                        <form id="form" action="{% url 'research_browser_view' %}" method="post">
                             {% csrf_token %}
                             <input type="hidden" name="entity" id="formEntity" value="" />
                             <input type="hidden" name="IDs" id="formIds" value="" />

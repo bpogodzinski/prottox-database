@@ -1,5 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Toxin_research
 
+def home_view(request):
+    return render(request, "home.html", {'page_content_template_name':'home.html'})
 
 def browse_view(request):
     """Browsing page view"""
@@ -24,15 +27,17 @@ def research_browser_view(request):
     if request.POST.get("IDs", None):
         IDs = request.POST["IDs"].strip().split(",")
         database = request.POST["entity"]
-
-        return render(request, "research_browser.html", {"IDs":IDs, "table":database, 'page_content_template_name':'research_browser.html'})
+        return render(request, "research_browser.html",
+                      {"IDs":IDs, "table":database,
+                       'page_content_template_name':'research_browser.html'})
     else:
         return redirect("browse_view")
 
 def compare_research_view(request):
     ids = request.GET["IDs"].split(",")
-
     return render(request, "compare.html", {"IDs":ids, 'page_content_template_name':'compare.html'})
 
-def home_view(request):
-    return render(request, "home.html", {'page_content_template_name':'home.html'})
+def research_view(request, db_id):
+    research = get_object_or_404(Toxin_research, pk=db_id)
+    return render(request, 'research.html',
+                  {'research':research, 'page_content_template_name':'research.html'})

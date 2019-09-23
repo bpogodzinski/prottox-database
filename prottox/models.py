@@ -70,15 +70,19 @@ class Publication(models.Model):
 
     @property
     def publicationInfo(self):
-        allAuthors = ", ".join(sorted([author.fullname for author in self.authors.all()]))
+        allAuthors = self.allAuthors
         info=''
 
         if self.pubmed_id:
             info = f"PubMed ID: {self.pubmed_id}"
         elif self.article_link:
             info = f"Article link: {self.article_link}"
-       
+
         return f"{self.date.year} {allAuthors} {info}"
+
+    @property
+    def allAuthors(self):
+        return ", ".join(sorted([author.fullname for author in self.authors.all()]))
 
     def __str__(self):
         return self.publicationInfo

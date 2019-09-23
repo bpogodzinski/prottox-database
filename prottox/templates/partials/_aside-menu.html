@@ -3,7 +3,7 @@
     <div id="kt_aside_menu"class="kt-aside-menu "data-ktmenu-vertical="1" data-ktmenu-scroll="1" data-ktmenu-dropdown-timeout="500" >
         <ul class="kt-menu__nav ">
             <li class="kt-menu__item kt-menu__item" aria-haspopup="true" >
-                <a href="?page=index" class="kt-menu__link ">
+                <a href="{% url 'home_view' %}" class="kt-menu__link ">
                     <span class="kt-menu__link-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" class="kt-svg-icon">
                             <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -41,13 +41,13 @@
                                 <span class="kt-menu__link"><span class="kt-menu__link-text">Browse</span></span>
                             </li>
                             <li class="kt-menu__item " aria-haspopup="true" >
-                                <a href="?page=layout/subheader/toolbar" class="kt-menu__link ">
+                                <a href="{% url 'browse_view' %}" class="kt-menu__link ">
                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                     <span class="kt-menu__link-text">By organism</span>
                                 </a>
                             </li>
                             <li class="kt-menu__item " aria-haspopup="true" >
-                                <a href="?page=layout/subheader/actions" class="kt-menu__link ">
+                                <a href="{% url 'browse_view' %}" class="kt-menu__link ">
                                     <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
                                     <span class="kt-menu__link-text">By factor</span>
                                 </a>
