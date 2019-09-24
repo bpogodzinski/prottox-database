@@ -87,6 +87,16 @@ class Publication(models.Model):
     def __str__(self):
         return self.publicationInfo
 
+    @property
+    def link(self):
+        PUBMED_LINK_TEMPLATE = "https://www.ncbi.nlm.nih.gov/pubmed/{ID}"
+        if self.pubmed_id:
+            return PUBMED_LINK_TEMPLATE.format(ID=self.pubmed_id)
+        elif self.article_link:
+            return self.article_link
+        else:
+            return None
+
 class Factor_source(models.Model):
     source = models.CharField(max_length=50)
 

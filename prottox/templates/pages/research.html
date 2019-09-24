@@ -33,7 +33,7 @@
                         </ul>
 
                         <!-- end::Nav pills -->
-
+                        <!-- TODO: Finish research -->
                         <!-- begin::Tab Content -->
                         <div class="tab-content">
                             <div id="toxin" class="tab-pane active">
@@ -103,16 +103,18 @@
                                         <span>{{research.publication.allAuthors}}</span>
                                     </div>
                                     <div class="kt-widget28__tab-item">
-                                        <span>Project Description</span>
-                                        <span>Creating Back-end Components</span>
+                                        <span>Publication year</span>
+                                        <span>{{research.publication.date.year}}</span>
                                     </div>
                                     <div class="kt-widget28__tab-item">
-                                        <span>Company Name</span>
-                                        <span>SLT Back-end Solutions</span>
-                                    </div>
-                                    <div class="kt-widget28__tab-item">
-                                        <span>INE Number</span>
-                                        <span>D510-7431562548</span>
+                                        <span>Link to publication</span>
+                                        {% with research.publication.link as link %}
+                                        {% if link %}
+                                        <span><a href="{{link}}">{{link}}</a></span>
+                                        {% else %}
+                                        <span>N/A</span>
+                                        {% endif %}
+                                        {% endwith %}
                                     </div>
                                 </div>
                             </div>
