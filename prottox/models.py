@@ -232,6 +232,10 @@ class Toxin_research(models.Model):
     quantity = models.ForeignKey(Toxin_quantity, on_delete=models.CASCADE, null=True, blank=True)
     results = models.ForeignKey(Result, on_delete=models.CASCADE)
 
+    @property
+    def factors(self):
+        return ' + '.join(toxin.fullname for toxin in self.toxin.all())
+
     def __str__(self):
         toxins = ', '.join(str(tox) for tox in self.toxin.all())
         return 'Toxin(s): {} | Publication: {} | Target: {} | Days of observation: {} | Toxin distribution: {} | Toxin quantity: {} | Results: {}'.format(toxins,
