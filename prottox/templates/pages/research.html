@@ -43,6 +43,10 @@
                                         <span>{{research.factors}}</span>
                                     </div>
                                     <div class="kt-widget28__tab-item">
+                                        <span>Toxin quantity</span>
+                                        <span>{{research.quantity.values | default:'N/A'}} {{research.quantity.units | default:'proportion'}}</span>
+                                    </div>
+                                    <div class="kt-widget28__tab-item">
                                         <span>Toxin distribution</span>
                                         <span>{{research.toxin_distribution.distribution_choice | default:'N/A' | capfirst}}</span>
                                     </div>
@@ -94,20 +98,20 @@
                             <div id="target" class="tab-pane fade">
                                 <div class="kt-widget28__tab-items">
                                     <div class="kt-widget28__tab-item">
-                                        <span>Project Description</span>
-                                        <span>Back-End Web Architecture</span>
+                                        <span>Target species</span>
+                                        <span>{{research.target.target_organism_taxonomy.name | capfirst}}</span>
                                     </div>
                                     <div class="kt-widget28__tab-item">
-                                        <span>Total Charges</span>
-                                        <span>USD 2,170.000</span>
+                                        <span>Target species strain</span>
+                                        <span>{{research.target.target_species_strain.strain | default:'N/A' | capfirst}}</span>
                                     </div>
                                     <div class="kt-widget28__tab-item">
-                                        <span>INE Number</span>
-                                        <span>D110-1234562546</span>
+                                        <span>Target larvae stage</span>
+                                        <span>{{research.target.larvae_stage.stage | default:'N/A' | capfirst}}</span>
                                     </div>
                                     <div class="kt-widget28__tab-item">
-                                        <span>Company Name</span>
-                                        <span>SLT Back-end Solutions</span>
+                                        <span>Recognised Bt toxin resistance in target species</span>
+                                        <span>{{research.target.factor_resistance | default:'N/A'}}</span>
                                     </div>
                                 </div>
                             </div>
