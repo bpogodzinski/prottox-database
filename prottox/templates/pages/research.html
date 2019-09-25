@@ -122,16 +122,24 @@
                                         <span>{{research.days_of_observation | default:'N/A'}}</span>
                                     </div>
                                     <div class="kt-widget28__tab-item">
-                                        <span>Project Description</span>
-                                        <span>Creating Back-end Components</span>
+                                        <span>Bioassay type</span>
+                                        <span>{{research.results.bioassay_type.bioassay_type | default:'N/A' | capfirst}}</span>
                                     </div>
                                     <div class="kt-widget28__tab-item">
-                                        <span>Company Name</span>
-                                        <span>SLT Back-end Solutions</span>
+                                        <span>Bioassay result observed</span>
+                                        <span>{{research.results.bioassay_result | default:'N/A' | lower | capfirst}} {{research.results.bioassay_unit | default:''}}</span>
                                     </div>
                                     <div class="kt-widget28__tab-item">
-                                        <span>INE Number</span>
-                                        <span>D510-7431562548</span>
+                                        <span>Bioassay result expected</span>
+                                        <span>{{research.results.expected | default:'N/A'}} {{research.results.bioassay_unit | default:''}}</span>
+                                    </div>
+                                    <div class="kt-widget28__tab-item">
+                                        <span>Fiducial limits</span>
+                                        <span>{{research.results.LC95min | default:'N/A'}} - {{research.results.LC95max | default:'N/A'}}</span>
+                                    </div>
+                                    <div class="kt-widget28__tab-item">
+                                        <span>Interaction</span>
+                                        <span></span>
                                     </div>
                                 </div>
                             </div>
