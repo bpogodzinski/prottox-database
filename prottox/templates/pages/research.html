@@ -7,7 +7,7 @@
             <div class="kt-portlet__head kt-portlet__space-x">
                 <div class="kt-portlet__head-label">
                     <h3 class="kt-portlet__head-title kt-font-light">
-                        Research #{{research.pk}}
+                        Research #{{research.pk}} - {{research.publication.allAuthors}} ({{research.publication.date.year}})
                     </h3>
                 </div>
             </div>
@@ -43,22 +43,52 @@
                                         <span>{{research.factors}}</span>
                                     </div>
                                     <div class="kt-widget28__tab-item">
+                                        <span>Toxin distribution</span>
+                                        <span>{{research.toxin_distribution.distribution_choice | default:'N/A' | capfirst}}</span>
+                                    </div>
+                                    {% for toxin in research.toxin.all %}    
+                                    <div class="kt-widget28__tab-item">
                                         <span>
                                             <div class="kt-divider">
                                                 <span></span>
-                                                <span>Cry1Aa</span>
+                                                <span>{{toxin.fullname}}</span>
                                                 <span></span>
                                             </div>
                                         </span>
                                     </div>
                                     <div class="kt-widget28__tab-item">
-                                        <span>Total Charges</span>
-                                        <span>USD 1,250.000</span>
+                                        <span>Factor source</span>
+                                        <span>{{toxin.factor_source.source | default:'N/A' | capfirst}}</span>
                                     </div>
                                     <div class="kt-widget28__tab-item">
-                                        <span>Project Description</span>
-                                        <span>Creating Back-end Components</span>
+                                        <span>Factor isolation source (subspecies/serovar/biotype etc.)</span>
+                                        <span>{{toxin.isolation_source.isolation_source | default:'N/A' | capfirst}}</span>
                                     </div>
+                                    <div class="kt-widget28__tab-item">
+                                        <span>Factor form</span>
+                                        <span>{{toxin.factor_form.form | default:'N/A' | capfirst}}</span>
+                                    </div>
+                                    <div class="kt-widget28__tab-item">
+                                        <span>Factor modification</span>
+                                        <span>{{toxin.modification_description | default:'N/A' | capfirst}}</span>
+                                    </div>
+                                    <div class="kt-widget28__tab-item">
+                                        <span>Factor expression host</span>
+                                        <span>{{toxin.factor_expression_host.host | default:'N/A' | capfirst}}</span>
+                                    </div>
+                                    <div class="kt-widget28__tab-item">
+                                        <span>Factor kDa</span>
+                                        <span>{{toxin.kDa | default_if_none:'N/A'}}</span>
+                                    </div>
+                                    <div class="kt-widget28__tab-item">
+                                        <span>Factor preparation</span>
+                                        <span>{{toxin.preparation | default:'N/A' | capfirst}}</span>
+                                    </div>
+                                    <div class="kt-widget28__tab-item">
+                                        <span>Factor NCBI accession number</span>
+                                        <span>{{toxin.NCBI_accession_number | default:'N/A'}}</span>
+                                    </div>
+                                    {% endfor %}
                                 </div>
                             </div>
                             <div id="target" class="tab-pane fade">
@@ -84,8 +114,8 @@
                             <div id="result" class="tab-pane fade">
                                 <div class="kt-widget28__tab-items">
                                     <div class="kt-widget28__tab-item">
-                                        <span>Total Charges</span>
-                                        <span>USD 3,450.000</span>
+                                        <span>Days of observation</span>
+                                        <span>{{research.days_of_observation | default:'N/A'}}</span>
                                     </div>
                                     <div class="kt-widget28__tab-item">
                                         <span>Project Description</span>
