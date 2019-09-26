@@ -41,7 +41,7 @@ function initFactorFilter(json) {
     let factors = [];
     let factors_raw = json["data"].map(x => x.Factor);
     for (const factor of factors_raw) {
-        let iFactor = factor.split('+');
+        let iFactor = stripHTML(factor).split('+');
         for (const readyFactor of iFactor) {
             factors.push(readyFactor.trim());
         }
@@ -51,7 +51,7 @@ function initFactorFilter(json) {
     factors = Array.from(factors).sort(collator.compare)
 
     for (const factor of factors) {
-        let options = "<option " + "value='" + factor + "'>" + factor + "</option>";
+        let options = "<option " + "value='" + stripHTML(factor) + "'>" + factor + "</option>";
         $("#factorFilter").append(options);
     }
 

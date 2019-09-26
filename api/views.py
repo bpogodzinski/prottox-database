@@ -1,6 +1,7 @@
 from natsort import natsorted
 
 from django.http import JsonResponse
+from django.urls import reverse
 from prottox.models import FactorTaxonomy, SpeciesTaxonomy, Toxin_research
 
 PUBMED_LINK_TEMPLATE = "https://www.ncbi.nlm.nih.gov/pubmed/{ID}"
@@ -119,7 +120,7 @@ def __processDatatableToxinResearchToJSON(queryset):
     for record in queryset:
         entry = {}
         entry['Select'] = ''
-        entry['Factor'] = __getDataTableFactors(record.toxin.all())
+        entry['Factor'] = __getDataTableFactors(record.toxin.all(), record.pk)
         entry['Target species'] = record.target.target_organism_taxonomy.name
         entry['Target larvae stage'] = record.target.larvae_stage.stage
         entry['Target factor resistance'] = record.target.factor_resistance
@@ -153,8 +154,8 @@ def __processDatatableToxinResearchToJSON(queryset):
 # ------------- BEGIN DataTable processing methods -----------------
 
 #TODO: Add link to research page and fix the splitting by '+' in research_browser.js
-def __getDataTableFactors(activeFactors):
-    return " + ".join([factor.fullname for factor in activeFactors])
+def __getDataTableFactors(activeFactors, pk):
+    return f"<a href={reverse('research_view', kwargs={'db_id':pk})}>{' + '.join([factor.fullname for factor in activeFactors])}<a/>"
 
 def __getDataTableBioassayResult(results, expected=False):
     if expected:
