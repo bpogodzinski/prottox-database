@@ -134,12 +134,28 @@
                                         <span>{{research.results.expected | default:'N/A'}} {{research.results.bioassay_unit | default:''}}</span>
                                     </div>
                                     <div class="kt-widget28__tab-item">
+                                        <span>Interaction</span>
+                                        <span>{{research.results.get_interaction_display | default:'N/A'}}</span>
+                                    </div>
+                                    <div class="kt-widget28__tab-item">
                                         <span>Fiducial limits</span>
                                         <span>{{research.results.LC95min | default:'N/A'}} - {{research.results.LC95max | default:'N/A'}}</span>
                                     </div>
                                     <div class="kt-widget28__tab-item">
-                                        <span>Interaction</span>
-                                        <span></span>
+                                        <span>Synergism factor</span>
+                                        <span>{{research.results.synergism_factor | default:'N/A'}}</span>
+                                    </div>
+                                    <div class="kt-widget28__tab-item">
+                                        <span>Estimation method</span>
+                                        <span>{{research.results.estimation_method | default:'N/A' | capfirst}}</span>
+                                    </div>
+                                    <div class="kt-widget28__tab-item">
+                                        <span>Statistics</span>
+                                        <span>
+                                            Chi-square: {{research.results.chi_square | default:'N/A'}}<br/>
+                                            Slope standard error: {{research.results.slopeSE | default:'N/A'}}<br/>
+                                            Slope fiducial limit: {{research.results.slopeLC | default:'N/A'}}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
