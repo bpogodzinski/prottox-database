@@ -266,7 +266,7 @@ $(document).ready(function () {
                     selected = $('#targetSpeciesFilter').val()
                     if ( that.search() !== selected ) {
                         that
-                            .search( selected.join(' ') )
+                            .search(selected.join('|'), true, false)
                             .draw();
                     }
                 } );
@@ -280,7 +280,7 @@ $(document).ready(function () {
                     selected = $('#targetLarvaeStageFilter').val()
                     if ( that.search() !== selected ) {
                         that
-                            .search( selected.join(' ') )
+                            .search(selected.join('|'), true, false)
                             .draw();
                     }
                 } );
@@ -294,7 +294,7 @@ $(document).ready(function () {
                     selected = $('#targetFactorResistanceFilter').val()
                     if ( that.search() !== selected ) {
                         that
-                            .search( selected.join(' ') )
+                            .search(selected.join('|'), true, false)
                             .draw();
                     }
                 } );
@@ -308,7 +308,7 @@ $(document).ready(function () {
                     selected = $('#toxinDistributionFilter').val()
                     if ( that.search() !== selected ) {
                         that
-                            .search( selected.join(' ') )
+                            .search(selected.join('|'), true, false)
                             .draw();
                     }
                 } );
@@ -322,7 +322,7 @@ $(document).ready(function () {
                     selected = $('#bioassayTypeFilter').val()
                     if ( that.search() !== selected ) {
                         that
-                            .search( selected.join(' ') )
+                            .search(selected.join('|'), true, false)
                             .draw();
                     }
                 } );
@@ -336,7 +336,7 @@ $(document).ready(function () {
                     selected = $('#interactionFilter').val()
                     if ( that.search() !== selected ) {
                         that
-                            .search( selected.join(' ') )
+                            .search(selected.join('|'), true, false)
                             .draw();
                     }
                 } );
@@ -349,7 +349,7 @@ $(document).ready(function () {
                     selected = $('#estimationMethodFilter').val()
                     if ( that.search() !== selected ) {
                         that
-                            .search( selected.join(' ') )
+                            .search(selected.join('|'), true, false)
                             .draw();
                     }
                 } );
