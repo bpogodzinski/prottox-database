@@ -4,9 +4,13 @@ from .models import Toxin_research
 def home_view(request):
     return render(request, "home.html", {'page_content_template_name':'home.html'})
 
-def browse_view(request):
+def organism_browse_view(request):
     """Browsing page view"""
-    return render(request, "browse.html", {'page_content_template_name':'factors_browser.html'})
+    return render(request, "organism_browse.html", {'page_content_template_name':'browse.html'})
+
+def factor_browse_view(request):
+    """Browsing page view"""
+    return render(request, "factor_browse.html", {'page_content_template_name':'browse.html'})
 
 
 def research_browser_view(request):
@@ -22,7 +26,7 @@ def research_browser_view(request):
 
     Returns:
         render('research.html') -- researches that have particular ID's in it
-        redirect to browse_view -- if there isn't any ID's in POST
+        redirect to factor_browse_view -- if there isn't any ID's in POST
     """
     if request.POST.get("IDs", None):
         IDs = request.POST["IDs"].strip().split(",")
@@ -31,7 +35,7 @@ def research_browser_view(request):
                       {"IDs":IDs, "table":database,
                        'page_content_template_name':'research_browser.html'})
     else:
-        return redirect("browse_view")
+        return redirect("factor_browse_view")
 
 def compare_research_view(request):
     ids = request.GET["IDs"].split(",")
