@@ -153,7 +153,6 @@ def __processDatatableToxinResearchToJSON(queryset):
 
 # ------------- BEGIN DataTable processing methods -----------------
 
-#TODO: Add link to research page and fix the splitting by '+' in research_browser.js
 def __getDataTableFactors(activeFactors, pk):
     return f"<a href={reverse('research_view', kwargs={'db_id':pk})}>{' + '.join([factor.fullname for factor in activeFactors])}<a/>"
 
