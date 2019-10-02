@@ -1,2 +1,158 @@
-<div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
+{% load static %}
+<script type="text/javascript"> 
+    var synCount = "{{countInteraction.SYN | escapejs}}";
+    var antCount = "{{countInteraction.ANT | escapejs}}";
+    var indCount = "{{countInteraction.IND | escapejs}}";
+    var total = "{{sumResearch | escapejs}}";
+    var countFactors = "{{countFactors | escapejs}}";
+    var countChimeric = "{{countChimeric | escapejs}}";
+    var countNotToxin = "{{countNotToxin | escapejs}}";
+ </script>
+<div class="kt-content  kt-grid__item kt-grid__item--fluid mt-n5" id="kt_content">
+    <div class="row justify-content-center mt-n5">
+        <div class="col-10">
+            <div class="kt-portlet">
+                <div class="kt-portlet__body" style="background-size: cover; background-image: url({% static 'prottox/assets/media/bg/fly-cut.jpg' %})">
+                    <div class="kt-section">
+                        <div class="kt-section__title">
+                            <h1 class="display-1 kt-shape-font-color-1">Prottox Database</h1>
+                        </div>
+                        <div class="kt-section__desc">
+                            <h4 class="text-muted">Protein toxins &amp; their combinations from Bacillus Thuringiensis.</h4> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="kt-portlet kt-portlet--mobile">
+                        <div class="kt-portlet__head">
+                            <div class="kt-portlet__head-label">
+                                <h1 class="kt-portlet__head-title">
+                                    About
+                                </h1>
+                            </div>
+                        </div>
+                        <div class="kt-portlet__body">
+                            <p class="lead text-justify">
+                                Biological insecticides, consisting of insecticidal Bacillus thuringiensis proteins, are a good and safe alternative to harmful synthetic pesticides 
+                                currently used on a large scale in agriculture and horticulture. The result of the work at Department of Computational Biology &amp; Department of Microbiology at Adam Mickiewicz University
+                                is a publicly available web application and a database of interactions of B. thuringensis protein insecticides. 
+                                The application shall not only allow for an efficient search of the collected information on the toxicity of B. thuringiensis proteins according to different search criteria 
+                                (e.g. insect development stage), but shall also allow comparison of the results of different studies, e.g. to select the highest
+                                insecticidal B. thuringiensis protein mixtures with the highest insecticidal activity against a particular species of insect resulting from the synergistic effect of the components of those mixtures.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4 text-center">
+                    <div class="kt-portlet">
+                        <div class="kt-portlet__body">
+                            <div>
+                                <h2 class="mb-4">Start Browsing</h2>
+                            </div>
+                            <div>
+                                <a href="{% url 'organism_browse_view' %}" class="btn btn-custom btn-bold btn-upper btn-font-sm  btn-primary">By organism <i class="fa fa-frog pl-2"></i></a>
+                                <div class="kt-divider my-2">
+                                        <span></span>
+                                        <span>or</span>
+                                        <span></span>
+                                    </div>
+                                <a href="{% url 'factor_browse_view' %}" class="btn btn-custom btn-bold btn-upper btn-font-sm  btn-primary">By factor <i class="fa fa-biohazard pl-2"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="kt-portlet">
+                <div class="kt-portlet__body">
+                    <div class="kt-section">
+                        <div class="kt-section__title">
+                            <h3>Database statistics</h3>
+                        </div>
+                        <div class="kt-separator kt-separator--space-lg kt-separator--border-solid"></div>
+                        <div class="kt-section__desc">
+                            <h4>Researches</h4>
+                        </div>
+                        <div class="row text-center">
+                                <div class="col">
+                                    <div class="alert alert-success" role="alert">
+                                        <div class="alert-text">
+                                            <h4 class="alert-heading"><i class="fa fa-plus" style="font-size: 30px"></i></h4>
+                                            <h4><span id="syn-count">0</span> synergistic researches</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="row text-center">
+                                <div class="col">
+                                    <div class="alert alert-danger" role="alert">
+                                        <div class="alert-text">
+                                            <h4 class="alert-heading"><i class="fa fa-minus" style="font-size: 30px"></i></h4>
+                                            <h4><span id="ant-count">0</span> antagonistic researches</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="row text-center">
+                                <div class="col">
+                                    <div class="alert alert-secondary" role="alert">
+                                        <div class="alert-text">
+                                            <h4 class="alert-heading"><i class="fa fa-ban" style="font-size: 30px"></i></h4>
+                                            <h4><span id="ind-count">0</span> independent researches</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="row text-center">
+                                <div class="col">
+                                    <div class="alert alert-light" role="alert">
+                                        <div class="alert-text">
+                                            <h4 class="alert-heading"><i class="fa fa-book" style="font-size: 30px"></i></h4>
+                                            <h4><span id="total-count">0</span> researches in total</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="kt-separator kt-separator--space-lg kt-separator--border-solid"></div>
+                        <div class="kt-section__desc">
+                                <h4>Factors</h4>
+                        </div>
+                        <div class="row text-center">
+                                <div class="col">
+                                    <div class="alert alert-light" role="alert">
+                                        <div class="alert-text">
+                                            <h4><span id="factor-count">0</span> insecticide factors</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="row text-center">
+                                <div class="col">
+                                    <div class="alert alert-light" role="alert">
+                                        <div class="alert-text">
+                                            <h4><span id="chimeric-count">0</span> chimeric proteins</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="row text-center">
+                                <div class="col">
+                                    <div class="alert alert-light" role="alert">
+                                        <div class="alert-text">
+                                            <h4><span id="nontoxin-count">0</span> non-protein agents</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

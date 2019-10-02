@@ -1,8 +1,17 @@
+from collections import Counter
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Toxin_research
+from .models import Toxin_research, Active_factor
 
 def home_view(request):
-    return render(request, "home.html", {'page_content_template_name':'home.html'})
+    queryset = Toxin_research.objects.all()
+    countInteraction = Counter([x.results.interaction for x in queryset])
+    countFactors = Active_factor.objects.all().distinct().count()
+    countChimeric = Active_factor.objects.filter(is_chimeric=True).distinct().count()
+    countNotToxin = Active_factor.objects.filter(is_toxin=False).distinct().count()
+    return render(request, "home.html", 
+    {'page_content_template_name':'home.html', 'countInteraction':countInteraction, 
+    'countFactors':countFactors, 'countChimeric':countChimeric, 'countNotToxin':countNotToxin,
+    'sumResearch':sum(countInteraction.values())})
 
 def organism_browse_view(request):
     """Browsing page view"""
