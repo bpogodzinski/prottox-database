@@ -1,4 +1,5 @@
 from collections import Counter
+from random import choice
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Toxin_research, Active_factor
 
@@ -11,7 +12,7 @@ def home_view(request):
     return render(request, "home.html", 
     {'page_content_template_name':'home.html', 'countInteraction':countInteraction, 
     'countFactors':countFactors, 'countChimeric':countChimeric, 'countNotToxin':countNotToxin,
-    'sumResearch':sum(countInteraction.values())})
+    'sumResearch':sum(countInteraction.values()), 'randomResearch':choice(queryset)})
 
 def organism_browse_view(request):
     """Browsing page view"""
