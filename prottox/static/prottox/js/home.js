@@ -124,4 +124,22 @@ $(document).ready(function() {
           duration: 3000
         }
       );
+    $('#source-count').animateNumber(
+        {
+          number: countSource,
+      
+          // optional custom step function
+          // using here to keep '%' sign after number
+          numberStep: function(now, tween) {
+            var floored_number = Math.floor(now),
+                target = $(tween.elem);
+      
+            target.text(floored_number);
+          }
+        },
+        {
+          easing: 'swing',
+          duration: 3000
+        }
+      );
 });

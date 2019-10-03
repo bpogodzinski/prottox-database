@@ -7,6 +7,7 @@
     var countFactors = "{{countFactors | escapejs}}";
     var countChimeric = "{{countChimeric | escapejs}}";
     var countNotToxin = "{{countNotToxin | escapejs}}";
+    var countSource = "{{countSource | escapejs}}";
  </script>
 <div class="kt-content  kt-grid__item kt-grid__item--fluid mt-n5" id="kt_content">
     <div class="row justify-content-center mt-n5">
@@ -23,6 +24,303 @@
                     </div>
                 </div>
             </div>
+            <div class="kt-portlet">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">Database statistics</h3>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body">
+                        <div class="kt-section">
+                            <div class="kt-section__desc">
+                                <span class="lead">
+                                        Research
+                                </span> 
+                            </div>
+                            <div class="kt-section__content">
+                                    <div class="kt-portlet__body  kt-portlet__body--fit">
+                                            <div class="row row-no-padding">
+                                    
+                                                <div class="col-md-12 col-lg-6 col-xl-3">
+                                                    <!--begin::Total Profit-->
+                                                    <div class="kt-widget24">
+                                                        <div class="kt-widget24__details">
+                                                            <div class="kt-widget24__info">
+                                                                <h4 class="kt-widget24__title">
+                                                                    Synergistic Researches
+                                                                </h4>
+                                                                <span class="kt-widget24__desc">
+                                                                    Researches with synergistic results
+                                                                </span>
+                                                            </div>
+                                    
+                                                            <span class="kt-widget24__stats kt-font-success" id="syn-count">
+                                                                0
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <!--end::Total Profit-->
+                                                </div>
+                                    
+                                                <div class="col-md-12 col-lg-6 col-xl-3">
+                                                    <!--begin::New Feedbacks-->
+                                                    <div class="kt-widget24">
+                                                        <div class="kt-widget24__details">
+                                                            <div class="kt-widget24__info">
+                                                                <h4 class="kt-widget24__title">
+                                                                    Antagonistic Researches
+                                                                </h4>
+                                                                <span class="kt-widget24__desc">
+                                                                    Researches with antagonistic results
+                                                                </span>
+                                                            </div>
+                                    
+                                                            <span class="kt-widget24__stats kt-font-danger" id="ant-count">
+                                                               0
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <!--end::New Feedbacks-->
+                                                </div>
+                                    
+                                                <div class="col-md-12 col-lg-6 col-xl-3">
+                                                    <!--begin::New Orders-->
+                                                    <div class="kt-widget24">
+                                                        <div class="kt-widget24__details">
+                                                            <div class="kt-widget24__info">
+                                                                <h4 class="kt-widget24__title">
+                                                                    Independent Researches
+                                                                </h4>
+                                                                <span class="kt-widget24__desc">
+                                                                    Researches with independent results
+                                                                </span>
+                                                            </div>
+                                    
+                                                            <span class="kt-widget24__stats kt-label-font-color-1" id="ind-count">
+                                                                0
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <!--end::New Orders-->
+                                                </div>
+                                    
+                                                <div class="col-md-12 col-lg-6 col-xl-3">
+                                                    <!--begin::New Users-->
+                                                    <div class="kt-widget24">
+                                                        <div class="kt-widget24__details">
+                                                            <div class="kt-widget24__info">
+                                                                <h4 class="kt-widget24__title">
+                                                                    All Researches
+                                                                </h4>
+                                                                <span class="kt-widget24__desc">
+                                                                    Including researches of single factor
+                                                                </span>
+                                                            </div>
+                                    
+                                                            <span class="kt-widget24__stats kt-font-dark" id="total-count">
+                                                                0
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                            </div>
+                            <div class="kt-section__desc">
+                                <span class="lead">
+                                        Factor
+                                </span> 
+                            </div>
+                            <div class="kt-section__content">
+                                    <div class="kt-portlet__body  kt-portlet__body--fit">
+                                            <div class="row row-no-padding">
+                                    
+                                                <div class="col-md-12 col-lg-6 col-xl-3">
+                                                    <!--begin::Total Profit-->
+                                                    <div class="kt-widget24">
+                                                        <div class="kt-widget24__details">
+                                                            <div class="kt-widget24__info">
+                                                                <h4 class="kt-widget24__title">
+                                                                    Factor sources
+                                                                </h4>
+                                                                <span class="kt-widget24__desc">
+                                                                    Sources from which factor was taken eg. Bacillus thuringiensis 
+                                                                </span>
+                                                            </div>
+                                    
+                                                            <span class="kt-widget24__stats kt-font-dark" id="source-count">
+                                                                0
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <!--end::Total Profit-->
+                                                </div>
+                                    
+                                                <div class="col-md-12 col-lg-6 col-xl-3">
+                                                    <!--begin::New Feedbacks-->
+                                                    <div class="kt-widget24">
+                                                        <div class="kt-widget24__details">
+                                                            <div class="kt-widget24__info">
+                                                                <h4 class="kt-widget24__title">
+                                                                    Chimeric Factors
+                                                                </h4>
+                                                                <span class="kt-widget24__desc">
+                                                                    Combined synthetic factors
+                                                                </span>
+                                                            </div>
+                                    
+                                                            <span class="kt-widget24__stats kt-font-dark" id="chimeric-count">
+                                                               0
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <!--end::New Feedbacks-->
+                                                </div>
+                                    
+                                                <div class="col-md-12 col-lg-6 col-xl-3">
+                                                    <!--begin::New Orders-->
+                                                    <div class="kt-widget24">
+                                                        <div class="kt-widget24__details">
+                                                            <div class="kt-widget24__info">
+                                                                <h4 class="kt-widget24__title">
+                                                                    Non-standard Factors
+                                                                </h4>
+                                                                <span class="kt-widget24__desc">
+                                                                    Factors that don't have standard nomenclature
+                                                                </span>
+                                                            </div>
+                                    
+                                                            <span class="kt-widget24__stats kt-font-dark" id="nontoxin-count">
+                                                                0
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <!--end::New Orders-->
+                                                </div>
+                                    
+                                                <div class="col-md-12 col-lg-6 col-xl-3">
+                                                    <!--begin::New Users-->
+                                                    <div class="kt-widget24">
+                                                        <div class="kt-widget24__details">
+                                                            <div class="kt-widget24__info">
+                                                                <h4 class="kt-widget24__title">
+                                                                    All Factors
+                                                                </h4>
+                                                                <span class="kt-widget24__desc">
+                                                                    Every single distinct factor
+                                                                </span>
+                                                            </div>
+                                    
+                                                            <span class="kt-widget24__stats kt-font-dark" id="factor-count">
+                                                                0
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <!--end::New Users-->
+                                                </div>
+                                    
+                                            </div>
+                                        </div>
+                            </div>
+                            <div class="kt-section__desc">
+                                <span class="lead">
+                                    Target
+                                </span> 
+                            </div>
+                            <div class="kt-section__content">
+                                    <div class="kt-portlet__body  kt-portlet__body--fit">
+                                            <div class="row row-no-padding">
+                                    
+                                                <div class="col-md-12 col-lg-6 col-xl-3">
+                                                    <!--begin::Total Profit-->
+                                                    <div class="kt-widget24">
+                                                        <div class="kt-widget24__details">
+                                                            <div class="kt-widget24__info">
+                                                                <h4 class="kt-widget24__title">
+                                                                    Total Profit
+                                                                </h4>
+                                                                <span class="kt-widget24__desc">
+                                                                    All Customs Value
+                                                                </span>
+                                                            </div>
+                                    
+                                                            <span class="kt-widget24__stats kt-font-brand">
+                                                                $18M
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <!--end::Total Profit-->
+                                                </div>
+                                    
+                                                <div class="col-md-12 col-lg-6 col-xl-3">
+                                                    <!--begin::New Feedbacks-->
+                                                    <div class="kt-widget24">
+                                                        <div class="kt-widget24__details">
+                                                            <div class="kt-widget24__info">
+                                                                <h4 class="kt-widget24__title">
+                                                                    New Feedbacks
+                                                                </h4>
+                                                                <span class="kt-widget24__desc">
+                                                                    Customer Review
+                                                                </span>
+                                                            </div>
+                                    
+                                                            <span class="kt-widget24__stats kt-font-warning">
+                                                               1349
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <!--end::New Feedbacks-->
+                                                </div>
+                                    
+                                                <div class="col-md-12 col-lg-6 col-xl-3">
+                                                    <!--begin::New Orders-->
+                                                    <div class="kt-widget24">
+                                                        <div class="kt-widget24__details">
+                                                            <div class="kt-widget24__info">
+                                                                <h4 class="kt-widget24__title">
+                                                                    New Orders
+                                                                </h4>
+                                                                <span class="kt-widget24__desc">
+                                                                    Fresh Order Amount
+                                                                </span>
+                                                            </div>
+                                    
+                                                            <span class="kt-widget24__stats kt-font-danger">
+                                                                567
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <!--end::New Orders-->
+                                                </div>
+                                    
+                                                <div class="col-md-12 col-lg-6 col-xl-3">
+                                                    <!--begin::New Users-->
+                                                    <div class="kt-widget24">
+                                                        <div class="kt-widget24__details">
+                                                            <div class="kt-widget24__info">
+                                                                <h4 class="kt-widget24__title">
+                                                                    New Users
+                                                                </h4>
+                                                                <span class="kt-widget24__desc">
+                                                                    Joined New User
+                                                                </span>
+                                                            </div>
+                                    
+                                                            <span class="kt-widget24__stats kt-font-success">
+                                                                276
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <!--end::New Users-->
+                                                </div>
+                                    
+                                            </div>
+                                        </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             <div class="row">
                 <div class="col-12">
                     <div class="kt-portlet kt-portlet--mobile">
@@ -37,7 +335,7 @@
                             <p class="lead text-justify">
                                 Biological insecticides, consisting of insecticidal Bacillus thuringiensis proteins, are a good and safe alternative to harmful synthetic pesticides 
                                 currently used on a large scale in agriculture and horticulture. The result of the work at Department of Computational Biology &amp; Department of Microbiology at Adam Mickiewicz University
-                                is a publicly available web application and a database of interactions of B. thuringensis protein insecticides. 
+                                is a publicly available web application and a database of interactions of B. thuringiensis protein insecticides. 
                                 The application not only allow for an efficient search of the collected information on the toxicity of B. thuringiensis proteins according to different search criteria 
                                 (e.g. insect development stage), but also allow comparison of the results of different studies, e.g. to select the highest
                                 insecticidal B. thuringiensis protein mixtures with the highest insecticidal activity against a particular species of insect resulting from the synergistic effect of the components of those mixtures.
@@ -80,92 +378,6 @@
                 </div>
             </div>
         </div>
-        <div class="col-2">
-            <div class="kt-portlet">
-                <div class="kt-portlet__body">
-                    <div class="kt-section">
-                        <div class="kt-section__title">
-                            <h3>Database statistics</h3>
-                        </div>
-                        <div class="kt-separator kt-separator--space-lg kt-separator--border-solid"></div>
-                        <div class="kt-section__desc">
-                            <h4>Researches</h4>
-                        </div>
-                        <div class="row text-center">
-                                <div class="col">
-                                    <div class="alert alert-success" role="alert">
-                                        <div class="alert-text">
-                                            <h4 class="alert-heading"><i class="fa fa-plus" style="font-size: 30px"></i></h4>
-                                            <h4><span id="syn-count">0</span> synergistic researches</h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <div class="row text-center">
-                                <div class="col">
-                                    <div class="alert alert-danger" role="alert">
-                                        <div class="alert-text">
-                                            <h4 class="alert-heading"><i class="fa fa-minus" style="font-size: 30px"></i></h4>
-                                            <h4><span id="ant-count">0</span> antagonistic researches</h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <div class="row text-center">
-                                <div class="col">
-                                    <div class="alert alert-secondary" role="alert">
-                                        <div class="alert-text">
-                                            <h4 class="alert-heading"><i class="fa fa-ban" style="font-size: 30px"></i></h4>
-                                            <h4><span id="ind-count">0</span> independent researches</h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <div class="row text-center">
-                                <div class="col">
-                                    <div class="alert alert-light" role="alert">
-                                        <div class="alert-text">
-                                            <h4 class="alert-heading"><i class="fa fa-book" style="font-size: 30px"></i></h4>
-                                            <h4><span id="total-count">0</span> researches in total</h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <div class="kt-separator kt-separator--space-lg kt-separator--border-solid"></div>
-                        <div class="kt-section__desc">
-                                <h4>Factors</h4>
-                        </div>
-                        <div class="row text-center">
-                                <div class="col">
-                                    <div class="alert alert-light" role="alert">
-                                        <div class="alert-text">
-                                            <h4><span id="factor-count">0</span> insecticide factors</h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <div class="row text-center">
-                                <div class="col">
-                                    <div class="alert alert-light" role="alert">
-                                        <div class="alert-text">
-                                            <h4><span id="chimeric-count">0</span> chimeric proteins</h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <div class="row text-center">
-                                <div class="col">
-                                    <div class="alert alert-light" role="alert">
-                                        <div class="alert-text">
-                                            <h4><span id="nontoxin-count">0</span> non-protein agents</h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
