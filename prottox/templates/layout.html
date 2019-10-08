@@ -1,0 +1,33 @@
+
+<!-- begin:: Page -->
+
+{% include 'partials/_header/base-mobile.html' %}
+
+<div class="kt-grid kt-grid--hor kt-grid--root">
+	<div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--ver kt-page">
+
+		{% include 'partials/_aside/base.html' %}
+
+		<div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor kt-wrapper" id="kt_wrapper">
+
+			{% include 'partials/_header/base.html' %}
+
+			<div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor" id="kt_content">
+
+				{% include 'partials/_subheader/subheader-v1.html' %}
+
+				{% with "pages/"|add:page_content_template_name as path %}
+                {% include path %}
+				{% endwith %}
+				
+			</div>
+
+			{% include 'partials/_footer/base.html' %}
+
+		</div>
+	</div>
+</div>
+
+<!-- end:: Page -->
+
+{% include 'partials/_scrolltop.html' %}
