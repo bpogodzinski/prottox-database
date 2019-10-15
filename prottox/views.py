@@ -19,6 +19,7 @@ def home_view(request):
 
     return render(request, "home.html",
                   {'page_content_template_name':'home.html',
+                   'header': 'Home',
                    'countInteraction':countInteraction,
                    'countFactors':countFactors,
                    'countChimeric':countChimeric,
@@ -33,11 +34,11 @@ def home_view(request):
 
 def organism_browse_view(request):
     """Browsing page view"""
-    return render(request, "organism_browse.html", {'page_content_template_name':'browse.html'})
+    return render(request, "organism_browse.html", {'page_content_template_name':'browse.html','header': 'Organism Browser'})
 
 def factor_browse_view(request):
     """Browsing page view"""
-    return render(request, "factor_browse.html", {'page_content_template_name':'browse.html'})
+    return render(request, "factor_browse.html", {'page_content_template_name':'browse.html', 'header': 'Factor Browser'})
 
 
 def research_browser_view(request):
@@ -60,18 +61,19 @@ def research_browser_view(request):
         database = request.POST["entity"]
         return render(request, "research_browser.html",
                       {"IDs":IDs, "table":database,
-                       'page_content_template_name':'research_browser.html'})
+                       'page_content_template_name':'research_browser.html',
+                       'header': 'Research Browser'})
     else:
         return redirect("factor_browse_view")
 
 def compare_research_view(request):
     ids = request.GET["IDs"].split(",")
-    return render(request, "compare.html", {"IDs":ids, 'page_content_template_name':'compare.html'})
+    return render(request, "compare.html", {"IDs":ids, 'page_content_template_name':'compare.html','header': 'Compare research'})
 
 def research_view(request, db_id):
     research = get_object_or_404(Toxin_research, pk=db_id)
     return render(request, 'research.html',
-                  {'research':research, 'page_content_template_name':'research.html'})
+                  {'research':research, 'page_content_template_name':'research.html', 'header': 'Research view'})
 
 # PROCESSING METHODS
 
