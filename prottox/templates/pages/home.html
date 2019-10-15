@@ -12,7 +12,7 @@
     var countSpecies = new Map(Object.entries(JSON.parse("{{countSpecies | escapejs}}")).sort());
  </script>
 <div class="kt-container  kt-container--fluid  kt-grid__item kt-grid__item--fluid">
-    <div class="row">
+    <div class="row row-no-padding">
         <div class="kt-portlet">
             <div class="kt-portlet__body" style="background-size: cover; background-image: url({% static 'prottox/assets/media/bg/insect.jpg' %})">
                 <div class="kt-section">
@@ -150,6 +150,108 @@
                 </div>
             </div>
         </div>
-
+        <div class="row">
+            <div class="col-12">
+                <div class="kt-portlet kt-portlet--mobile">
+                    <div class="kt-portlet__head">
+                        <div class="kt-portlet__head-label">
+                            <h3 class="kt-portlet__head-title">
+                                About
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="kt-portlet__body text-justify">
+                        <p>
+                            Biological insecticides, consisting of insecticidal Bacillus thuringiensis proteins, are a good and safe alternative to harmful synthetic pesticides currently used on a large scale in agriculture and horticulture.
+                            The result of the work at Department of Computational Biology & Department of Microbiology at Adam Mickiewicz University is a publicly available web application and a database of interactions of B. thuringensis protein insecticides.
+                            The application not only allow for an efficient search of the collected information on the toxicity of B. thuringiensis proteins according to different search criteria (e.g. insect development stage), but also allow comparison of the 
+                            results of different studies, e.g. to select the highest insecticidal B. thuringiensis protein mixtures with the highest insecticidal activity against a particular species of insect resulting from the synergistic effect of the components of those mixtures.
+                            <br/><br/><a href="#" class="kt-link">Read more</a>
+                        </p> 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="kt-portlet kt-iconbox kt-iconbox--danger kt-iconbox--animate-slow">
+                    <div class="kt-portlet__body">
+                        <div class="kt-iconbox__body">
+                            <div class="kt-iconbox__icon">
+                                <!-- <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" class="kt-svg-icon">
+                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                        <rect x="0" y="0" width="24" height="24"/>
+                                        <path d="M2.76702366,20 C2.59202225,20 2.4200849,19.9540749 2.2683913,19.8668136 C1.78966338,19.5914265 1.62482304,18.9800956 1.90021009,18.5013676 L11.1332403,2.45083309 C11.221302,2.29774818 11.3483346,2.17071522 11.5014193,2.08265312 C11.9801465,1.80726488 12.5914779,1.97210369 12.8668662,2.45083092 L22.0999499,18.5013655 C22.187212,18.6530596 22.2331375,18.8249977 22.2331375,19 C22.2331375,19.5522847 21.7854223,20 21.2331375,20 L2.76702366,20 Z M11,18 L15,12 L12.9444444,12 L12.9444444,8 L9,14 L11,14 L11,18 Z" fill="#000000"/>
+                                    </g>
+                                </svg>  -->
+                            <i class="fa fa-biohazard fa-4x" style="color: #FD397A;"></i>
+                            </div>
+                            <div class="kt-iconbox__desc">
+                                <h3 class="kt-iconbox__title">
+                                    <a class="kt-link" href="{% url 'factor_browse_view' %}">Browse by Factor</a>
+                                </h3>
+                                <div class="kt-iconbox__content">
+                                    Protein, chimeric or non-standard agents
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="kt-portlet kt-iconbox kt-iconbox--success kt-iconbox--animate-slow">
+                    <div class="kt-portlet__body">
+                        <div class="kt-iconbox__body">
+                            <div class="kt-iconbox__icon">
+                                    <!-- <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" class="kt-svg-icon">
+                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                            <polygon points="0 0 24 0 24 24 0 24"/>
+                                            <path d="M9,1 C4.92361111,7.82926829 4.92361111,12.8292683 9,16 C12.9097222,12.8292683 12.9097222,7.82926829 9,1 Z" fill="#000000" opacity="0.3" transform="translate(8.937500, 8.500000) scale(-1, 1) rotate(-330.000000) translate(-8.937500, -8.500000) "/>
+                                            <path d="M15,1 C10.9236111,7.82926829 10.9236111,12.8292683 15,16 C18.9097222,12.8292683 18.9097222,7.82926829 15,1 Z" fill="#000000" opacity="0.3" transform="translate(14.937500, 8.500000) rotate(-330.000000) translate(-14.937500, -8.500000) "/>
+                                            <path d="M12,1 C7.92361111,7.82926829 7.92361111,12.8292683 12,16 C15.9097222,12.8292683 15.9097222,7.82926829 12,1 Z" fill="#000000" opacity="0.3"/>
+                                            <path d="M6.34403065,13 L17.6559693,13 C18.2082541,13 18.6559693,13.4477153 18.6559693,14 C18.6559693,14.0973246 18.6417616,14.1941279 18.6137956,14.2873479 L16.4275913,21.5746958 C16.1738009,22.4206637 15.3951551,23 14.5119387,23 L9.4880613,23 C8.60484486,23 7.82619911,22.4206637 7.57240873,21.5746958 L5.38620437,14.2873479 C5.22750651,13.758355 5.52768992,13.2008716 6.05668277,13.0421737 C6.14990279,13.0142077 6.24670609,13 6.34403065,13 Z" fill="#000000"/>
+                                        </g>
+                                    </svg> -->
+                                    <i class="fa fa-bug fa-4x" style="color: #0ABB87;"></i>
+                                 </div>
+                            <div class="kt-iconbox__desc">
+                                <h3 class="kt-iconbox__title">
+                                    <a class="kt-link" href="{% url 'organism_browse_view' %}">Browse by Organism</a>
+                                </h3>
+                                <div class="kt-iconbox__content">
+                                    Coleoptera, Diptera, Nematoda &amp; more...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="kt-portlet kt-iconbox kt-iconbox--warning kt-iconbox--animate-slow">
+                    <div class="kt-portlet__body">
+                        <div class="kt-iconbox__body">
+                            <div class="kt-iconbox__icon">
+                                <!-- <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" class="kt-svg-icon">
+                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                        <polygon points="0 0 24 0 24 24 0 24"></polygon>
+                                        <path d="M12,11 C9.790861,11 8,9.209139 8,7 C8,4.790861 9.790861,3 12,3 C14.209139,3 16,4.790861 16,7 C16,9.209139 14.209139,11 12,11 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"></path>
+                                        <path d="M3.00065168,20.1992055 C3.38825852,15.4265159 7.26191235,13 11.9833413,13 C16.7712164,13 20.7048837,15.2931929 20.9979143,20.2 C21.0095879,20.3954741 20.9979143,21 20.2466999,21 C16.541124,21 11.0347247,21 3.72750223,21 C3.47671215,21 2.97953825,20.45918 3.00065168,20.1992055 Z" fill="#000000" fill-rule="nonzero"></path>
+                                    </g>
+                                </svg> -->
+                                <i class="fa fa-dice fa-4x" style="color: #FFB822;"></i>
+                             </div>
+                            <div class="kt-iconbox__desc">
+                                <h3 class="kt-iconbox__title">
+                                    <a class="kt-link" href="{% url 'research_view' db_id=randomResearch.pk %}">Random Research</a>
+                                </h3>
+                                <div class="kt-iconbox__content">
+                                I'm feeling lucky
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 </div>
