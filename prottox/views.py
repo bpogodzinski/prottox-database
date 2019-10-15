@@ -11,7 +11,6 @@ def home_view(request):
     countChimeric = Active_factor.objects.filter(is_chimeric=True).distinct().count()
     countNotToxin = Active_factor.objects.filter(is_toxin=False).distinct().count()
     countSource = Factor_source.objects.all().distinct().count()
-    countOrganism = SpeciesTaxonomy.objects.filter(taxonomy_rank__name='Species').count()
     counted = __countSpecies(SpeciesTaxonomy.objects.filter(taxonomy_rank__name='Species'))
     countSpeciesDict = OrderedDict(sorted(dict(counted).items()))
     print(countSpeciesDict)
@@ -27,7 +26,6 @@ def home_view(request):
                    'sumResearch':sum(countInteraction.values()),
                    'randomResearch':choice(queryset),
                    'countSource':countSource,
-                   'countOrganism':countOrganism,
                    'countSpecies': countSpecies,
                    'species': countSpeciesDict,
     })

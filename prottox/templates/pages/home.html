@@ -8,8 +8,8 @@
     var countChimeric = {{countChimeric | escapejs}};
     var countNotToxin = {{countNotToxin | escapejs}};
     var countSource = {{countSource | escapejs}};
-    var countOrganism = {{countOrganism | escapejs}};
     var countSpecies = new Map(Object.entries(JSON.parse("{{countSpecies | escapejs}}")).sort());
+    var countOrganism = Array.from(countSpecies.values()).reduce((a,b) => a + b, 0);
  </script>
 <div class="kt-container  kt-container--fluid  kt-grid__item kt-grid__item--fluid">
     <div class="row row-no-padding">
