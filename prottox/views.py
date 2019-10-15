@@ -66,12 +66,12 @@ def research_browser_view(request):
 
 def compare_research_view(request):
     ids = request.GET["IDs"].split(",")
-    return render(request, "compare.html", {"IDs":ids, 'page_content_template_name':'compare.html','header': 'Compare research'})
+    return render(request, "compare.html", {"IDs":ids, 'page_content_template_name':'compare.html','header': 'Compare Research'})
 
 def research_view(request, db_id):
     research = get_object_or_404(Toxin_research, pk=db_id)
     return render(request, 'research.html',
-                  {'research':research, 'page_content_template_name':'research.html', 'header': 'Research view'})
+                  {'research':research, 'page_content_template_name':'research.html', 'header': 'Research View'})
 
 # PROCESSING METHODS
 
