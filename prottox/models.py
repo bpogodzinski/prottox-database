@@ -12,7 +12,7 @@ class SpeciesTaxonomy(models.Model):
     taxID = models.PositiveIntegerField(blank=True, null=True)
     name = models.CharField(max_length=255)
     common_name = models.CharField(max_length=255, blank=True)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='children')
     taxonomy_rank = models.ForeignKey(SpeciesTaxonomyRank, on_delete=models.CASCADE)
 
     def __str__(self):

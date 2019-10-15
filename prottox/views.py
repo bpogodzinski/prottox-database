@@ -1,7 +1,8 @@
-from collections import Counter
+from collections import Counter, OrderedDict
 from random import choice
+import json
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Toxin_research, Active_factor, Factor_source, Target
+from .models import Toxin_research, Active_factor, Factor_source, Target, SpeciesTaxonomy
 
 def home_view(request):
     queryset = Toxin_research.objects.all()
@@ -10,7 +11,11 @@ def home_view(request):
     countChimeric = Active_factor.objects.filter(is_chimeric=True).distinct().count()
     countNotToxin = Active_factor.objects.filter(is_toxin=False).distinct().count()
     countSource = Factor_source.objects.all().distinct().count()
-    countOrganism = Target.objects.all().distinct().count()
+    countOrganism = SpeciesTaxonomy.objects.filter(taxonomy_rank__name='Species').count()
+    counted = __countSpecies(SpeciesTaxonomy.objects.filter(taxonomy_rank__name='Species'))
+    countSpeciesDict = OrderedDict(sorted(dict(counted).items()))
+    print(countSpeciesDict)
+    countSpecies = json.dumps(counted)
 
     return render(request, "home.html",
                   {'page_content_template_name':'home.html',
@@ -22,6 +27,8 @@ def home_view(request):
                    'randomResearch':choice(queryset),
                    'countSource':countSource,
                    'countOrganism':countOrganism,
+                   'countSpecies': countSpecies,
+                   'species': countSpeciesDict,
     })
 
 def organism_browse_view(request):
@@ -65,3 +72,13 @@ def research_view(request, db_id):
     research = get_object_or_404(Toxin_research, pk=db_id)
     return render(request, 'research.html',
                   {'research':research, 'page_content_template_name':'research.html'})
+
+# PROCESSING METHODS
+
+def __countSpecies(species):
+    return Counter(map(__getOrder, species))
+
+def __getOrder(item):
+    if item.taxonomy_rank.name != 'Order':
+        return __getOrder(item.parent)
+    return item.name

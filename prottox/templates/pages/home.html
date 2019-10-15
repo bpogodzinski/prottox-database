@@ -1,16 +1,17 @@
 {% load static %}
 <script type="text/javascript"> 
-    var synCount = "{{countInteraction.SYN | escapejs}}";
-    var antCount = "{{countInteraction.ANT | escapejs}}";
-    var indCount = "{{countInteraction.IND | escapejs}}";
-    var total = "{{sumResearch | escapejs}}";
-    var countFactors = "{{countFactors | escapejs}}";
-    var countChimeric = "{{countChimeric | escapejs}}";
-    var countNotToxin = "{{countNotToxin | escapejs}}";
-    var countSource = "{{countSource | escapejs}}";
-    var countOrganism = "{{countOrganism | escapejs}}";
+    var synCount = {{countInteraction.SYN | escapejs}};
+    var antCount = {{countInteraction.ANT | escapejs}};
+    var indCount = {{countInteraction.IND | escapejs}};
+    var total = {{sumResearch | escapejs}};
+    var countFactors = {{countFactors | escapejs}};
+    var countChimeric = {{countChimeric | escapejs}};
+    var countNotToxin = {{countNotToxin | escapejs}};
+    var countSource = {{countSource | escapejs}};
+    var countOrganism = {{countOrganism | escapejs}};
+    var countSpecies = new Map(Object.entries(JSON.parse("{{countSpecies | escapejs}}")).sort());
  </script>
-<div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
+<div class="kt-container  kt-container--fluid  kt-grid__item kt-grid__item--fluid">
     <div class="row">
         <div class="kt-portlet">
             <div class="kt-portlet__body" style="background-size: cover; background-image: url({% static 'prottox/assets/media/bg/insect.jpg' %})">
@@ -25,4 +26,130 @@
             </div>
         </div>
     </div>
+
+
+    <div class="kt-portlet">
+            <div class="kt-portlet__body  kt-portlet__body--fit">
+                <div class="row row-no-padding row-col-separator-xl">
+                    <div class="col-xl-4">
+                        <!--begin:: Widgets/Profit Share-->
+                        <div class="kt-portlet kt-portlet--height-fluid">
+                            <div class="kt-widget14">
+                                <div class="kt-widget14__header">
+                                    <h3 class="kt-widget14__title">
+                                        Factors      
+                                    </h3>
+                                    <span class="kt-widget14__desc">
+                                        Insecticide proteins &amp; non-standard agents
+                                    </span>
+                                </div>	 
+                                <div class="kt-widget14__content">	
+                                    <div class="kt-widget14__chart"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                        <div class="kt-widget14__stat"><span id="factor-count">0</span></div>
+                                        <canvas id="chart_factor" style="height: 140px; width: 140px; display: block;" width="140" height="140" class="chartjs-render-monitor"></canvas>
+                                    </div> 
+                                    <div class="kt-widget14__legends">
+                                        <div class="kt-widget14__legend">
+                                            <span class="kt-widget14__bullet kt-bg-warning"></span>
+                                            <span class="kt-widget14__stats"><span id="nontoxin-count">0</span> non-standard agents</span>
+                                        </div>
+                                        <div class="kt-widget14__legend">
+                                            <span class="kt-widget14__bullet kt-bg-danger"></span>
+                                            <span class="kt-widget14__stats"><span id="chimeric-count">0</span> chimeric protein factors</span>
+                                        </div>
+                                        <div class="kt-widget14__legend">
+                                            <span class="kt-widget14__bullet kt-bg-brand"></span>
+                                            <span class="kt-widget14__stats"><span id="standard-count">0</span> standard protein toxins</span>
+                                        </div>
+                                    </div>			
+                                </div> 
+                            </div>
+                        </div>		
+        <!--end:: Widgets/Profit Share-->			
+                    </div>
+                    <div class="col-xl-4">
+                        <!--begin:: Widgets/Profit Share-->
+                        <div class="kt-portlet kt-portlet--height-fluid">
+                            <div class="kt-widget14">
+                                <div class="kt-widget14__header">
+                                    <h3 class="kt-widget14__title">
+                                        Research            
+                                    </h3>
+                                    <span class="kt-widget14__desc">
+                                        Available research
+                                    </span>
+                                </div>	 
+                                <div class="kt-widget14__content">	
+                                    <div class="kt-widget14__chart"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                        <div class="kt-widget14__stat"><span id="total-count">0</span></div>
+                                        <canvas id="chart_research" style="height: 140px; width: 140px; display: block;" width="140" height="140" class="chartjs-render-monitor"></canvas>
+                                    </div> 
+                                    <div class="kt-widget14__legends">
+                                        <div class="kt-widget14__legend">
+                                            <span class="kt-widget14__bullet kt-bg-success"></span>
+                                            <span class="kt-widget14__stats"><span id="syn-count">0</span> synergistic results</span>
+                                        </div>
+                                        <div class="kt-widget14__legend">
+                                            <span class="kt-widget14__bullet kt-bg-danger"></span>
+                                            <span class="kt-widget14__stats"><span id="ant-count">0</span> antagonistic results</span>
+                                        </div>
+                                        <div class="kt-widget14__legend">
+                                            <span class="kt-widget14__bullet kt-bg-light-dark"></span>
+                                            <span class="kt-widget14__stats"><span id="ind-count">0</span> independent results</span>
+                                        </div>
+                                        <div class="kt-widget14__legend">
+                                            <span class="kt-widget14__bullet kt-bg-dark"></span>
+                                            <span class="kt-widget14__stats"><span id="single-count">0</span> single factor</span>
+                                        </div>
+                                    </div>			
+                                </div> 
+                            </div>
+                        </div>		
+        <!--end:: Widgets/Profit Share-->			
+                    </div>
+                    <div class="col-xl-4">
+                        <!--begin:: Widgets/Profit Share-->
+                        <div class="kt-portlet kt-portlet--height-fluid">
+                            <div class="kt-widget14">
+                                <div class="kt-widget14__header">
+                                    <h3 class="kt-widget14__title">
+                                        Target            
+                                    </h3>
+                                    <span class="kt-widget14__desc">
+                                        Species examined
+                                    </span>
+                                </div>	 
+                                <div class="kt-widget14__content">	
+                                    <div class="kt-widget14__chart"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                        <div class="kt-widget14__stat"><span id="organism-count">0</span></div>
+                                        <canvas id="chart_target" style="height: 140px; width: 140px; display: block;" width="140" height="140" class="chartjs-render-monitor"></canvas>
+                                    </div> 
+                                    <div class="kt-widget14__legends">
+                                        <div class="kt-widget14__legend">
+                                            <span class="kt-widget14__bullet kt-bg-primary"></span>
+                                            <span class="kt-widget14__stats"><span id="coleoptera-count">0</span> Coleoptera</span>
+                                        </div>
+                                        <div class="kt-widget14__legend">
+                                            <span class="kt-widget14__bullet kt-bg-danger"></span>
+                                            <span class="kt-widget14__stats"><span id="diptera-count">0</span> Diptera</span>
+                                        </div>
+                                        <div class="kt-widget14__legend">
+                                            <span class="kt-widget14__bullet kt-bg-warning"></span>
+                                            <span class="kt-widget14__stats"><span id="lepidoptera-count">0</span> Lepidoptera</span>
+                                        </div>
+                                        <div class="kt-widget14__legend">
+                                            <span class="kt-widget14__bullet kt-bg-dark"></span>
+                                            <span class="kt-widget14__stats"><span id="rhabditida-count">0</span> Rhabditida</span>
+                                        </div>
+                                    </div>			
+                                </div> 
+                            </div>
+                        </div>		
+        <!--end:: Widgets/Profit Share-->			
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
 </div>
