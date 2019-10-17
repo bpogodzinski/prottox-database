@@ -1,139 +1,123 @@
 <!-- begin:: Content -->
 <div class="kt-container  kt-container--fluid  kt-grid__item kt-grid__item--fluid">
-        <div class="kt-portlet kt-portlet--tabs">
-            <div class="kt-portlet__head">
-                <div class="kt-portlet__head-toolbar">
-                    <ul class="nav nav-tabs nav-tabs-line nav-tabs-line-success" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" data-toggle="tab" href="#tab_visibility" role="tab">
-                                <i class="la la-eye"></i> Visible columns
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#tab_flitering" role="tab">
-                                <i class="la la-filter"></i> Filter datatable
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+    <div class="kt-portlet kt-portlet--mobile" id="research_table">
+        <div class="kt-portlet__head kt-portlet__head--lg">
+            <div class="kt-portlet__head-label">
+                <span class="kt-portlet__head-icon">
+                    <i class="kt-font-brand fa fa-newspaper"></i>
+                </span>
+                <h3 class="kt-portlet__head-title">
+                    Research Browser
+                </h3>
             </div>
-            <div class="kt-portlet__body">
-                <div class="tab-content">
-                    <div class="tab-pane active" id="tab_visibility" role="tabpanel">
-                        <select id="columnFilter" class="selectpicker" multiple data-live-search="true" data-selected-text-format="count" data-actions-box="true"></select>
-                    </div>
-                    <div class="tab-pane" id="tab_flitering" role="tabpanel">
-                        <div class="row">
-                            <div class="col-2">
-                                <p>Factors</p>
-                                <select id="factorFilter" class="selectpicker" multiple data-live-search="true" title="All"></select>
-                            </div>
-                            <div class="col-2">
-                                <p>Target species</p>
-                                <select id="targetSpeciesFilter" class="selectpicker" multiple data-live-search="true" title="All"></select>
-                            </div>
-                            <div class="col-2">
-                                <p>Target larvae stage</p>
-                                <select id="targetLarvaeStageFilter" class="selectpicker" multiple data-live-search="true" title="All"></select>
-                            </div>
-                            <div class="col-2">
-                                <p>Target factor resistance</p>
-                                <select id="targetFactorResistanceFilter" class="selectpicker" multiple data-live-search="true" title="All"></select>
-                            </div>
-                            <div class="col-2">
-                                <p>Toxin distribution</p>
-                                <select id="toxinDistributionFilter" class="selectpicker" multiple data-live-search="true" title="All"></select>
-                            </div>
-                            <div class="col-2">
-                                <p>Bioassay type</p>
-                                <select id="bioassayTypeFilter" class="selectpicker" multiple data-live-search="true" title="All"></select>
-                            </div>
-                        </div>
-                        <div class="row mt-4">
-                            <div class="col-2">
-                                <p>Interaction</p>
-                                <select id="interactionFilter" class="selectpicker" multiple data-live-search="true" title="All"></select>
-                            </div>
-                            <div class="col-2">
-                                <p>Estimation method</p>
-                                <select id="estimationMethodFilter" class="selectpicker" multiple data-live-search="true" title="All"></select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="kt-portlet kt-portlet--mobile" id="research_table">
-            <div class="kt-portlet__head kt-portlet__head--lg">
-                <div class="kt-portlet__head-label">
-                    <span class="kt-portlet__head-icon">
-                        <i class="kt-font-brand fa fa-newspaper"></i>
-                    </span>
-                    <h3 class="kt-portlet__head-title">
-                        Research Browser
-                    </h3>
-                </div>
-                <div class="kt-portlet__head-toolbar">
-                    <div class="kt-portlet__head-wrapper">
-                        <div class="kt-portlet__head-actions">
-                            <div class="dropdown dropdown-inline">
-                                <button type="button" class="btn btn-default btn-icon-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="la la-download"></i> Export
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <ul class="kt-nav">
-                                        <li class="kt-nav__section kt-nav__section--first">
-                                            <span class="kt-nav__section-text">Choose an option</span>
-                                        </li>
-                                        <li class="kt-nav__item">
-                                            <a href="#" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-print"></i>
-                                                <span class="kt-nav__link-text">Print</span>
-                                            </a>
-                                        </li>
-                                        <li class="kt-nav__item">
-                                            <a href="#" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-copy"></i>
-                                                <span class="kt-nav__link-text">Copy</span>
-                                            </a>
-                                        </li>
-                                        <li class="kt-nav__item">
-                                            <a href="#" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-file-excel-o"></i>
-                                                <span class="kt-nav__link-text">Excel</span>
-                                            </a>
-                                        </li>
-                                        <li class="kt-nav__item">
-                                            <a href="#" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-file-text-o"></i>
-                                                <span class="kt-nav__link-text">CSV</span>
-                                            </a>
-                                        </li>
-                                        <li class="kt-nav__item">
-                                            <a href="#" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-file-pdf-o"></i>
-                                                <span class="kt-nav__link-text">PDF</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            &nbsp;
-                            <button type="submit" form="compareForm" class="btn btn-brand btn-elevate btn-icon-sm disabled" id="compareBtn">
-                                <i class="flaticon-statistics"></i>
-                                Compare
+            <div class="kt-portlet__head-toolbar">
+                <div class="kt-portlet__head-wrapper">
+                    <div class="kt-portlet__head-actions">
+                        <div class="dropdown dropdown-inline">
+                            <button type="button" class="btn btn-default btn-icon-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="la la-download"></i> Export
                             </button>
-                            <form id="compareForm" action="{% url 'compare_view' %}" method="GET">
-                                <input type="hidden" name="IDs" id="formIds" value="" />
-                            </form>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <ul class="kt-nav">
+                                    <li class="kt-nav__section kt-nav__section--first">
+                                        <span class="kt-nav__section-text">Choose an option</span>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a href="#" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-print"></i>
+                                            <span class="kt-nav__link-text">Print</span>
+                                        </a>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a href="#" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-copy"></i>
+                                            <span class="kt-nav__link-text">Copy</span>
+                                        </a>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a href="#" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-file-excel-o"></i>
+                                            <span class="kt-nav__link-text">Excel</span>
+                                        </a>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a href="#" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-file-text-o"></i>
+                                            <span class="kt-nav__link-text">CSV</span>
+                                        </a>
+                                    </li>
+                                    <li class="kt-nav__item">
+                                        <a href="#" class="kt-nav__link">
+                                            <i class="kt-nav__link-icon la la-file-pdf-o"></i>
+                                            <span class="kt-nav__link-text">PDF</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
+                        &nbsp;
+                        <button type="submit" form="compareForm" class="btn btn-brand btn-elevate btn-icon-sm disabled" id="compareBtn">
+                            <i class="flaticon-statistics"></i>
+                            Compare
+                        </button>
+                        <form id="compareForm" action="{% url 'compare_view' %}" method="GET">
+                            <input type="hidden" name="IDs" id="formIds" value="" />
+                        </form>
                     </div>
                 </div>
             </div>
-            <div class="kt-portlet__body">
-                <table class="table table-striped- table-bordered table-hover table-checkable" id="table"></table>
-
+        </div>
+        <div class="kt-portlet__body">
+            <div class="kt-section">
+                <div class="kt-section__title">
+                    Filter results
+                </div>
+                <div class="kt-section__content">
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="row row-no-padding">
+                                <span>Visible columns <select id="columnFilter" class="selectpicker" multiple data-live-search="true" data-selected-text-format="count" data-actions-box="true"></select></span>
+                            </div>
+                            <div class="row row-no-padding">
+                                <span>Factors <select id="factorFilter" class="selectpicker" multiple data-live-search="true" title="All"></select></span> 
+                            </div>
+                            <div class="row row-no-padding">
+                                <span>Target species <select id="targetSpeciesFilter" class="selectpicker" multiple data-live-search="true" title="All"></select></span> 
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row row-no-padding">
+                                <span>Larvae stage <select id="targetLarvaeStageFilter" class="selectpicker" multiple data-live-search="true" title="All"></select></span> 
+                            </div>
+                            <div class="row row-no-padding">
+                                <span>Target factor resistance <select id="targetFactorResistanceFilter" class="selectpicker" multiple data-live-search="true" title="All"></select></span> 
+                            </div>
+                            <div class="row row-no-padding">
+                                <span>Toxin distribution <select id="toxinDistributionFilter" class="selectpicker" multiple data-live-search="true" title="All"></select></span> 
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="row row-no-padding">
+                                <span>Bioassay type <select id="bioassayTypeFilter" class="selectpicker" multiple data-live-search="true" title="All"></select></span>
+                            </div>
+                            <div class="row row-no-padding">
+                                <span>Interaction <select id="interactionFilter" class="selectpicker" multiple data-live-search="true" title="All"></select></span> 
+                            </div>
+                            <div class="row row-no-padding">
+                                <span>Estimation method <select id="estimationMethodFilter" class="selectpicker" multiple data-live-search="true" title="All"></select></span> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="kt-separator kt-separator--space-lg kt-separator--border-solid"></div>
+                <div class="kt-section__title">
+                    Data
+                </div>
+                <div class="kt-section__content">
+                    <table class="table table-striped- table-bordered table-hover table-checkable" id="table"></table>
+                </div>
             </div>
         </div>
+    </div>
     </div>
 <!-- end:: Content -->
