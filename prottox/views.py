@@ -13,7 +13,6 @@ def home_view(request):
     countSource = Factor_source.objects.all().distinct().count()
     counted = __countSpecies(SpeciesTaxonomy.objects.filter(taxonomy_rank__name='Species'))
     countSpeciesDict = OrderedDict(sorted(dict(counted).items()))
-    print(countSpeciesDict)
     countSpecies = json.dumps(counted)
 
     return render(request, "home.html",
