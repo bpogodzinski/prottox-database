@@ -8,7 +8,7 @@ function initDataTable(json){
         columns:json['columns'],
         rowID:'ID',
         colReorder: true,
-        scrollX:false,
+        scrollX:true,
         paging:true,
         columnDefs: [ {
             orderable: false,
