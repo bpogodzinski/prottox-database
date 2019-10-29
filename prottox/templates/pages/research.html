@@ -129,9 +129,7 @@
                                             <p><label class="lead kt-font-bold">Factor form:</label> {{toxin.factor_form.form | default:'N/A' | capfirst}}</p>
                                             <p><label class="lead kt-font-bold">Factor modification:</label> {{toxin.modification_description | default:'N/A' | capfirst}}</p>
                                             <p><label class="lead kt-font-bold">Factor expression host:</label> {{toxin.factor_expression_host.host | default:'N/A' | capfirst}}</p>
-                                            <p><label class="lead kt-font-bold">Factor kDa:</label> {{toxin.kDa | default_if_none:'N/A'}}</p>
                                             <p><label class="lead kt-font-bold">Factor preparation:</label> {{toxin.preparation | default:'N/A' | capfirst}}</p>
-                                            <p><label class="lead kt-font-bold">Factor NCBI accession number:</label> {{toxin.NCBI_accession_number | default:'N/A'}}</p>
                                         </div>
                                     </div>
                                     {% endfor %}
@@ -183,9 +181,7 @@
                                             <p><label class="lead kt-font-bold">Fiducial limits:</label> {{research.results.LC95min | default:'N/A'}} - {{research.results.LC95max | default:'N/A'}}</p>
                                             <p><label class="lead kt-font-bold">Synergism factor:</label> {{research.results.synergism_factor | default:'N/A'}}</p>
                                             <p><label class="lead kt-font-bold">Estimation method:</label> {{research.results.estimation_method | default:'N/A' | capfirst}}</p>
-                                            <p><label class="lead kt-font-bold">Chi-square:</label> {{research.results.chi_square | default:'N/A'}}</p>
-                                            <p><label class="lead kt-font-bold">Slope standard error:</label> {{research.results.slopeSE | default:'N/A'}}</p>
-                                            <p><label class="lead kt-font-bold">Slope fiducial limit:</label> {{research.results.slopeLC | default:'N/A'}}</p>
+                                            <p><label class="lead kt-font-bold">Slope:</label> {{research.results.slopeLC | default:'N/A'}} &PlusMinus; {{research.results.slopeSE | default:'N/A'}}</p>
                                         </div>
                                     </div>
                                 </div>
