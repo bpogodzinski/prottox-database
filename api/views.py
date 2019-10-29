@@ -132,7 +132,7 @@ def __processDatatableToxinResearchToJSON(queryset):
         entry['Bioassay result expected'] = __getDataTableBioassayResult(record.results, expected=True) if record.results.expected else None
         entry['95% Fiducial limits'] = __getDataTableFiducialLimits(record.results)
         entry['Interaction'] = BADGE_DICT.get(record.results.interaction, record.results.interaction)
-        entry['Synergism factor'] = record.results.synergism_factor
+        entry['Synergism factor'] = __roundOrEmptyString(record.results.synergism_factor, 2)
         entry['Estimation method'] = record.results.estimation_method
         entry['Publication'] = __getDataTablePublication(record.publication)
         entry['DT_RowId'] = record.id
@@ -176,3 +176,13 @@ def __getDataTableFiducialLimits(results):
     return f"{results.LC95min} - {results.LC95max}"
 
 # ------------- END DataTable processing methods -----------------
+
+# ------------- BEGIN Custom funtions -----------------
+
+def __roundOrEmptyString(number, ndigits=None):
+    try:
+        return round(float(number.replace(',','.')), ndigits)
+    except ValueError:
+        return ''
+
+# ------------- END Custom funtions -----------------
