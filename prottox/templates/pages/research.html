@@ -179,7 +179,7 @@
                                             <p><label class="lead kt-font-bold">Bioassay result expected:</label> {{research.results.expected | default:'N/A'}} {{research.results.bioassay_unit | default:''}}</p>
                                             <p><label class="lead kt-font-bold">Interaction:</label> {{research.results.get_interaction_display | default:'N/A'}}</p>
                                             <p><label class="lead kt-font-bold">Fiducial limits:</label> {{research.results.LC95min | default:'N/A'}} - {{research.results.LC95max | default:'N/A'}}</p>
-                                            <p><label class="lead kt-font-bold">Synergism factor:</label> {{research.results.synergism_factor | default:'N/A'}}</p>
+                                            <p><label class="lead kt-font-bold">Synergism factor:</label> {{synfactor | default:'N/A'}}</p>
                                             <p><label class="lead kt-font-bold">Estimation method:</label> {{research.results.estimation_method | default:'N/A' | capfirst}}</p>
                                             <p><label class="lead kt-font-bold">Slope:</label> {{research.results.slopeLC | default:'N/A'}} &PlusMinus; {{research.results.slopeSE | default:'N/A'}}</p>
                                         </div>

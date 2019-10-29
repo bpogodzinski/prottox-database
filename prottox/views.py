@@ -70,7 +70,7 @@ def compare_research_view(request):
 def research_view(request, db_id):
     research = get_object_or_404(Toxin_research, pk=db_id)
     return render(request, 'research.html',
-                  {'research':research, 'page_content_template_name':'research.html', 'header': 'Research View'})
+                  {'research':research, 'synfactor':__roundOrEmptyString(research.results.synergism_factor, 2), 'page_content_template_name':'research.html', 'header': 'Research View'})
 
 # PROCESSING METHODS
 
@@ -81,3 +81,9 @@ def __getOrder(item):
     if item.taxonomy_rank.name != 'Order':
         return __getOrder(item.parent)
     return item.name
+
+def __roundOrEmptyString(number, ndigits=None):
+    try:
+        return round(float(number.replace(',','.')), ndigits)
+    except ValueError:
+        return ''
