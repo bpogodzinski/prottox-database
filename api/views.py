@@ -5,7 +5,7 @@ from django.urls import reverse
 from prottox.models import FactorTaxonomy, SpeciesTaxonomy, Toxin_research
 
 PUBMED_LINK_TEMPLATE = "https://www.ncbi.nlm.nih.gov/pubmed/{ID}"
-DATATABLE_VISIBLE_COLUMNS = ['Select', 'Target species', 'Factor', 'Bioassay type', 'Bioassay result', 'Interaction', 'Publication']
+DATATABLE_VISIBLE_COLUMNS = ['Select', 'Target species', 'Factor', 'Toxin quantity', 'Bioassay type', 'Bioassay result observed', 'Interaction', 'Publication']
 DATATABLE_DATA_COLUMNS = ['Select', 'Factor', 'Target species', 'Target larvae stage', 'Target factor resistance', 'Days of observation', 'Toxin quantity', 'Toxin distribution', 'Bioassay type', 'Bioassay result observed', 'Bioassay result expected', '95% Fiducial limits', 'Interaction', 'Synergism factor', 'Estimation method', 'Publication']
 SYNERGISM_BADGE = '<span class="kt-badge kt-badge--success kt-badge--inline">Synergism</span>'
 ANTAGONISM_BADGE = '<span class="kt-badge kt-badge--danger kt-badge--inline">Antagonism</span>'
