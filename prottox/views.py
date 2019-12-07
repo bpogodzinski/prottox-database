@@ -1,37 +1,37 @@
 from collections import Counter, OrderedDict
-from random import choice
+from heapq import nlargest
 import json
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Toxin_research, Active_factor, Factor_source, Target, SpeciesTaxonomy
+from .models import Toxin_research, SpeciesTaxonomy, FactorTaxonomy
 
 def home_view(request):
-    queryset = Toxin_research.objects.all()
-    countInteraction = Counter([x.results.interaction for x in queryset])
-    countFactors = Active_factor.objects.all().distinct().count()
-    countChimeric = Active_factor.objects.filter(is_chimeric=True).distinct().count()
-    countNotToxin = Active_factor.objects.filter(is_toxin=False).distinct().count()
-    countSource = Factor_source.objects.all().distinct().count()
-    counted = __countSpecies(SpeciesTaxonomy.objects.filter(taxonomy_rank__name='Species'))
-    countSpeciesDict = OrderedDict(sorted(dict(counted).items()))
-    countSpecies = json.dumps(counted)
+    context = {}
+    context['page_content_template_name'] = 'home.html'
+    context['header'] = 'Home'
 
-    return render(request, "home.html",
-                  {'page_content_template_name':'home.html',
-                   'header': 'Home',
-                   'countInteraction':countInteraction,
-                   'countFactors':countFactors,
-                   'countChimeric':countChimeric,
-                   'countNotToxin':countNotToxin,
-                   'sumResearch':sum(countInteraction.values()),
-                   'randomResearch':choice(queryset),
-                   'countSource':countSource,
-                   'countSpecies': countSpecies,
-                   'species': countSpeciesDict,
-    })
+    queryset = Toxin_research.objects.all()
+    context['maxItems'] = queryset.count()
+
+    researchInteractions = Counter([x.results.interaction for x in queryset])
+    context['research'] = {'interactions': researchInteractions,
+                           'sum': sum(researchInteractions.values())}
+
+    countedSpecies = __countSpecies(SpeciesTaxonomy.objects.filter(taxonomy_rank__name='Species'))
+    context['target'] = {'species': OrderedDict(sorted(dict(countedSpecies).items())),
+                         'speciesJSON': json.dumps(countedSpecies),
+                         'sum': sum(countedSpecies.values())}
+
+    allFactors = {k.name :v for k, v in __getTaxCount().items()}
+    context['factors'] = {'allFactors': allFactors,
+                          'allFactorsJSON': json.dumps(allFactors),
+                          '4largestJSON': json.dumps(nlargest(4, allFactors, key=allFactors.get)),
+                          'sum': sum(allFactors.values())}
+
+    return render(request, "home.html", context)
 
 def organism_browse_view(request):
     """Browsing page view"""
-    return render(request, "organism_browse.html", {'page_content_template_name':'browse.html','header': 'Organism Browser'})
+    return render(request, "organism_browse.html", {'page_content_template_name':'browse.html', 'header': 'Organism Browser'})
 
 def factor_browse_view(request):
     """Browsing page view"""
@@ -67,7 +67,7 @@ def compare_research_view(request):
     ids = request.GET["IDs"].split(",")
     return render(request, "compare.html", {"IDs":ids, 'page_content_template_name':'compare.html','header': 'Compare Research'})
 
-def research_view(request, db_id):
+def research_view(request, db_id=1):
     research = get_object_or_404(Toxin_research, pk=db_id)
     return render(request, 'research.html',
                   {'research':research, 'synfactor':__roundOrEmptyString(research.results.synergism_factor, 2), 'page_content_template_name':'research.html', 'header': 'Research View'})
@@ -87,3 +87,13 @@ def __roundOrEmptyString(number, ndigits=None):
         return round(float(number.replace(',','.')), ndigits)
     except ValueError:
         return ''
+
+def __getTaxCount():
+    leaves = FactorTaxonomy.objects.filter(children__isnull=True)
+    return Counter(map(__getTopParent, leaves))
+
+def __getTopParent(tax):
+    if tax.parent is not None:
+        return __getTopParent(tax.parent)
+    else:
+        return tax

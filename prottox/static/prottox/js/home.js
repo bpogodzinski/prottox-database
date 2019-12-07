@@ -1,11 +1,38 @@
+// https://codenebula.io/javascript/frontend/dataviz/2019/04/18/automatically-generate-chart-colors-with-chart-js-d3s-color-scales/
+
+function calculatePoint(i, intervalSize, colorRangeInfo) {
+  var { colorStart, colorEnd, useEndAsStart } = colorRangeInfo;
+  return (useEndAsStart
+    ? (colorEnd - (i * intervalSize))
+    : (colorStart + (i * intervalSize)));
+}
+
+/* Must use an interpolated color scale, which has a range of [0, 1] */
+function interpolateColors(dataLength, colorScale, colorRangeInfo) {
+  var { colorStart, colorEnd } = colorRangeInfo;
+  var colorRange = colorEnd - colorStart;
+  var intervalSize = colorRange / dataLength;
+  var i, colorPoint;
+  var colorArray = [];
+
+  for (i = 0; i < dataLength; i++) {
+    colorPoint = calculatePoint(i, intervalSize, colorRangeInfo);
+    colorArray.push(colorScale(colorPoint));
+  }
+
+  return colorArray;
+}
+
+// -----------------------------------------------------------
+
 function initResearchChart() {        
   if (!KTUtil.getByID('chart_research')) {
       return;
   }
-
-  var randomScalingFactor = function() {
-      return Math.round(Math.random() * 100);
-  };
+  let synCount = $('#chart_research').data('syn');
+  let antCount = $('#chart_research').data('ant');
+  let indCount = $('#chart_research').data('ind');
+  let total = $('#chart_research').data('total');
 
   var config = {
       type: 'doughnut',
@@ -66,33 +93,43 @@ function initResearchChart() {
   var myDoughnut = new Chart(ctx, config);
 }
 
+function populateLegend(colorCode, allFactors, id = '#topFactors') {
+  let html2populate = '';
+  let first4Factors = $('#chart_factor').data('first4factors');
+  for (const factor of first4Factors){
+    html2populate += `
+    <div class="kt-widget14__legend">
+        <span class="kt-widget14__bullet" style="background-color: ${colorCode[factor]};"></span>
+        <span class="kt-widget14__stats"><span class="animateNumber" data-value="${allFactors.get(factor)}">0</span> ${factor}</span>
+    </div>`
+  }
+  $(id).html(html2populate)
+}
+
 function initFactorChart() {        
   if (!KTUtil.getByID('chart_factor')) {
       return;
   }
 
-  var randomScalingFactor = function() {
-      return Math.round(Math.random() * 100);
-  };
+  let allFactors = new Map(Object.entries($('#chart_factor').data('factors')));
+  const COLORS = interpolateColors(Array.from(allFactors.keys()).length, d3.interpolateTurbo, {colorStart: 0, colorEnd: 1, useEndAsStart: true});
+  const FACTOR_DATA = Array.from(allFactors.values());
+  const FACTOR_LABELS = Array.from(allFactors.keys());
+  var colorCodedLabels = {};
+
+  for (let index = 0; index < COLORS.length; index++) {
+    colorCodedLabels[FACTOR_LABELS[index]] = COLORS[index];    
+  }
+  populateLegend(colorCodedLabels, allFactors);
 
   var config = {
       type: 'doughnut',
       data: {
           datasets: [{
-              data: [
-                  countNotToxin, countChimeric, countFactors - countNotToxin - countChimeric
-              ],
-              backgroundColor: [
-                  KTApp.getStateColor('warning'),
-                  KTApp.getStateColor('danger'),
-                  KTApp.getStateColor('primary'),
-              ]
+              data: FACTOR_DATA,
+              backgroundColor: COLORS,
           }],
-          labels: [
-              'Non-standard',
-              'Chimeric',
-              'Standard',
-          ]
+          labels: FACTOR_LABELS
       },
       options: {
           cutoutPercentage: 75,
@@ -100,7 +137,7 @@ function initFactorChart() {
           maintainAspectRatio: false,
           legend: {
               display: false,
-              position: 'top',
+              position: 'right',
           },
           title: {
               display: false,
@@ -137,9 +174,7 @@ function initTargetChart() {
       return;
   }
 
-  var randomScalingFactor = function() {
-      return Math.round(Math.random() * 100);
-  };
+  let countSpecies = new Map(Object.entries($('#chart_target').data('species')));
 
   var config = {
       type: 'doughnut',
@@ -192,279 +227,29 @@ function initTargetChart() {
   var ctx = KTUtil.getByID('chart_target').getContext('2d');
   var myDoughnut = new Chart(ctx, config);
 }
-//TODO: Add animate numbers to target
+
 $(document).ready(function() {
-    $('#syn-count').animateNumber(
-        {
-          number: synCount,
-          // optional custom step function
-          // using here to keep '%' sign after number
-          numberStep: function(now, tween) {
-            var floored_number = Math.floor(now),
-                target = $(tween.elem);
-      
-            target.text(floored_number);
-          }
-        },
-        {
-          easing: 'swing',
-          duration: 1000
-        }
-      );
-    $('#ant-count').animateNumber(
-        {
-          number: antCount,
-      
-          // optional custom step function
-          // using here to keep '%' sign after number
-          numberStep: function(now, tween) {
-            var floored_number = Math.floor(now),
-                target = $(tween.elem);
-      
-            target.text(floored_number);
-          }
-        },
-        {
-          easing: 'swing',
-          duration: 1000
-        }
-      );
-    $('#ind-count').animateNumber(
-        {
-          number: indCount,
-      
-          // optional custom step function
-          // using here to keep '%' sign after number
-          numberStep: function(now, tween) {
-            var floored_number = Math.floor(now),
-                target = $(tween.elem);
-      
-            target.text(floored_number);
-          }
-        },
-        {
-          easing: 'swing',
-          duration: 1000
-        }
-      );
-    $('#single-count').animateNumber(
-        {
-          number: total - synCount - antCount - indCount,
-      
-          // optional custom step function
-          // using here to keep '%' sign after number
-          numberStep: function(now, tween) {
-            var floored_number = Math.floor(now),
-                target = $(tween.elem);
-      
-            target.text(floored_number);
-          }
-        },
-        {
-          easing: 'swing',
-          duration: 1000
-        }
-      );
-    $('#total-count').animateNumber(
-        {
-          number: total,
-      
-          // optional custom step function
-          // using here to keep '%' sign after number
-          numberStep: function(now, tween) {
-            var floored_number = Math.floor(now),
-                target = $(tween.elem);
-      
-            target.text(floored_number);
-          }
-        },
-        {
-          easing: 'swing',
-          duration: 1000
-        }
-      );
-    $('#factor-count').animateNumber(
-        {
-          number: countFactors,
-      
-          // optional custom step function
-          // using here to keep '%' sign after number
-          numberStep: function(now, tween) {
-            var floored_number = Math.floor(now),
-                target = $(tween.elem);
-      
-            target.text(floored_number);
-          }
-        },
-        {
-          easing: 'swing',
-          duration: 1000
-        }
-      );
-    $('#standard-count').animateNumber(
-        {
-          number: countFactors - countChimeric - countNotToxin,
-      
-          // optional custom step function
-          // using here to keep '%' sign after number
-          numberStep: function(now, tween) {
-            var floored_number = Math.floor(now),
-                target = $(tween.elem);
-      
-            target.text(floored_number);
-          }
-        },
-        {
-          easing: 'swing',
-          duration: 1000
-        }
-      );
-    $('#chimeric-count').animateNumber(
-        {
-          number: countChimeric,
-      
-          // optional custom step function
-          // using here to keep '%' sign after number
-          numberStep: function(now, tween) {
-            var floored_number = Math.floor(now),
-                target = $(tween.elem);
-      
-            target.text(floored_number);
-          }
-        },
-        {
-          easing: 'swing',
-          duration: 1000
-        }
-      );
-    $('#nontoxin-count').animateNumber(
-        {
-          number: countNotToxin,
-      
-          // optional custom step function
-          // using here to keep '%' sign after number
-          numberStep: function(now, tween) {
-            var floored_number = Math.floor(now),
-                target = $(tween.elem);
-      
-            target.text(floored_number);
-          }
-        },
-        {
-          easing: 'swing',
-          duration: 1000
-        }
-      );
-    $('#source-count').animateNumber(
-        {
-          number: countSource,
-      
-          // optional custom step function
-          // using here to keep '%' sign after number
-          numberStep: function(now, tween) {
-            var floored_number = Math.floor(now),
-                target = $(tween.elem);
-      
-            target.text(floored_number);
-          }
-        },
-        {
-          easing: 'swing',
-          duration: 1000
-        }
-      );
-    $('#organism-count').animateNumber(
-        {
-          number: countOrganism,
-      
-          // optional custom step function
-          // using here to keep '%' sign after number
-          numberStep: function(now, tween) {
-            var floored_number = Math.floor(now),
-                target = $(tween.elem);
-      
-            target.text(floored_number);
-          }
-        },
-        {
-          easing: 'swing',
-          duration: 1000
-        }
-      );
-    $('#coleoptera-count').animateNumber(
-        {
-          number: countSpecies.get("Coleoptera"),
-      
-          // optional custom step function
-          // using here to keep '%' sign after number
-          numberStep: function(now, tween) {
-            var floored_number = Math.floor(now),
-                target = $(tween.elem);
-      
-            target.text(floored_number);
-          }
-        },
-        {
-          easing: 'swing',
-          duration: 1000
-        }
-      );
-    $('#diptera-count').animateNumber(
-        {
-          number: countSpecies.get("Diptera"),
-      
-          // optional custom step function
-          // using here to keep '%' sign after number
-          numberStep: function(now, tween) {
-            var floored_number = Math.floor(now),
-                target = $(tween.elem);
-      
-            target.text(floored_number);
-          }
-        },
-        {
-          easing: 'swing',
-          duration: 1000
-        }
-      );
-    $('#lepidoptera-count').animateNumber(
-        {
-          number: countSpecies.get("Lepidoptera"),
-      
-          // optional custom step function
-          // using here to keep '%' sign after number
-          numberStep: function(now, tween) {
-            var floored_number = Math.floor(now),
-                target = $(tween.elem);
-      
-            target.text(floored_number);
-          }
-        },
-        {
-          easing: 'swing',
-          duration: 1000
-        }
-      );
-    $('#rhabditida-count').animateNumber(
-        {
-          number: countSpecies.get("Rhabditida"),
-      
-          // optional custom step function
-          // using here to keep '%' sign after number
-          numberStep: function(now, tween) {
-            var floored_number = Math.floor(now),
-                target = $(tween.elem);
-      
-            target.text(floored_number);
-          }
-        },
-        {
-          easing: 'swing',
-          duration: 1000
-        }
-      );
 
       initResearchChart();
       initFactorChart();
       initTargetChart();
+
+      $('.animateNumber').each(function() {
+        $(this).animateNumber(
+          {
+            number:$(this).data('value'),
+            // optional custom step function
+            // using here to keep '%' sign after number
+            numberStep: function(now, tween) {
+              var floored_number = Math.floor(now),
+                  target = $(tween.elem);
+        
+              target.text(floored_number);
+            }
+          },
+          {
+            easing: 'swing',
+            duration: 1000
+          }
+        )});
 });

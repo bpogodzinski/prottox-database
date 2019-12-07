@@ -5,6 +5,11 @@
 
 {% endblock additional_css %}
 {% block additional_js %}
+<!-- Import D3 Scale Chromatic via CDN -->
+<script src="https://d3js.org/d3-color.v1.min.js"></script>
+<script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
 <script src="{% static 'prottox/js/jquery.animateNumber.min.js' %}" type="text/javascript"></script>
 <script src="{% static 'prottox/js/home.js' %}" type="text/javascript"></script>
 {% endblock additional_js %}

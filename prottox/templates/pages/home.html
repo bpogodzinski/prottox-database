@@ -1,16 +1,4 @@
 {% load static %}
-<script type="text/javascript"> 
-    var synCount = {{countInteraction.SYN | escapejs}};
-    var antCount = {{countInteraction.ANT | escapejs}};
-    var indCount = {{countInteraction.IND | escapejs}};
-    var total = {{sumResearch | escapejs}};
-    var countFactors = {{countFactors | escapejs}};
-    var countChimeric = {{countChimeric | escapejs}};
-    var countNotToxin = {{countNotToxin | escapejs}};
-    var countSource = {{countSource | escapejs}};
-    var countSpecies = new Map(Object.entries(JSON.parse("{{countSpecies | escapejs}}")).sort());
-    var countOrganism = Array.from(countSpecies.values()).reduce((a,b) => a + b, 0);
- </script>
 <div class="kt-container  kt-container--fluid  kt-grid__item kt-grid__item--fluid">
     <div class="row row-no-padding">
         <div class="kt-portlet">
@@ -37,7 +25,7 @@
                             <div class="kt-widget14">
                                 <div class="kt-widget14__header">
                                     <h3 class="kt-widget14__title">
-                                        Factors      
+                                        Factors
                                     </h3>
                                     <span class="kt-widget14__desc">
                                         Insecticide proteins &amp; non-standard agents
@@ -45,22 +33,10 @@
                                 </div>	 
                                 <div class="kt-widget14__content">	
                                     <div class="kt-widget14__chart"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
-                                        <div class="kt-widget14__stat"><span id="factor-count">0</span></div>
-                                        <canvas id="chart_factor" style="height: 140px; width: 140px; display: block;" width="140" height="140" class="chartjs-render-monitor"></canvas>
+                                        <div class="kt-widget14__stat"><span class="animateNumber" data-value="{{factors.sum}}">0</span></div>
+                                        <canvas id="chart_factor" data-factors="{{factors.allFactorsJSON}}" data-first4Factors="{{factors.4largestJSON}}" style="height: 140px; width: 140px; display: block;" width="140" height="140" class="chartjs-render-monitor"></canvas>
                                     </div> 
-                                    <div class="kt-widget14__legends">
-                                        <div class="kt-widget14__legend">
-                                            <span class="kt-widget14__bullet kt-bg-warning"></span>
-                                            <span class="kt-widget14__stats"><span id="nontoxin-count">0</span> non-standard agents</span>
-                                        </div>
-                                        <div class="kt-widget14__legend">
-                                            <span class="kt-widget14__bullet kt-bg-danger"></span>
-                                            <span class="kt-widget14__stats"><span id="chimeric-count">0</span> chimeric protein factors</span>
-                                        </div>
-                                        <div class="kt-widget14__legend">
-                                            <span class="kt-widget14__bullet kt-bg-brand"></span>
-                                            <span class="kt-widget14__stats"><span id="standard-count">0</span> standard protein toxins</span>
-                                        </div>
+                                    <div id='topFactors' class="kt-widget14__legends">
                                     </div>			
                                 </div> 
                             </div>
@@ -73,7 +49,7 @@
                             <div class="kt-widget14">
                                 <div class="kt-widget14__header">
                                     <h3 class="kt-widget14__title">
-                                        Research            
+                                        Research          
                                     </h3>
                                     <span class="kt-widget14__desc">
                                         Available research
@@ -81,25 +57,25 @@
                                 </div>	 
                                 <div class="kt-widget14__content">	
                                     <div class="kt-widget14__chart"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
-                                        <div class="kt-widget14__stat"><span id="total-count">0</span></div>
-                                        <canvas id="chart_research" style="height: 140px; width: 140px; display: block;" width="140" height="140" class="chartjs-render-monitor"></canvas>
+                                        <div class="kt-widget14__stat"><span class="animateNumber" data-value="{{research.sum}}">0</span></div>
+                                        <canvas id="chart_research" data-syn="{{research.interactions.SYN}}" data-ant="{{research.interactions.ANT}}" data-ind="{{research.interactions.IND}}" data-total="{{research.sum}}" style="height: 140px; width: 140px; display: block;" width="140" height="140" class="chartjs-render-monitor"></canvas>
                                     </div> 
                                     <div class="kt-widget14__legends">
                                         <div class="kt-widget14__legend">
                                             <span class="kt-widget14__bullet kt-bg-success"></span>
-                                            <span class="kt-widget14__stats"><span id="syn-count">0</span> synergistic results</span>
+                                            <span class="kt-widget14__stats"><span class='animateNumber' data-value="{{research.interactions.SYN}}">0</span> synergistic results</span>
                                         </div>
                                         <div class="kt-widget14__legend">
                                             <span class="kt-widget14__bullet kt-bg-danger"></span>
-                                            <span class="kt-widget14__stats"><span id="ant-count">0</span> antagonistic results</span>
+                                            <span class="kt-widget14__stats"><span class='animateNumber' data-value="{{research.interactions.ANT}}">0</span> antagonistic results</span>
                                         </div>
                                         <div class="kt-widget14__legend">
                                             <span class="kt-widget14__bullet kt-bg-light-dark"></span>
-                                            <span class="kt-widget14__stats"><span id="ind-count">0</span> independent results</span>
+                                            <span class="kt-widget14__stats"><span class="animateNumber" data-value="{{research.interactions.IND}}">0</span> independent results</span>
                                         </div>
                                         <div class="kt-widget14__legend">
                                             <span class="kt-widget14__bullet kt-bg-dark"></span>
-                                            <span class="kt-widget14__stats"><span id="single-count">0</span> single factor</span>
+                                            <span class="kt-widget14__stats"><span class="animateNumber" data-value="{{research.interactions.}}">0</span> single factor</span>
                                         </div>
                                     </div>			
                                 </div> 
@@ -121,25 +97,25 @@
                                 </div>	 
                                 <div class="kt-widget14__content">	
                                     <div class="kt-widget14__chart"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
-                                        <div class="kt-widget14__stat"><span id="organism-count">0</span></div>
-                                        <canvas id="chart_target" style="height: 140px; width: 140px; display: block;" width="140" height="140" class="chartjs-render-monitor"></canvas>
+                                        <div class="kt-widget14__stat"><span class="animateNumber" data-value="{{target.sum}}">0</span></div>
+                                        <canvas id="chart_target" data-species="{{target.speciesJSON}}" style="height: 140px; width: 140px; display: block;" width="140" height="140" class="chartjs-render-monitor"></canvas>
                                     </div> 
                                     <div class="kt-widget14__legends">
                                         <div class="kt-widget14__legend">
                                             <span class="kt-widget14__bullet kt-bg-primary"></span>
-                                            <span class="kt-widget14__stats"><span id="coleoptera-count">0</span> Coleoptera</span>
+                                            <span class="kt-widget14__stats"><span class="animateNumber" data-value="{{target.species.Coleoptera}}">0</span> Coleoptera</span>
                                         </div>
                                         <div class="kt-widget14__legend">
                                             <span class="kt-widget14__bullet kt-bg-danger"></span>
-                                            <span class="kt-widget14__stats"><span id="diptera-count">0</span> Diptera</span>
+                                            <span class="kt-widget14__stats"><span class="animateNumber" data-value="{{target.species.Diptera}}">0</span> Diptera</span>
                                         </div>
                                         <div class="kt-widget14__legend">
                                             <span class="kt-widget14__bullet kt-bg-warning"></span>
-                                            <span class="kt-widget14__stats"><span id="lepidoptera-count">0</span> Lepidoptera</span>
+                                            <span class="kt-widget14__stats"><span class="animateNumber" data-value="{{target.species.Lepidoptera}}">0</span> Lepidoptera</span>
                                         </div>
                                         <div class="kt-widget14__legend">
                                             <span class="kt-widget14__bullet kt-bg-dark"></span>
-                                            <span class="kt-widget14__stats"><span id="rhabditida-count">0</span> Rhabditida</span>
+                                            <span class="kt-widget14__stats"><span class="animateNumber" data-value="{{target.species.Rhabditida}}">0</span> Rhabditida</span>
                                         </div>
                                     </div>			
                                 </div> 
@@ -242,7 +218,8 @@
                              </div>
                             <div class="kt-iconbox__desc">
                                 <h3 class="kt-iconbox__title">
-                                    <a class="kt-link" href="{% url 'research_view' db_id=randomResearch.pk %}">Random Research</a>
+                                    <!-- TODO PROTTOX: add js random research -->
+                                    <a id="randomResearch" class="kt-link" href="" data-max-range="{{context.maxItems}}">Random Research</a>
                                 </h3>
                                 <div class="kt-iconbox__content">
                                 I'm feeling lucky

@@ -21,7 +21,7 @@ class SpeciesTaxonomy(models.Model):
 
 class FactorTaxonomy(models.Model):
     name = models.CharField(max_length=100)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='children')
 
     @property
     def fullname(self):
