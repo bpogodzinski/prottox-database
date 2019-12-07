@@ -228,28 +228,36 @@ function initTargetChart() {
   var myDoughnut = new Chart(ctx, config);
 }
 
+function initRandomResearch() {
+    let randomResearch = $('#randomResearch');
+    let maxRange = randomResearch.data('maxRange');
+    let randomID = Math.floor(Math.random() * maxRange) + 1;
+    let link = `/database/research/${randomID}`;
+    randomResearch.prop('href', link);
+}
+
 $(document).ready(function() {
 
-      initResearchChart();
-      initFactorChart();
-      initTargetChart();
-
-      $('.animateNumber').each(function() {
-        $(this).animateNumber(
-          {
-            number:$(this).data('value'),
-            // optional custom step function
-            // using here to keep '%' sign after number
-            numberStep: function(now, tween) {
-              var floored_number = Math.floor(now),
-                  target = $(tween.elem);
-        
-              target.text(floored_number);
-            }
-          },
-          {
-            easing: 'swing',
-            duration: 1000
-          }
-        )});
+    initResearchChart();
+    initFactorChart();
+    initTargetChart();
+    initRandomResearch();
+    $('.animateNumber').each(function() {
+    $(this).animateNumber(
+        {
+        number:$(this).data('value'),
+        // optional custom step function
+        // using here to keep '%' sign after number
+        numberStep: function(now, tween) {
+            var floored_number = Math.floor(now),
+                target = $(tween.elem);
+    
+            target.text(floored_number);
+        }
+        },
+        {
+        easing: 'swing',
+        duration: 1000
+        }
+    )});
 });
