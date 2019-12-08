@@ -96,6 +96,13 @@
                                 <h2 class="kt-sc__title">
                                     Research - {{research.publication.allAuthors}} ({{research.publication.date.year}})
                                 </h2>
+                                {% with research.publication.link as link %}
+                                {% if link %}
+                                <a class="btn btn-success" href="{{link}}" target=”_blank”>Go to Publication</a>
+                                {% else %}
+                                <a class="btn btn-success disabled">No publication</a>
+                                {% endif %}
+                                {% endwith %}
                             </div>
                         </div>
                     </div>
@@ -182,28 +189,6 @@
                                             <p><label class="lead kt-font-bold">Synergism factor:</label> {{synfactor | default:'N/A'}}</p>
                                             <p><label class="lead kt-font-bold">Estimation method:</label> {{research.results.estimation_method | default:'N/A' | capfirst}}</p>
                                             <p><label class="lead kt-font-bold">Slope:</label> {{research.results.slopeLC | default:'N/A'}} &PlusMinus; {{research.results.slopeSE | default:'N/A'}}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-        </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="kt-portlet kt-portlet--height-fluid">
-                        <div class="kt-portlet__body">
-                            <div class="kt-infobox">
-                                <div class="kt-infobox__header">
-                                    <h2 class="kt-infobox__title">Publication</h2>
-                                </div>
-                                <div class="kt-infobox__body">
-                                    <div class="kt-infobox__section">
-                                        <div class="kt-infobox__content">
-                                            <p><label class="lead kt-font-bold">Authors:</label> {{research.publication.allAuthors}}</p>
-                                            <p><label class="lead kt-font-bold">Publication year:</label> {{research.publication.date.year}}</p>
-                                            <p><label class="lead kt-font-bold">Link to publication:</label> {% with research.publication.link as link %}{% if link %}<a class="kt-link" href="{{link}}">{{link}}</a>{% else %}N/A{% endif %}{% endwith %}</p>
                                         </div>
                                     </div>
                                 </div>
