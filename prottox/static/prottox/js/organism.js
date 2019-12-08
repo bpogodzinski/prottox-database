@@ -27,7 +27,7 @@ function initTargetTree() {
         "case_sensitive":false,
         "show_only_matches":true
       },
-      plugins: ["checkbox", "types", "state", "search"]
+      plugins: ["checkbox", "types", "search"]
     })
     .on("open_node.jstree", function(e, data) {
       data.instance.set_icon(data.node, "fas fa-folder-open");
