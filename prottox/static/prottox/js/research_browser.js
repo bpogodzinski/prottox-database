@@ -10,22 +10,11 @@ function initDataTable(json){
         colReorder: true,
         scrollX:true,
         paging:true,
-        columnDefs: [ {
-            orderable: false,
-            className: 'select-checkbox',
-            targets:   0
-        } ],
-        select: {
-            style:    'multi',
-            selector: 'td:first-child'
-        },
     });
 }
 
 function initColumnsFilter(json){
     let selected = [];
-    let hiddenColumns = ['DT_RowId', 'Select']
-    json['columns'] = json['columns'].filter((value) => !hiddenColumns.includes(value.title))
     for (const column of json['columns']) {
         if(column.visible === true){
             selected.push(column.title)
@@ -235,8 +224,6 @@ $(document).ready(function () {
             $('#columnFilter').on('change', function (){
                 let selected = [];
                 selected = $('#columnFilter').val()
-                //Make select always visible
-                selected.push('Select');
                 $("#table").DataTable().columns().visible(false);
                 for (const columnName of selected) {
                     let column = $("#table").DataTable().column(columnName+':name');
@@ -359,16 +346,5 @@ $(document).ready(function () {
         },
         dataType: "json"
     } );
-
-    $('#table').on( 'select.dt deselect.dt', function ( e, dt, type, indexes ) {
-        if(type === 'row'){
-            let data = $('#table').DataTable().rows( {selected:true} ).data().count()
-            $('#compareBtn').toggleClass('disabled', data < 2)        
-        } 
-    });
-
-    $("#compareForm").submit(function() {
-        getSelectedIDsToForm()
-      });
 
 })

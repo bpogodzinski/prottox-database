@@ -5,8 +5,8 @@ from django.urls import reverse
 from prottox.models import FactorTaxonomy, SpeciesTaxonomy, Toxin_research
 
 PUBMED_LINK_TEMPLATE = "https://www.ncbi.nlm.nih.gov/pubmed/{ID}"
-DATATABLE_VISIBLE_COLUMNS = ['Select', 'Target species', 'Factor', 'Toxin quantity', 'Bioassay type', 'Bioassay result observed', 'Interaction', 'Publication']
-DATATABLE_DATA_COLUMNS = ['Select', 'Factor', 'Target species', 'Target larvae stage', 'Target factor resistance', 'Days of observation', 'Toxin quantity', 'Toxin distribution', 'Bioassay type', 'Bioassay result observed', 'Bioassay result expected', '95% Fiducial limits', 'Interaction', 'Synergism factor', 'Estimation method', 'Publication']
+DATATABLE_VISIBLE_COLUMNS = ['Target species', 'Factor', 'Toxin quantity', 'Bioassay type', 'Bioassay result observed', 'Interaction', 'Publication']
+DATATABLE_DATA_COLUMNS = ['Factor', 'Target species', 'Target larvae stage', 'Target factor resistance', 'Days of observation', 'Toxin quantity', 'Toxin distribution', 'Bioassay type', 'Bioassay result observed', 'Bioassay result expected', '95% Fiducial limits', 'Interaction', 'Synergism factor', 'Estimation method', 'Publication']
 SYNERGISM_BADGE = '<span class="kt-badge kt-badge--success kt-badge--inline">Synergism</span>'
 ANTAGONISM_BADGE = '<span class="kt-badge kt-badge--danger kt-badge--inline">Antagonism</span>'
 INDEPENDENT_BADGE = '<span class="kt-badge kt-badge--dark kt-badge--inline">Independent</span>'
@@ -119,7 +119,6 @@ def __processDatatableToxinResearchToJSON(queryset):
     json = dict(data=[], columns=[])
     for record in queryset:
         entry = {}
-        entry['Select'] = ''
         entry['Factor'] = __getDataTableFactors(record.toxin.all(), record.pk)
         entry['Target species'] = record.target.target_organism_taxonomy.name
         entry['Target larvae stage'] = record.target.larvae_stage.stage
@@ -135,7 +134,6 @@ def __processDatatableToxinResearchToJSON(queryset):
         entry['Synergism factor'] = __roundOrEmptyString(record.results.synergism_factor, 2)
         entry['Estimation method'] = record.results.estimation_method
         entry['Publication'] = __getDataTablePublication(record.publication)
-        entry['DT_RowId'] = record.id
         json['data'].append(entry)
 
     for name in json['data'][0].keys():
