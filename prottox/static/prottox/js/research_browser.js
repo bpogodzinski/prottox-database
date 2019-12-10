@@ -3,6 +3,7 @@ var DBdata = null;
 
 function initDataTable(json){
     let table = $('#table').DataTable({
+        dom: 'Bfrtip',
         lengthMenu: [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
         data:json['data'],
         columns:json['columns'],
@@ -10,6 +11,38 @@ function initDataTable(json){
         colReorder: true,
         scrollX:true,
         paging:true,
+        buttons: [
+            {   
+                extend:'csv',
+                exportOptions: {
+                    columns:':visible'
+                }
+            },
+            {   
+                extend:'excel',
+                exportOptions: {
+                    columns:':visible'
+                }
+            },
+            {   
+                extend:'pdf',
+                exportOptions: {
+                    columns:':visible'
+                }
+            },
+            {   
+                extend:'copy',
+                exportOptions: {
+                    columns:':visible'
+                }
+            },
+            {   
+                extend:'print',
+                exportOptions: {
+                    columns:':visible'
+                }
+            }
+        ]
     });
 }
 
