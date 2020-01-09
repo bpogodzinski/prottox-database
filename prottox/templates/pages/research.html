@@ -132,7 +132,6 @@
                                         <h3 class="kt-infobox__subtitle">{{ toxin.fullname }}</h3><hr>
                                         <div class="kt-infobox__content ml-4">
                                             <p><label class="lead kt-font-bold">Factor source:</label> <i>{{toxin.factor_source.source | default:'N/A' | capfirst}}</i></p>
-                                            <p><label class="lead kt-font-bold">Factor isolation source (subspecies/serovar/biotype etc.):</label> {{toxin.isolation_source.isolation_source | default:'N/A' | capfirst}}</p>
                                             <p><label class="lead kt-font-bold">Factor form:</label> {{toxin.factor_form.form | default:'N/A' | capfirst}}</p>
                                             <p><label class="lead kt-font-bold">Factor modification:</label> {{toxin.modification_description | default:'N/A' | capfirst}}</p>
                                             <p><label class="lead kt-font-bold">Factor expression host:</label> <i>{{toxin.factor_expression_host.host | default:'N/A' | capfirst}}</i></p>
