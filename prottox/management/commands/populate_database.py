@@ -22,19 +22,19 @@ class Command(BaseCommand):
         print('Created dataframe. Begin to populate ...')
         for index, row in tqdm(data.iterrows(), total=len(data.index)):
             factors = self.make_active_factor(row)
-            target = self.createTargetSpecies(row["Target species"], row['Larvae stage'], row['Target species strain'], row['Recognised Bt toxin resistance in target species? (YES/)'])
-            publication = self.make_publication(row['AUTHOR'], row['PMID (PubMed ID)'], row['Link (if PMID not available)'], row['PUBLICATION DATE'])
+            target = self.createTargetSpecies(row["Target species"], row['Target developmental stage'], row['Target species strain'], row['Recognised resistance in target species'])
+            publication = self.make_publication(row['AUTHORS'], row['PMID (PubMed ID)'], row['Link (if PMID not available)'], row['PUBLICATION DATE'])
             toxin_distrib = self.make_toxin_distrib(row['Toxin distribution'])
             quantity = None if pd.isnull(row['Proportion_F 1']) else self.createToxinQuantity(row['Proportion_F 1':'Proportion_F 8'], row['Proportion unit'])
             results = self.createResults(row['BIOASSAY TYPE':'Interaction estimation method'])
             try:
-                Toxin_research.objects.get(toxin__in=factors, publication=publication, target=target, days_of_observation=row['DAYS OF OBSERVATION'], toxin_distribution=toxin_distrib, quantity=quantity, results=results)
+                Toxin_research.objects.get(toxin__in=factors, publication=publication, target=target, days_of_observation=row['Bioassay duration'], toxin_distribution=toxin_distrib, quantity=quantity, results=results)
             except ObjectDoesNotExist:
-                toxin_research = Toxin_research.objects.create(publication=publication, target=target, days_of_observation=row['DAYS OF OBSERVATION'], toxin_distribution=toxin_distrib, quantity=quantity, results=results)
+                toxin_research = Toxin_research.objects.create(publication=publication, target=target, days_of_observation=row['Bioassay duration'], toxin_distribution=toxin_distrib, quantity=quantity, results=results)
                 toxin_research.toxin.add(*factors)
                 self.researchCreated += 1
             except MultipleObjectsReturned:
-                toxin_research = Toxin_research.objects.filter(toxin__in=factors, publication=publication, target=target, days_of_observation=row['DAYS OF OBSERVATION'], toxin_distribution=toxin_distrib, quantity=quantity, results=results)
+                toxin_research = Toxin_research.objects.filter(toxin__in=factors, publication=publication, target=target, days_of_observation=row['Bioassay duration'], toxin_distribution=toxin_distrib, quantity=quantity, results=results)
                 primaryKey = toxin_research[0].pk
                 assert all(toxinRes.pk == primaryKey for toxinRes in toxin_research), "Something went really wrong...(different PK)"
 
@@ -91,6 +91,7 @@ class Command(BaseCommand):
             last_rank1 = None
             last_rank2 = None
             firstTox = self.toxinRE.match(row.iloc[self.F1_TYPE_INDEX + offset + 1]).groups()
+            #FIXME PROTTOX: 'NoneType' object has no attribute 'groups' (1630)
             secondTox = self.toxinRE.match(row.iloc[self.F1_TYPE_INDEX + offset + 2]).groups()
             firstTox = [x for x in firstTox if x is not None]
             secondTox = [x for x in secondTox if x is not None]
