@@ -86,7 +86,7 @@ class Command(BaseCommand):
         toxin = None
         last_rank = None
         r1 = row.iloc[self.F1_TYPE_INDEX + offset]
-        if r1 == "chimeric protein" or r1 == "chemical pesticides":
+        if r1 == "chimeric protein":
             toxin = True
             last_rank1 = None
             last_rank2 = None
@@ -113,6 +113,12 @@ class Command(BaseCommand):
                     last_rank2, created = FactorTaxonomy.objects.get_or_create(name=secondTox[i], parent=last_rank2)
 
             return (last_rank1, last_rank2), toxin
+        elif r1 == "chemical pesticides":
+            toxin = False
+            typ, _ = FactorTaxonomy.objects.get_or_create(name=r1, parent=None)
+            last_rank, _ = FactorTaxonomy.objects.get_or_create(name=row.iloc[self.F1_TYPE_INDEX + offset + 1], parent=typ)
+            last_rank, _ = FactorTaxonomy.objects.get_or_create(name=row.iloc[self.F1_TYPE_INDEX + offset + 2], parent=last_rank)
+            return last_rank, toxin
         else:
             toxin = True if len(r1) == 3 else False
             typ, created = FactorTaxonomy.objects.get_or_create(name=r1, parent=None)
