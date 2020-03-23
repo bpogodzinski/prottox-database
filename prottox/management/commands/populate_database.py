@@ -15,10 +15,10 @@ class Command(BaseCommand):
     toxinRE = re.compile(r'([A-Za-z]{3})([0-9]+)([A-Z])([a-z])(\d+)?')
     factorsCreated = 0
     researchCreated = 0
-    taxInfo = pd.read_csv('/home/panda/Dokumenty/Development/licencjat/data/taksonomia.csv', sep=';', header=0, index_col=0)
+    taxInfo = pd.read_csv(r'/home/panda/Dokumenty/baza_danych/data/taksonomia.csv', sep=';', header=0, index_col=0)
 
     def handle(self, *args, **options):
-        data = pd.read_csv('/home/panda/Dokumenty/Development/licencjat/data/data.csv', sep=';', header=0, dtype=str)
+        data = pd.read_csv(r'/home/panda/Dokumenty/baza_danych/data/data.csv', sep=';', header=0, dtype=str)
         print('Created dataframe. Begin to populate ...')
         for index, row in tqdm(data.iterrows(), total=len(data.index)):
             factors = self.make_active_factor(row)
@@ -90,20 +90,35 @@ class Command(BaseCommand):
             toxin = True
             last_rank1 = None
             last_rank2 = None
-            firstTox = self.toxinRE.match(row.iloc[self.F1_TYPE_INDEX + offset + 1]).groups()
-            #FIXME PROTTOX: 'NoneType' object has no attribute 'groups' (1630)
-            secondTox = self.toxinRE.match(row.iloc[self.F1_TYPE_INDEX + offset + 2]).groups()
-            firstTox = [x for x in firstTox if x is not None]
-            secondTox = [x for x in secondTox if x is not None]
-
-            last_rank1, created = FactorTaxonomy.objects.get_or_create(name=firstTox[0], parent=None)
-            for i in range(1,len(firstTox)):
-                last_rank1, created = FactorTaxonomy.objects.get_or_create(name=firstTox[i], parent=last_rank1)
+            firstTox = self.toxinRE.match(row.iloc[self.F1_TYPE_INDEX + offset + 1])
+            if firstTox is None:
+                last_rank1, created = FactorTaxonomy.objects.get_or_create(name=row.iloc[self.F1_TYPE_INDEX + offset + 1], parent=None)
+            else:
+                firstTox = firstTox.groups()
+                firstTox = [x for x in firstTox if x is not None]
+                
+                last_rank1, created = FactorTaxonomy.objects.get_or_create(name=firstTox[0], parent=None)
+                for i in range(1,len(firstTox)):
+                    last_rank1, created = FactorTaxonomy.objects.get_or_create(name=firstTox[i], parent=last_rank1)
             
-            last_rank2, created = FactorTaxonomy.objects.get_or_create(name=secondTox[0], parent=None)
-            for i in range(1,len(secondTox)):
-                last_rank2, created = FactorTaxonomy.objects.get_or_create(name=secondTox[i], parent=last_rank2)
+            secondTox = self.toxinRE.match(row.iloc[self.F1_TYPE_INDEX + offset + 2])
+            if secondTox is None:
+                last_rank2, created = FactorTaxonomy.objects.get_or_create(name=row.iloc[self.F1_TYPE_INDEX + offset + 2])
+            else:
+                secondTox = secondTox.groups()
+                secondTox = [x for x in secondTox if x is not None]
+
+                last_rank2, created = FactorTaxonomy.objects.get_or_create(name=secondTox[0], parent=None)
+                for i in range(1,len(secondTox)):
+                    last_rank2, created = FactorTaxonomy.objects.get_or_create(name=secondTox[i], parent=last_rank2)
+
             return (last_rank1, last_rank2), toxin
+        elif r1 == "chemical pesticides":
+            toxin = False
+            typ, _ = FactorTaxonomy.objects.get_or_create(name=r1, parent=None)
+            last_rank, _ = FactorTaxonomy.objects.get_or_create(name=row.iloc[self.F1_TYPE_INDEX + offset + 1], parent=typ)
+            last_rank, _ = FactorTaxonomy.objects.get_or_create(name=row.iloc[self.F1_TYPE_INDEX + offset + 2], parent=last_rank)
+            return last_rank, toxin
         else:
             toxin = True if len(r1) == 3 else False
             typ, created = FactorTaxonomy.objects.get_or_create(name=r1, parent=None)
