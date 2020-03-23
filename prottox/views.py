@@ -35,7 +35,7 @@ def organism_browse_view(request):
 
 def factor_browse_view(request):
     """Browsing page view"""
-    return render(request, "factor_browse.html", {'page_content_template_name':'browse.html', 'header': 'Factor Browser'})
+    return render(request, "factor_browse.html", {'page_content_template_name':'browse.html', 'header': 'Toxin Browser'})
 
 
 def research_browser_view(request):

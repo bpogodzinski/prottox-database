@@ -5,8 +5,8 @@ from django.urls import reverse
 from prottox.models import FactorTaxonomy, SpeciesTaxonomy, Toxin_research
 
 PUBMED_LINK_TEMPLATE = "https://www.ncbi.nlm.nih.gov/pubmed/{ID}"
-DATATABLE_VISIBLE_COLUMNS = ['Target species', 'Factor', 'Toxin quantity', 'Bioassay type', 'Bioassay result observed', 'Interaction', 'Publication']
-DATATABLE_DATA_COLUMNS = ['Factor', 'Target species', 'Target larvae stage', 'Target factor resistance', 'Days of observation', 'Toxin quantity', 'Toxin distribution', 'Bioassay type', 'Bioassay result observed', 'Bioassay result expected', '95% Fiducial limits', 'Interaction', 'Synergism factor', 'Estimation method', 'Publication']
+DATATABLE_VISIBLE_COLUMNS = ['Target species', 'Toxin', 'Toxin quantity', 'Bioassay type', 'Bioassay result observed', 'Interaction', 'Publication']
+DATATABLE_DATA_COLUMNS = ['Toxin', 'Target species', 'Target developmental stage', 'Recognised resistance in target species', 'Bioassay duration', 'Toxin quantity', 'Toxin distribution', 'Bioassay type', 'Bioassay result observed', 'Bioassay result expected', '95% Fiducial limits', 'Interaction', 'Synergism factor', 'Estimation method', 'Publication']
 SYNERGISM_BADGE = '<span class="kt-badge kt-badge--success kt-badge--inline">Synergism</span>'
 ANTAGONISM_BADGE = '<span class="kt-badge kt-badge--danger kt-badge--inline">Antagonism</span>'
 INDEPENDENT_BADGE = '<span class="kt-badge kt-badge--dark kt-badge--inline">Independent</span>'
@@ -119,11 +119,11 @@ def __processDatatableToxinResearchToJSON(queryset):
     json = dict(data=[], columns=[])
     for record in queryset:
         entry = {}
-        entry['Factor'] = __getDataTableFactors(record.toxin.all(), record.pk)
+        entry['Toxin'] = __getDataTableFactors(record.toxin.all(), record.pk)
         entry['Target species'] = record.target.target_organism_taxonomy.name
-        entry['Target larvae stage'] = record.target.larvae_stage.stage
-        entry['Target factor resistance'] = record.target.factor_resistance
-        entry['Days of observation'] = record.days_of_observation
+        entry['Target developmental stage'] = record.target.larvae_stage.stage
+        entry['Recognised resistance in target species'] = record.target.factor_resistance
+        entry['Bioassay duration'] = record.days_of_observation
         entry['Toxin quantity'] = record.quantity.quantity if record.quantity else None
         entry['Toxin distribution'] = record.toxin_distribution.distribution_choice
         entry['Bioassay type'] = record.results.bioassay_type.bioassay_type

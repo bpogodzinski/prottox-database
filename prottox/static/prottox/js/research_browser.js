@@ -62,7 +62,7 @@ function initColumnsFilter(json){
 
 function initFactorFilter(json) {
     let factors = [];
-    let factors_raw = json["data"].map(x => x.Factor);
+    let factors_raw = json["data"].map(x => x.Toxin);
     for (const factor of factors_raw) {
         let iFactor = stripHTML(factor).split('+');
         for (const readyFactor of iFactor) {
@@ -100,7 +100,7 @@ function initTargetSpeciesFilter(json) {
 
 function initLarvaeStageFilter(json) {
     let larvaeStage = [];
-    let larvaeStage_raw = json["data"].map(x => x['Target larvae stage']);
+    let larvaeStage_raw = json["data"].map(x => x['Target developmental stage']);
     for (const stage of larvaeStage_raw) {
         larvaeStage.push(stage.trim());
     }
@@ -117,7 +117,7 @@ function initLarvaeStageFilter(json) {
 
 function initTargetFactorResistanceFilter(json) {
     let factorResistance = [];
-    let factorResistance_raw = json["data"].map(x => x['Target factor resistance']);
+    let factorResistance_raw = json["data"].map(x => x['Recognised resistance in target species']);
     for (const factor of factorResistance_raw) {
         if (factor) {
             let iFactor = factor.split(',');
@@ -265,7 +265,7 @@ $(document).ready(function () {
               });
             
 
-              $("#table").DataTable().column('Factor:name').every( function () {
+              $("#table").DataTable().column('Toxin:name').every( function () {
                 var that = this;
          
                 $('#factorFilter').on('change', function (){
@@ -293,7 +293,7 @@ $(document).ready(function () {
                 } );
             } );
 
-              $("#table").DataTable().column('Target larvae stage:name').every( function () {
+              $("#table").DataTable().column('Target developmental stage:name').every( function () {
                 var that = this;
          
                 $('#targetLarvaeStageFilter').on('change', function (){
@@ -307,7 +307,7 @@ $(document).ready(function () {
                 } );
             } );
 
-                $("#table").DataTable().column('Target factor resistance:name').every( function () {
+                $("#table").DataTable().column('Recognised resistance in target species:name').every( function () {
                 var that = this;
             
                 $('#targetFactorResistanceFilter').on('change', function (){

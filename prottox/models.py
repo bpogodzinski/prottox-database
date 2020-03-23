@@ -238,5 +238,5 @@ class Toxin_research(models.Model):
 
     def __str__(self):
         toxins = ', '.join(str(tox) for tox in self.toxin.all())
-        return 'Toxin(s): {} | Publication: {} | Target: {} | Days of observation: {} | Toxin distribution: {} | Toxin quantity: {} | Results: {}'.format(toxins,
+        return 'Toxin(s): {} | Publication: {} | Target: {} | Bioassay duration: {} | Toxin distribution: {} | Toxin quantity: {} | Results: {}'.format(toxins,
          self.publication.__str__(), self.target.__str__(), self.days_of_observation, self.toxin_distribution.__str__(), self.quantity.__str__(), self.results.__str__())
