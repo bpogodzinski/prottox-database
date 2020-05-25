@@ -19,13 +19,13 @@
                 <div class="kt-section__content">
                     <div class="form-group row">
                         <div class="col-lg-4">
-                            <label>Visible columns:</label>
+                            <label>Single toxin / Combination:</label>
                             <div class="input-group">
-                                <select id="columnFilter" class="selectpicker" multiple data-live-search="true" data-selected-text-format="count" data-actions-box="true"></select>
+                                <select id="combinationFilter" class="selectpicker" multiple data-live-search="true" title="All"></select>
                             </div>
                         </div>
                         <div class="col-lg-4">
-                            <label class="">Toxins:</label>
+                            <label>Toxins:</label>
                             <div class="input-group">
                                 <select id="factorFilter" class="selectpicker" multiple data-live-search="true" title="All"></select>
                             </div>
@@ -51,7 +51,7 @@
                             </div>
                         </div>
                         <div class="col-lg-4">
-                            <label>Toxin distribution:</label>
+                            <label>Toxin administration method:</label>
                             <div class="input-group">
                                 <select id="toxinDistributionFilter" class="selectpicker" multiple data-live-search="true" title="All"></select>
                             </div>
@@ -59,7 +59,7 @@
                     </div>
                     <div class="form-group row">
                         <div class="col-lg-4">
-                            <label>Bioassay type:</label>
+                            <label>Toxicity measure:</label>
                             <div class="input-group">
                                 <select id="bioassayTypeFilter" class="selectpicker" multiple data-live-search="true" title="All"></select>
                             </div>
@@ -71,7 +71,7 @@
                             </div>
                         </div>
                         <div class="col-lg-4">
-                            <label>Estimation method:</label>
+                            <label>Interaction estimation model:</label>
                             <div class="input-group">
                                 <select id="estimationMethodFilter" class="selectpicker" multiple data-live-search="true" title="All"></select>
                             </div>
@@ -83,6 +83,12 @@
                     Data
                 </div>
                 <div class="kt-section__content">
+                    <div class="col-lg-4 mb-3">
+                        <label>Visible columns:</label>
+                        <div class="input-group">
+                            <select id="columnFilter" class="selectpicker" multiple data-live-search="true" data-selected-text-format="count" data-actions-box="true"></select>
+                        </div>
+                    </div>
                     <table class="table table-striped- table-bordered table-hover table-checkable" id="table"></table>
                 </div>
             </div>

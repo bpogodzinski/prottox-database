@@ -139,7 +139,7 @@ function initTargetFactorResistanceFilter(json) {
 
 function initToxinDistributionFilter(json) {
     let toxinDistrib = [];
-    let toxin_raw = json["data"].map(x => x['Toxin distribution']);
+    let toxin_raw = json["data"].map(x => x['Toxin administration method']);
     for (const toxin of toxin_raw) {
         toxinDistrib.push(toxin.trim());
     }
@@ -156,7 +156,7 @@ function initToxinDistributionFilter(json) {
 
 function initBioassayTypeFilter(json) {
     let bioassayType = [];
-    let bioassayType_raw = json["data"].map(x => x['Bioassay type']);
+    let bioassayType_raw = json["data"].map(x => x['Toxicity measure']);
     for (const type of bioassayType_raw) {
         bioassayType.push(type.trim());
     }
@@ -196,10 +196,28 @@ function initInteractionFilter(json) {
 
     $("#interactionFilter").selectpicker('refresh');
 }
+function initCombinationFilter(json) {
+    let combination = [];
+    let combination_raw = json["data"].map(x => x['Single toxin / Combination']);
+    for (const type of combination_raw) {
+        if(type){
+            combination.push(type.trim());
+        }
+    }
+    combination = new Set(combination);
+    combination = Array.from(combination).sort()
+
+    for (const type of combination) {
+        let options = "<option " + "value='" + stripHTML(type) + "'>" + type + "</option>";
+        $("#combinationFilter").append(options);
+    }
+
+    $("#combinationFilter").selectpicker('refresh');
+}
 
 function initEstimationMethodFilter(json) {
     let estimationMethod = [];
-    let estimationMethod_raw = json["data"].map(x => x['Estimation method']);
+    let estimationMethod_raw = json["data"].map(x => x['Interaction estimation model']);
     for (const type of estimationMethod_raw) {
         if(type){
             estimationMethod.push(type.trim());
@@ -248,6 +266,7 @@ $(document).ready(function () {
             initToxinDistributionFilter(json);
             initBioassayTypeFilter(json);
             initInteractionFilter(json);
+            initCombinationFilter(json);
             initEstimationMethodFilter(json);
 
         },
@@ -321,7 +340,7 @@ $(document).ready(function () {
                 } );
             } );
             
-                $("#table").DataTable().column('Toxin distribution:name').every( function () {
+                $("#table").DataTable().column('Toxin administration method:name').every( function () {
                 var that = this;
             
                 $('#toxinDistributionFilter').on('change', function (){
@@ -335,7 +354,7 @@ $(document).ready(function () {
                 } );
             } );
 
-                $("#table").DataTable().column('Bioassay type:name').every( function () {
+                $("#table").DataTable().column('Toxicity measure:name').every( function () {
                 var that = this;
             
                 $('#bioassayTypeFilter').on('change', function (){
@@ -362,7 +381,21 @@ $(document).ready(function () {
                     }
                 } );
             } );
-                $("#table").DataTable().column('Estimation method:name').every( function () {
+
+                $("#table").DataTable().column('Single toxin / Combination:name').every( function () {
+                var that = this;
+            
+                $('#combinationFilter').on('change', function (){
+                    let selected = [];
+                    selected = $('#combinationFilter').val()
+                    if ( that.search() !== selected ) {
+                        that
+                            .search(selected.join('|'), true, false)
+                            .draw();
+                    }
+                } );
+            } );
+                $("#table").DataTable().column('Interaction estimation model:name').every( function () {
                 var that = this;
             
                 $('#estimationMethodFilter').on('change', function (){

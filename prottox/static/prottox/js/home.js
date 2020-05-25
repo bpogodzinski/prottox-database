@@ -51,7 +51,7 @@ function initResearchChart() {
           labels: [
               'Synergistic',
               'Antagonistic',
-              'Independent',
+              'Additive',
               'Single'
           ]
       },

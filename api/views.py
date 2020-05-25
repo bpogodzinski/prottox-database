@@ -5,11 +5,11 @@ from django.urls import reverse
 from prottox.models import FactorTaxonomy, SpeciesTaxonomy, Toxin_research
 
 PUBMED_LINK_TEMPLATE = "https://www.ncbi.nlm.nih.gov/pubmed/{ID}"
-DATATABLE_VISIBLE_COLUMNS = ['Target species', 'Toxin', 'Toxin quantity', 'Bioassay type', 'Bioassay result observed', 'Interaction', 'Publication']
-DATATABLE_DATA_COLUMNS = ['Toxin', 'Target species', 'Target developmental stage', 'Recognised resistance in target species', 'Bioassay duration', 'Toxin quantity', 'Toxin distribution', 'Bioassay type', 'Bioassay result observed', 'Bioassay result expected', '95% Fiducial limits', 'Interaction', 'Synergism factor', 'Estimation method', 'Publication']
+DATATABLE_VISIBLE_COLUMNS = ['Target species', 'Toxin', 'Toxin quantity', 'Toxicity measure', 'Observed toxicity', 'Interaction', 'Publication']
+DATATABLE_DATA_COLUMNS = ['Toxin', 'Target species', 'Target developmental stage', 'Recognised resistance in target species', 'Bioassay duration (days)', 'Toxin quantity', 'Toxin administration method', 'Toxicity measure', 'Observed toxicity', 'Expected toxicity', '95% Fiducial limits', 'Interaction', 'Synergism factor', 'Interaction estimation model', 'Single toxin / Combination', 'Publication']
 SYNERGISM_BADGE = '<span class="kt-badge kt-badge--success kt-badge--inline">Synergism</span>'
 ANTAGONISM_BADGE = '<span class="kt-badge kt-badge--danger kt-badge--inline">Antagonism</span>'
-INDEPENDENT_BADGE = '<span class="kt-badge kt-badge--dark kt-badge--inline">Independent</span>'
+INDEPENDENT_BADGE = '<span class="kt-badge kt-badge--dark kt-badge--inline">Additive</span>'
 BADGE_DICT = {'SYN': SYNERGISM_BADGE, 'ANT':ANTAGONISM_BADGE, 'IND':INDEPENDENT_BADGE}
 
 def factorTaxonomyAPI(request):
@@ -123,16 +123,17 @@ def __processDatatableToxinResearchToJSON(queryset):
         entry['Target species'] = record.target.target_organism_taxonomy.name
         entry['Target developmental stage'] = record.target.larvae_stage.stage
         entry['Recognised resistance in target species'] = record.target.factor_resistance
-        entry['Bioassay duration'] = record.days_of_observation
+        entry['Bioassay duration (days)'] = record.days_of_observation
         entry['Toxin quantity'] = record.quantity.quantity if record.quantity else None
-        entry['Toxin distribution'] = record.toxin_distribution.distribution_choice
-        entry['Bioassay type'] = record.results.bioassay_type.bioassay_type
-        entry['Bioassay result observed'] = __getDataTableBioassayResult(record.results) if record.results.bioassay_result else None
-        entry['Bioassay result expected'] = __getDataTableBioassayResult(record.results, expected=True) if record.results.expected else None
+        entry['Toxin administration method'] = record.toxin_distribution.distribution_choice
+        entry['Toxicity measure'] = record.results.bioassay_type.bioassay_type
+        entry['Observed toxicity'] = __getDataTableBioassayResult(record.results) if record.results.bioassay_result else None
+        entry['Expected toxicity'] = __getDataTableBioassayResult(record.results, expected=True) if record.results.expected else None
         entry['95% Fiducial limits'] = __getDataTableFiducialLimits(record.results)
         entry['Interaction'] = BADGE_DICT.get(record.results.interaction, record.results.interaction)
         entry['Synergism factor'] = __roundOrEmptyString(record.results.synergism_factor, 2)
-        entry['Estimation method'] = record.results.estimation_method
+        entry['Interaction estimation model'] = record.results.estimation_method
+        entry['Single toxin / Combination'] = record.label.split('(')[0]
         entry['Publication'] = __getDataTablePublication(record.publication)
         json['data'].append(entry)
 

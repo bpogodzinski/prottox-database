@@ -19,6 +19,7 @@ class SpeciesTaxonomy(models.Model):
         return self.name
 
 
+
 class FactorTaxonomy(models.Model):
     name = models.CharField(max_length=100)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='children')
@@ -119,6 +120,7 @@ class Factor_expression_host(models.Model):
 
 
 class Active_factor(models.Model):
+    display_name = models.CharField(max_length=100, blank=True)
     is_toxin = models.BooleanField(null=False, blank=False, default=True)
     factor_source = models.ForeignKey(Factor_source, on_delete=models.CASCADE, blank=True, null=True)
     NCBI_accession_number = models.CharField(max_length=20, blank=True)
@@ -181,7 +183,7 @@ class Toxin_quantity(models.Model):
     def quantity(self):
         if self.values == 'reference':
             return self.values
-        return f"{self.values} {self.units}" if self.units else f"{self.values} proportion"
+        return f"{self.values} {self.units}" if self.units else f"{self.values} ratio"
 
     def __str__(self):
         return '{} | {}{}'.format(self.measurement_type, self.values, '' if self.units is None else ' ' + self.units)
@@ -201,7 +203,7 @@ class Result(models.Model):
     POSSIBLE_INTERACTIONS = (
         (SYNERGISM, 'Synergism'),
         (ANTAGONISM, 'Antagonism'),
-        (INDEPENDENT, 'Independent')
+        (INDEPENDENT, 'Additive')
     )
     bioassay_type = models.ForeignKey(Bioassay_type, on_delete=models.CASCADE)
     bioassay_result = models.CharField(max_length=20)
@@ -231,6 +233,7 @@ class Toxin_research(models.Model):
         Toxin_distribution, on_delete=models.CASCADE)
     quantity = models.ForeignKey(Toxin_quantity, on_delete=models.CASCADE, null=True, blank=True)
     results = models.ForeignKey(Result, on_delete=models.CASCADE)
+    label = models.CharField(max_length=100)
 
     @property
     def factors(self):

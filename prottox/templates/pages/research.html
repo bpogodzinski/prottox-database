@@ -123,8 +123,8 @@
                                         <h3 class="kt-infobox__subtitle">Basic Informations</h3><hr>
                                         <div class="kt-infobox__content ml-4">
                                             <p><label class="lead kt-font-bold">Toxins:</label> {{research.factors}}</p>
-                                            <p><label class="lead kt-font-bold">Toxin quantity:</label> {{research.quantity.values | default:'N/A'}} {{research.quantity.units | default:'proportion'}}</p>
-                                            <p><label class="lead kt-font-bold">Toxin distribution:</label> {{research.toxin_distribution.distribution_choice | default:'N/A' | capfirst}}</p>
+                                            <p><label class="lead kt-font-bold">Toxin quantity:</label> {{research.quantity.values | default:'N/A'}} {{research.quantity.units | default:'ratio'}}</p>
+                                            <p><label class="lead kt-font-bold">Toxin administration method:</label> {{research.toxin_distribution.distribution_choice | default:'N/A' | capfirst}}</p>
                                         </div>
                                     </div>
                                     {% for toxin in research.toxin.all %}
@@ -179,14 +179,14 @@
                                 <div class="kt-infobox__body">
                                     <div class="kt-infobox__section">
                                         <div class="kt-infobox__content">
-                                            <p><label class="lead kt-font-bold">Bioassay duration:</label> {{research.days_of_observation | default:'N/A'}}</p>
-                                            <p><label class="lead kt-font-bold">Bioassay type:</label> {{research.results.bioassay_type.bioassay_type | default:'N/A' | capfirst}}</p>
-                                            <p><label class="lead kt-font-bold">Bioassay result observed:</label> {{research.results.bioassay_result | default:'N/A' | lower | capfirst}} {{research.results.bioassay_unit | default:''}}</p>
-                                            <p><label class="lead kt-font-bold">Bioassay result expected:</label> {{research.results.expected | default:'N/A'}} {{research.results.bioassay_unit | default:''}}</p>
+                                            <p><label class="lead kt-font-bold">Bioassay duration (days):</label> {{research.days_of_observation | default:'N/A'}}</p>
+                                            <p><label class="lead kt-font-bold">Toxicity measure:</label> {{research.results.bioassay_type.bioassay_type | default:'N/A' | capfirst}}</p>
+                                            <p><label class="lead kt-font-bold">Observed toxicity:</label> {{research.results.bioassay_result | default:'N/A' | lower | capfirst}} {{research.results.bioassay_unit | default:''}}</p>
+                                            <p><label class="lead kt-font-bold">Expected toxicity:</label> {{research.results.expected | default:'N/A'}} {{research.results.bioassay_unit | default:''}}</p>
                                             <p><label class="lead kt-font-bold">Interaction:</label> {{research.results.get_interaction_display | default:'N/A'}}</p>
                                             <p><label class="lead kt-font-bold">Fiducial limits:</label> {{research.results.LC95min | default:'N/A'}} - {{research.results.LC95max | default:'N/A'}}</p>
                                             <p><label class="lead kt-font-bold">Synergism factor:</label> {{synfactor | default:'N/A'}}</p>
-                                            <p><label class="lead kt-font-bold">Estimation method:</label> {{research.results.estimation_method | default:'N/A' | capfirst}}</p>
+                                            <p><label class="lead kt-font-bold">Interaction estimation model:</label> {{research.results.estimation_method | default:'N/A' | capfirst}}</p>
                                             <p><label class="lead kt-font-bold">Slope:</label> {{research.results.slopeLC | default:'N/A'}} &PlusMinus; {{research.results.slopeSE | default:'N/A'}}</p>
                                         </div>
                                     </div>

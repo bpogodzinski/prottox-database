@@ -27,14 +27,15 @@ class Command(BaseCommand):
             toxin_distrib = self.make_toxin_distrib(row['Toxin distribution'])
             quantity = None if pd.isnull(row['Proportion_F 1']) else self.createToxinQuantity(row['Proportion_F 1':'Proportion_F 8'], row['Proportion unit'])
             results = self.createResults(row['BIOASSAY TYPE':'Interaction estimation method'])
+            label = row['Label']
             try:
-                Toxin_research.objects.get(toxin__in=factors, publication=publication, target=target, days_of_observation=row['Bioassay duration'], toxin_distribution=toxin_distrib, quantity=quantity, results=results)
+                Toxin_research.objects.get(toxin__in=factors, publication=publication, target=target, days_of_observation=row['Bioassay duration'], toxin_distribution=toxin_distrib, quantity=quantity, results=results, label=label)
             except ObjectDoesNotExist:
-                toxin_research = Toxin_research.objects.create(publication=publication, target=target, days_of_observation=row['Bioassay duration'], toxin_distribution=toxin_distrib, quantity=quantity, results=results)
+                toxin_research = Toxin_research.objects.create(publication=publication, target=target, days_of_observation=row['Bioassay duration'], toxin_distribution=toxin_distrib, quantity=quantity, results=results, label=label)
                 toxin_research.toxin.add(*factors)
                 self.researchCreated += 1
             except MultipleObjectsReturned:
-                toxin_research = Toxin_research.objects.filter(toxin__in=factors, publication=publication, target=target, days_of_observation=row['Bioassay duration'], toxin_distribution=toxin_distrib, quantity=quantity, results=results)
+                toxin_research = Toxin_research.objects.filter(toxin__in=factors, publication=publication, target=target, days_of_observation=row['Bioassay duration'], toxin_distribution=toxin_distrib, quantity=quantity, results=results, label=label)
                 primaryKey = toxin_research[0].pk
                 assert all(toxinRes.pk == primaryKey for toxinRes in toxin_research), "Something went really wrong...(different PK)"
 
@@ -47,6 +48,7 @@ class Command(BaseCommand):
         offset = 0
         while pd.notna(row.iloc[self.F1_TYPE_INDEX + offset]):
             last_rank, is_toxin = self.createRanks(row, offset)
+            display_name = row.iloc[self.F1_TYPE_INDEX + offset - 1]
             NCBI_acc = '' if pd.isna(row.iloc[self.F1_TYPE_INDEX + offset + 5]) else row.iloc[self.F1_TYPE_INDEX + offset + 5]
             factor_source, cre = Factor_source.objects.get_or_create(source=row.iloc[self.F1_TYPE_INDEX + offset + 6]) if pd.notna(row.iloc[self.F1_TYPE_INDEX + offset + 6]) else (None,None)
             factor_isolation_source, cre = Factor_isolation_source.objects.get_or_create(isolation_source=row.iloc[self.F1_TYPE_INDEX + offset + 7]) if pd.notna(row.iloc[self.F1_TYPE_INDEX + offset + 7]) else (None,None)
@@ -57,19 +59,19 @@ class Command(BaseCommand):
             kda = float(kda.replace(',','.')) if type(kda) == str else kda
             prep = row.iloc[self.F1_TYPE_INDEX + offset + 12] if pd.notna(row.iloc[self.F1_TYPE_INDEX + offset + 12]) else ''
             chimeric = True if type(last_rank) is tuple else False
-            
+
             taxonomyIterable = last_rank if chimeric else [last_rank]
 
             try:
-                active_factor = Active_factor.objects.get(is_toxin=is_toxin, NCBI_accession_number=NCBI_acc, factor_source=factor_source, isolation_source=factor_isolation_source, factor_form=factor_form, modification_description=modification, 
+                active_factor = Active_factor.objects.get(display_name=display_name, is_toxin=is_toxin, NCBI_accession_number=NCBI_acc, factor_source=factor_source, isolation_source=factor_isolation_source, factor_form=factor_form, modification_description=modification, 
                 factor_expression_host=expression_host, kDa=kda, preparation=prep, is_chimeric=chimeric, taxonomy__in=taxonomyIterable)
             except ObjectDoesNotExist:
-                active_factor = Active_factor.objects.create(is_toxin=is_toxin, NCBI_accession_number=NCBI_acc, factor_source=factor_source, isolation_source=factor_isolation_source, factor_form=factor_form, modification_description=modification, 
+                active_factor = Active_factor.objects.create(display_name=display_name, is_toxin=is_toxin, NCBI_accession_number=NCBI_acc, factor_source=factor_source, isolation_source=factor_isolation_source, factor_form=factor_form, modification_description=modification, 
                 factor_expression_host=expression_host, kDa=kda, preparation=prep, is_chimeric=chimeric)
                 self.factorsCreated += 1
             except MultipleObjectsReturned:
                 #Chimeric proteins have both last ranks so get returns same chimeric protein twice
-                chimerics = Active_factor.objects.filter(is_toxin=is_toxin, NCBI_accession_number=NCBI_acc, factor_source=factor_source, isolation_source=factor_isolation_source, factor_form=factor_form, modification_description=modification, 
+                chimerics = Active_factor.objects.filter(display_name=display_name, is_toxin=is_toxin, NCBI_accession_number=NCBI_acc, factor_source=factor_source, isolation_source=factor_isolation_source, factor_form=factor_form, modification_description=modification, 
                 factor_expression_host=expression_host, kDa=kda, preparation=prep, is_chimeric=chimeric, taxonomy__in=taxonomyIterable)
                 #Just to be sure...
                 primaryKey = chimerics[0].pk
