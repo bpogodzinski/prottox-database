@@ -21,7 +21,17 @@ def home_view(request):
                          'speciesJSON': json.dumps(countedSpecies),
                          'sum': sum(countedSpecies.values())}
 
-    allFactors = {k.name :v for k, v in __getTaxCount().items()}
+    #allFactors = {k.name :v for k, v in __getTaxCount().items()}
+    allFactors = {'Cry':50,
+                  'Cyt':4,
+                  'Vip':5,
+                  'Sip':2,
+                  'Chimeric':4,
+                  'Enzyme':5,
+                  'Chemical pesticides':39,
+                  'Fungi':12,
+                  'Other':10}
+                  
     context['factors'] = {'allFactors': allFactors,
                           'allFactorsJSON': json.dumps(allFactors),
                           '4largestJSON': json.dumps(nlargest(4, allFactors, key=allFactors.get)),
@@ -32,6 +42,10 @@ def home_view(request):
 def organism_browse_view(request):
     """Browsing page view"""
     return render(request, "organism_browse.html", {'page_content_template_name':'browse.html', 'header': 'Organism Browser'})
+
+def about_view(request):
+    """About page view"""
+    return render(request, "about.html", {'page_content_template_name':'about.html', 'header': 'About'})
 
 def factor_browse_view(request):
     """Browsing page view"""
@@ -89,7 +103,9 @@ def __roundOrEmptyString(number, ndigits=None):
         return ''
 
 def __getTaxCount():
-    leaves = FactorTaxonomy.objects.filter(children__isnull=True)
+    # TODO: finish leaves to nie dziala napraw
+    leaves = {tax for research in Toxin_research.objects.all() for factor in research.toxin.all() for tax in factor.taxonomy.all()}
+    #leaves = FactorTaxonomy.objects.filter(children__isnull=True)
     return Counter(map(__getTopParent, leaves))
 
 def __getTopParent(tax):

@@ -1,4 +1,5 @@
 from natsort import natsorted
+import pandas as pd
 
 from django.http import JsonResponse
 from django.urls import reverse
@@ -88,7 +89,7 @@ def __processFactorTaxonomyQuerysetParentID(param):
     """
     return (
         FactorTaxonomy.objects.filter(parent__id=param)
-        if param is not "0"
+        if param != "0"
         else FactorTaxonomy.objects.filter(parent__isnull=True)
     )
 
@@ -123,9 +124,9 @@ def __processDatatableToxinResearchToJSON(queryset):
         entry['Target species'] = record.target.target_organism_taxonomy.name
         entry['Target developmental stage'] = record.target.larvae_stage.stage
         entry['Recognised resistance in target species'] = record.target.factor_resistance
-        entry['Bioassay duration (days)'] = record.days_of_observation
+        entry['Bioassay duration (days)'] = 'N/A' if record.days_of_observation == 'nan' else record.days_of_observation
         entry['Toxin quantity'] = record.quantity.quantity if record.quantity else None
-        entry['Toxin administration method'] = record.toxin_distribution.distribution_choice
+        entry['Toxin administration method'] = 'N/A' if record.toxin_distribution.distribution_choice == 'nan' else record.toxin_distribution.distribution_choice
         entry['Toxicity measure'] = record.results.bioassay_type.bioassay_type
         entry['Observed toxicity'] = __getDataTableBioassayResult(record.results) if record.results.bioassay_result else None
         entry['Expected toxicity'] = __getDataTableBioassayResult(record.results, expected=True) if record.results.expected else None
@@ -157,9 +158,9 @@ def __getDataTableFactors(activeFactors, pk):
 
 def __getDataTableBioassayResult(results, expected=False):
     if expected:
-        return f"{results.expected} {results.bioassay_unit}" if results.expected != "reference" else "reference"
+        return f"{results.expected} {results.bioassay_unit}" if results.expected != "refer to source article" else "refer to source article"
     else:
-        return f"{results.bioassay_result} {results.bioassay_unit}" if results.bioassay_result != "reference" else "reference"
+        return f"{results.bioassay_result} {results.bioassay_unit}" if results.bioassay_result != "refer to source article" else "refer to source article"
 
 def __getDataTablePublication(publication):
     allAuthors = ", ".join(sorted([author.fullname for author in publication.authors.all()]))

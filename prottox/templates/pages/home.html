@@ -8,7 +8,7 @@
                         <h1 class="display-1 kt-shape-font-color-1">TOXiTAXi Database</h1>
                     </div>
                     <div class="kt-section__desc">
-                        <h4 class="text-muted">Protein insecticide &amp; their combinations from Bacillus Thuringiensis.</h4> 
+                        <h4 class="text-white">Activity of Bacillus thuringiensis Cry, Cyt and Vip toxins as well as other toxic agents towards taxonomic groups.</h4> 
                     </div>
                 </div>
             </div>
@@ -28,7 +28,7 @@
                                         Toxins
                                     </h3>
                                     <span class="kt-widget14__desc">
-                                        Insecticide proteins &amp; non-standard agents
+                                        Categories of toxic agents and entomopathogens included in the database
                                     </span>
                                 </div>	 
                                 <div class="kt-widget14__content">	
@@ -49,50 +49,10 @@
                             <div class="kt-widget14">
                                 <div class="kt-widget14__header">
                                     <h3 class="kt-widget14__title">
-                                        Research          
+                                        Taxa            
                                     </h3>
                                     <span class="kt-widget14__desc">
-                                        Available research
-                                    </span>
-                                </div>	 
-                                <div class="kt-widget14__content">	
-                                    <div class="kt-widget14__chart"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
-                                        <div class="kt-widget14__stat"><span class="animateNumber" data-value="{{research.sum}}">0</span></div>
-                                        <canvas id="chart_research" data-syn="{{research.interactions.SYN}}" data-ant="{{research.interactions.ANT}}" data-ind="{{research.interactions.IND}}" data-total="{{research.sum}}" style="height: 140px; width: 140px; display: block;" width="140" height="140" class="chartjs-render-monitor"></canvas>
-                                    </div> 
-                                    <div class="kt-widget14__legends">
-                                        <div class="kt-widget14__legend">
-                                            <span class="kt-widget14__bullet kt-bg-success"></span>
-                                            <span class="kt-widget14__stats"><span class='animateNumber' data-value="{{research.interactions.SYN}}">0</span> synergistic results</span>
-                                        </div>
-                                        <div class="kt-widget14__legend">
-                                            <span class="kt-widget14__bullet kt-bg-danger"></span>
-                                            <span class="kt-widget14__stats"><span class='animateNumber' data-value="{{research.interactions.ANT}}">0</span> antagonistic results</span>
-                                        </div>
-                                        <div class="kt-widget14__legend">
-                                            <span class="kt-widget14__bullet kt-bg-light-dark"></span>
-                                            <span class="kt-widget14__stats"><span class="animateNumber" data-value="{{research.interactions.IND}}">0</span> additive results</span>
-                                        </div>
-                                        <div class="kt-widget14__legend">
-                                            <span class="kt-widget14__bullet kt-bg-dark"></span>
-                                            <span class="kt-widget14__stats"><span class="animateNumber" data-value="{{research.interactions.}}">0</span> single toxin</span>
-                                        </div>
-                                    </div>			
-                                </div> 
-                            </div>
-                        </div>		
-        <!--end:: Widgets/Profit Share-->			
-                    </div>
-                    <div class="col-xl-4">
-                        <!--begin:: Widgets/Profit Share-->
-                        <div class="kt-portlet kt-portlet--height-fluid">
-                            <div class="kt-widget14">
-                                <div class="kt-widget14__header">
-                                    <h3 class="kt-widget14__title">
-                                        Target            
-                                    </h3>
-                                    <span class="kt-widget14__desc">
-                                        Species examined
+                                        Invertebrate taxa tested in experiments included in the database
                                     </span>
                                 </div>	 
                                 <div class="kt-widget14__content">	
@@ -123,6 +83,46 @@
                         </div>		
         <!--end:: Widgets/Profit Share-->			
                     </div>
+                    <div class="col-xl-4">
+                        <!--begin:: Widgets/Profit Share-->
+                        <div class="kt-portlet kt-portlet--height-fluid">
+                            <div class="kt-widget14">
+                                <div class="kt-widget14__header">
+                                    <h3 class="kt-widget14__title">
+                                        Interactions        
+                                    </h3>
+                                    <span class="kt-widget14__desc">
+                                        Number of experiments indicating combinatorial effects among toxins, and toxins bioassayed separately
+                                    </span>
+                                </div>	 
+                                <div class="kt-widget14__content">	
+                                    <div class="kt-widget14__chart"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                        <div class="kt-widget14__stat"><span class="animateNumber" data-value="{{research.sum}}">0</span></div>
+                                        <canvas id="chart_research" data-syn="{{research.interactions.SYN}}" data-ant="{{research.interactions.ANT}}" data-ind="{{research.interactions.IND}}" data-total="{{research.sum}}" style="height: 140px; width: 140px; display: block;" width="140" height="140" class="chartjs-render-monitor"></canvas>
+                                    </div> 
+                                    <div class="kt-widget14__legends">
+                                        <div class="kt-widget14__legend">
+                                            <span class="kt-widget14__bullet kt-bg-success"></span>
+                                            <span class="kt-widget14__stats"><span class='animateNumber' data-value="{{research.interactions.SYN}}">0</span> synergistic results</span>
+                                        </div>
+                                        <div class="kt-widget14__legend">
+                                            <span class="kt-widget14__bullet kt-bg-danger"></span>
+                                            <span class="kt-widget14__stats"><span class='animateNumber' data-value="{{research.interactions.ANT}}">0</span> antagonistic results</span>
+                                        </div>
+                                        <div class="kt-widget14__legend">
+                                            <span class="kt-widget14__bullet kt-bg-light-dark"></span>
+                                            <span class="kt-widget14__stats"><span class="animateNumber" data-value="{{research.interactions.IND}}">0</span> additive results</span>
+                                        </div>
+                                        <div class="kt-widget14__legend">
+                                            <span class="kt-widget14__bullet kt-bg-dark"></span>
+                                            <span class="kt-widget14__stats"><span class="animateNumber" data-value="{{research.interactions.}}">0</span> single toxin</span>
+                                        </div>
+                                    </div>			
+                                </div> 
+                            </div>
+                        </div>		
+        <!--end:: Widgets/Profit Share-->			
+                    </div>
                 </div>
             </div>
         </div>
@@ -138,11 +138,9 @@
                     </div>
                     <div class="kt-portlet__body text-justify">
                         <p>
-                            Biological insecticides, consisting of insecticidal Bacillus thuringiensis proteins, are a good and safe alternative to harmful synthetic pesticides currently used on a large scale in agriculture and horticulture.
-                            The result of the work at Department of Computational Biology & Department of Microbiology at Adam Mickiewicz University is a publicly available web application and a database of interactions of B. thuringensis protein insecticides.
-                            The application not only allow for an efficient search of the collected information on the toxicity of B. thuringiensis proteins according to different search criteria (e.g. insect development stage), but also allow comparison of the 
-                            results of different studies, e.g. to select the highest insecticidal B. thuringiensis protein mixtures with the highest insecticidal activity against a particular species of insect resulting from the synergistic effect of the components of those mixtures.
-                            <br/><br/><a href="#" class="kt-link">Read more</a>
+                            TOXiTAXi is a publicly available database and web application dedicated to gather and analyze the existing and future bioassay results of experiments investigating insecticidal activity and combinatorial effects among Bacillus thuringiensis toxins. </br>
+                            This user-friendly tool provides effortless sorting and analysis of the dataset and it is designed to be used by a bench scientist on an everyday basis. TOXiTAXi is dedicated both to academic communities and implementation units, which develop new bioinsecticides and Integrated Pest Management strategies.
+                            <br/><br/><a href="{% url 'about_view' %}" class="kt-link">Read more</a>
                         </p> 
                     </div>
                 </div>
@@ -167,7 +165,7 @@
                                     <a class="kt-link" href="{% url 'factor_browse_view' %}">Browse by Toxin</a>
                                 </h3>
                                 <div class="kt-iconbox__content">
-                                    Protein, chimeric or non-standard agents
+                                    Toxic proteins and other toxic agents
                                 </div>
                             </div>
                         </div>
@@ -195,7 +193,7 @@
                                     <a class="kt-link" href="{% url 'organism_browse_view' %}">Browse by Organism</a>
                                 </h3>
                                 <div class="kt-iconbox__content">
-                                    Coleoptera, Diptera, Nematoda &amp; more...
+                                    Phyla, Orders, Families and species
                                 </div>
                             </div>
                         </div>

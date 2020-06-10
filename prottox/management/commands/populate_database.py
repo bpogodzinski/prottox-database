@@ -19,6 +19,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         data = pd.read_csv(r'/home/panda/Dokumenty/baza_danych/data/data.csv', sep=';', header=0, dtype=str)
+        antiduplicate_set = set()
         print('Created dataframe. Begin to populate ...')
         for index, row in tqdm(data.iterrows(), total=len(data.index)):
             factors = self.make_active_factor(row)
@@ -28,16 +29,22 @@ class Command(BaseCommand):
             quantity = None if pd.isnull(row['Proportion_F 1']) else self.createToxinQuantity(row['Proportion_F 1':'Proportion_F 8'], row['Proportion unit'])
             results = self.createResults(row['BIOASSAY TYPE':'Interaction estimation method'])
             label = row['Label']
-            try:
-                Toxin_research.objects.get(toxin__in=factors, publication=publication, target=target, days_of_observation=row['Bioassay duration'], toxin_distribution=toxin_distrib, quantity=quantity, results=results, label=label)
-            except ObjectDoesNotExist:
+            immutable_row = tuple([value for _, value in row.items()])
+            if immutable_row not in antiduplicate_set:
                 toxin_research = Toxin_research.objects.create(publication=publication, target=target, days_of_observation=row['Bioassay duration'], toxin_distribution=toxin_distrib, quantity=quantity, results=results, label=label)
                 toxin_research.toxin.add(*factors)
                 self.researchCreated += 1
-            except MultipleObjectsReturned:
-                toxin_research = Toxin_research.objects.filter(toxin__in=factors, publication=publication, target=target, days_of_observation=row['Bioassay duration'], toxin_distribution=toxin_distrib, quantity=quantity, results=results, label=label)
-                primaryKey = toxin_research[0].pk
-                assert all(toxinRes.pk == primaryKey for toxinRes in toxin_research), "Something went really wrong...(different PK)"
+                antiduplicate_set.add(immutable_row)
+            # try:
+            #     Toxin_research.objects.get(toxin__in=factors, publication=publication, target=target, days_of_observation=row['Bioassay duration'], toxin_distribution=toxin_distrib, quantity=quantity, results=results, label=label)
+            # except ObjectDoesNotExist:
+            #     toxin_research = Toxin_research.objects.create(publication=publication, target=target, days_of_observation=row['Bioassay duration'], toxin_distribution=toxin_distrib, quantity=quantity, results=results, label=label)
+            #     toxin_research.toxin.add(*factors)
+            #     self.researchCreated += 1
+            # except MultipleObjectsReturned:
+            #     toxin_research = Toxin_research.objects.filter(toxin__in=factors, publication=publication, target=target, days_of_observation=row['Bioassay duration'], toxin_distribution=toxin_distrib, quantity=quantity, results=results, label=label)
+            #     primaryKey = toxin_research[0].pk
+            #     assert all(toxinRes.pk == primaryKey for toxinRes in toxin_research), "Something went really wrong...(different PK)"
 
 
         print(f'Created {self.factorsCreated} new Factors!')
