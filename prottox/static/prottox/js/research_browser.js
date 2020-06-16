@@ -3,7 +3,6 @@ var DBdata = null;
 
 function initDataTable(json){
     let table = $('#table').DataTable({
-        dom: 'Bfrtip',
         lengthMenu: [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
         data:json['data'],
         columns:json['columns'],
