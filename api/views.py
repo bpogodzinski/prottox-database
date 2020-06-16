@@ -121,7 +121,7 @@ def __processDatatableToxinResearchToJSON(queryset):
     for record in queryset:
         entry = {}
         entry['Toxin'] = __getDataTableFactors(record.toxin.all(), record.pk)
-        entry['Target species'] = record.target.target_organism_taxonomy.name
+        entry['Target species'] = f'<i>{record.target.target_organism_taxonomy.name}</i>'
         entry['Target developmental stage'] = record.target.larvae_stage.stage
         entry['Recognised resistance in target species'] = record.target.factor_resistance
         entry['Bioassay duration (days)'] = 'N/A' if record.days_of_observation == 'nan' else record.days_of_observation
@@ -158,9 +158,9 @@ def __getDataTableFactors(activeFactors, pk):
 
 def __getDataTableBioassayResult(results, expected=False):
     if expected:
-        return f"{results.expected} {results.bioassay_unit}" if results.expected != "refer to source article" else "refer to source article"
+        return f"{results.expected.replace(',','.')} {results.bioassay_unit}" if results.expected != "refer to source article" else "refer to source article"
     else:
-        return f"{results.bioassay_result} {results.bioassay_unit}" if results.bioassay_result != "refer to source article" else "refer to source article"
+        return f"{results.bioassay_result.replace(',','.')} {results.bioassay_unit}" if results.bioassay_result != "refer to source article" else "refer to source article"
 
 def __getDataTablePublication(publication):
     allAuthors = ", ".join(sorted([author.fullname for author in publication.authors.all()]))
