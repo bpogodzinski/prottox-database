@@ -89,26 +89,33 @@
                                                 <li>Tested toxic agent/composition (exact toxin name(s) according to current nomenclature, toxin source, expression host, molecular modifications applied, details on toxin preparation)</li>
                                                 <li>Target organism (species name; strain/laboratory line, developmental stage, recognized resistance to toxins)</li>
                                                 <li>Bioassay (toxin administration method, bioassay duration, toxicity measure, observed toxicity with units and confidence intervals)</li>
-                                                <li>Interaction among toxins (expected toxicity of a mixture, interaction type, estimation model of interaction, and synergism factor)</li>
+                                                <li>Interaction among toxins (expected toxicity of a mixture, interaction type, model used for interaction type estimation, synergism factor)</li>
                                             </ul>
                                             Experimental records were omitted when toxicity bioassays were performed using: 
                                             <ul>
-                                                <li>Wild type Bt strains (usually containing sets of not precisely characterized and/or non-quantified toxins)</li>
+                                                <li>Wild type <i>B. thuringiensis</i> strains (usually containing sets of not precisely characterized and/or non-quantified toxins)</li>
                                                 <li>Binary toxins (Bin, Cry34/Cry35, Vip1/Vip2 etc.)</li>
-                                                <li>Lysinibacillus sphaericus toxins (e.g. Mtx)</li>
-                                                <li>Bt toxins obtained from transgenic crops – regardless if the above were tested with or without accepted Cry/Cyt/Vip toxins.</li>
+                                                <li><i>Lysinibacillus sphaericus</i> toxins (e.g., Mtx)</li>
+                                                <li><i>B. thuringiensis</i> toxins obtained from transgenic crops – regardless if the above were tested with or without accepted Cry/Cyt/Vip toxins.</li>
                                             </ul>
                                             Moreover, if for some reason the exact values could not be determined for bioassay parameters (e.g. results presented solely in a chart form) the data was not included.
                                             The published data was incorporated into the database without alterations with the following exceptions: 
                                             <ul>
                                                 <li>If synergism factor was not provided by the authors, it was calculated when possible</li>
                                                 <li>Antagonism factors were recalculated to synergism factors</li>
-                                                <li>Toxicity measure units were recalculated to nanograms (e.g., µg/cm2 to ng/cm2, µg/ml to ng/ml, etc.)</li>
+                                                <li>Toxicity measure units were recalculated to nanograms (e.g., µg/cm<sup>2</sup> to ng/cm<sup>2</sup>, µg/ml to ng/ml, etc.)</li>
 
                                             </ul>
 
-                                            The TOXiTAXi relies on Bt toxin nomenclature introduced by Crickmore et al. (1998) and maintained in Bt toxin nomenclature database (http://www.btnomenclature.info/). In this nomenclature, the quaternary rank groups identical or almost identical (a few amino acid substitutions) Bt proteins and the differences are considered biologically insignificant (Crickmore et al. 1998; van Frankenhuyzen 2009). Therefore, in TOXiTAXi Bt toxins are considered unalike, when they differ in tertiary or higher rank.<br><br>
-                                            TOXiTAXi was designed to be easily expandable and its flexibility enables processing of heterogeneous data regarding toxicity of various biocidal compounds with well-established or just potential use in pest control. In order to test the broad-use potential of the created database, a selection of 16 arbitrarily chosen manuscripts were additionally added to the dataset. These works investigate biocidal activity of agents other than <i>B. thuringiensis</i> Cry/Cyt/Vip proteins, including: chitinolytic enzymes, synthetic and biochemical insecticides, insect midgut proteins, <i>Bacillus thuringiensis</i> Sip proteins, scorpion toxins and fungal spores. For the sake of convenience, in TOXiTAXi, the above-mentioned molecules and pathogens are termed/labeled as “toxins” although many of them do not meet the definition of this term.
+                                            The TOXiTAXi relies on <i>B. thuringiensis</i> toxin nomenclature introduced by Crickmore et al. (1998) and maintained in <i>B. thuringiensis</i> toxin nomenclature database (http://www.btnomenclature.info/). In this nomenclature, the quaternary rank groups identical or almost identical (a few amino acid substitutions) <i>B. thuringiensis</i> proteins and the differences are considered biologically insignificant (Crickmore et al. 1998; van Frankenhuyzen 2009). Therefore, in TOXiTAXi <i>B. thuringiensis</i> toxins are considered unalike, when they differ in tertiary or higher rank.<br><br>
+                                            TOXiTAXi was designed to be easily expandable and its flexibility enables processing of heterogeneous data regarding toxicity of various biocidal compounds with well-established or just potential use in pest control. In order to test the broad-use potential of the created database, a selection of 16 arbitrarily chosen manuscripts were additionally added to the dataset. These works investigate biocidal activity of agents other than <i>B. thuringiensis</i> Cry/Cyt/Vip proteins, including: chitinolytic enzymes, synthetic and biochemical insecticides, insect midgut proteins, <i>B. thuringiensis</i> Sip proteins, scorpion toxins and fungal spores. For the sake of convenience, in TOXiTAXi, the above-mentioned molecules and pathogens are termed/labeled as “toxins” although some of them do not meet the definition of this term.
+											
+											<ul>
+											REFERENCES:
+											<li> Crickmore N, Zeigler DR, Feitelson J, et al (1998) Revision of the nomenclature for the <i>Bacillus thuringiensis</i> pesticidal crystal proteins. Microbiol Mol Biol Rev 62:807–813. doi: 1092-2172/98</li>
+											<li>Frankenhuyzen K van (2009) Insecticidal activity of <i>Bacillus thuringiensis</i> crystal proteins. J Invertebr Pathol 101:1–16. doi: 10.1016/j.jip.2009.02.009</li>
+											</ul>
+											
                                         </div>
                                     </div>
                                 </div>
@@ -127,7 +134,7 @@
                                     <div id="collapseFour1" class="collapse" aria-labelledby="headingFour1" data-parent="#accordionExample1">
                                         <div class="card-body">
                                             The TOXiTAXi database interface is designed to be used by a bench scientist on an everyday basis. Following a simplicity rule, the interface of TOXiTAXi has been built on only one result window and simple two types of querying systems, despite the vast amount and variability of data contained in the database.<br><br>
-                                            The data selection process is provided in the form of a hierarchical expandable menu to supply the functionality for selecting any combination of toxins or target species. In this way, users can select toxins either by marking individual proteins (e.g., Cry1Ab3 and/or Vip3Aa20) or groups of proteins (e.g., all Cry and/or Vip proteins) from the tree-like menu reflecting the proteins hierarchical nomenclature or by typing protein names in the input text box. Analogously, users can select individual target species of interest (e.g., Helicoverpa armigera) or different combinations of taxonomic groups (e.g., all Lepidoptera and Coleoptera species). The real potential of the TOXiTAXi service is based on its ability to combine different datasets into one display - there is no limit as to the number and type of selected toxins and target species that can be combined in a single query.
+                                            The data selection process is provided in the form of a hierarchical expandable menu to supply the functionality for selecting any combination of toxins or target species. In this way, users can select toxins either by marking individual proteins (e.g., Cry1Ab3 and/or Vip3Aa20) or groups of proteins (e.g., all Cry and/or Vip proteins) from the tree-like menu reflecting the proteins hierarchical nomenclature or by typing protein names in the input text box. Analogously, users can select individual target species of interest (e.g., <i>Helicoverpa armigera</i>) or different combinations of taxonomic groups (e.g., all Lepidoptera and Coleoptera species). The real potential of the TOXiTAXi service is based on its ability to combine different datasets into one display - there is no limit as to the number and type of selected toxins and target species that can be combined in a single query.
                                         </div>
                                     </div>
                                 </div>
@@ -154,7 +161,7 @@
                                                 <li>Expected toxicity (i.e., theoretical toxicity value of toxin combination assuming lack of synergism and antagonism)</li>
                                                 <li>Confidence intervals of the observed toxicity</li>
                                                 <li>Synergism factor (SF; ratio of expected to observed toxicity)</li>
-                                                <li>Estimation model of interaction type</li>
+                                                <li>Model used for interaction type estimation</li>
                                             </ul>
                                             The order of the result category columns can be manually adjusted by the user, and eight filters enable further selection of desired information. Such customized tables can be further downloaded from the web page in common tabular formats (i.e. Excel, CSV, and PDF files). Also, by clicking on reference publication, the user is forwarded to related publication in PubMed repository or other online source.<br><br> 
 
@@ -177,7 +184,7 @@
                                     <div id="collapseSix1" class="collapse" aria-labelledby="headingSix1" data-parent="#accordionExample1">
                                         <div class="card-body">
                                             <ul>
-                                                <li>Toxin – name or short description of the toxic agent used in bioassay. In case of toxin combinations, separate constituents are separated by “+”. In case of chimeric/fusion proteins, the names of fused molecules are separated by “-‘.   In case of <i>B. thuringiensis</i> toxins nomenclature introduced by Crickmore et al. (1998) is used. For the sake of convenience, various agents (i.e. enzymes, insect midgut proteins) and entomopathogens are termed/labeled as “toxins”, although they do not meet the definition of this term.</li>
+                                                <li>Toxin – name or short description of the toxic agent used in bioassay. In case of toxin combinations, separate constituents are separated by plus sign. In case of chimeric/fusion proteins, the names of fused molecules are separated by hyphen.   In case of <i>B. thuringiensis</i> toxins nomenclature introduced by Crickmore et al. (1998) is used. For the sake of convenience, various agents (i.e. enzymes, insect midgut proteins) and entomopathogens are termed/labeled as “toxins”, although they do not meet the definition of this term.</li>
                                                 <li>Target species – binominal species name according to current NCBI taxonomy</li>
                                                 <li>Target developmental stage – developmental stage (larval instar, imago, etc.) of organism tested in bioassay</li>
                                                 <li>Recognised resistance in target species – list of toxins or other factors to which the target organism resistance was recognised</li>
@@ -210,12 +217,13 @@
                                                         <li>Mortality (mortality rate) – percentage of dead insects in relation to the entire exposed population</li>
                                                         <li>Weight reduction – percentage weight loss of exposed population in relation to control</li>
                                                         <li>Weight reduction 50% - the concentration of the toxin(s) causing 50% reduction in larval weight in comparison with control larvae</li>
+														<li>TI (toxicity improvement) - this measure has been introduced to express the influence of a toxic agent on the biocidal activity of heterogeneous toxin combinations i.e., the influence of chitinase enzyme on the insecticidal activity of <i>B. thuringiensis</i> parasporal crystals containing different, undetermined Cry/Cyt proteins. Expanding the mentioned example, TI can be calculated using equation: TI<sub>chitinase</sub> = LC<sub>50 (chitinase + parasporal crystals)</sub>/LC<sub>50(parasporal crystals)</sub>. The higher is the TI value the higher is the potency of a toxic agent. TI measure can be successfully used to overcome difficulties in expressing the results of some bioassays in a simple manner, especially for database purposes. It should be noted however, that TI value is only relative and inaccurate value.</li>
                                                     </ul>
                                                 </li>
                                                 <li>Observed toxicity – calculated value of toxin(s) potency along with appropriate unit</li>
                                                 <li>Confidence intervals – 95% fiducial limits calculated for observed toxicity. In some cases, standard error (SE) is provided in this field.</li>
                                                 <li>Expected toxicity – expected, theoretical value of toxin combination potency calculated upon observed toxicities of constituents tested separately, assuming additive effect between the constituents</li>
-                                                <li>Interaction – estimated combinatorial effect among two or more toxins. Possible options include: synergism, antagonism and additivity. When toxin composition was bioassayed but no interaction studies were performed “N/A” appears in the cell.</li>
+                                                <li>Interaction – estimated combinatorial effect among two or more toxins. Possible options include: synergism, antagonism and additivity. When toxin composition was bioassayed but no interaction studies were performed “N/A” appears in the cell. In case of bioassays performed with individual toxins this cell remains empty.</li>
                                                 <li>Synergism factor (SF) – indicator of synergism (or antagonism) magnitude. This value is calculated by dividing Expected toxicity by Observed toxicity. In experiments indicating synergism, higher SF value means higher magnitude of synergism. In experiments indicating antagonism, lower SF value means higher magnitude of antagonism.</li>
                                                 <li>Interaction estimation model – model used to estimate expected, theoretical value of toxin combination activity, assuming additivity among constituents (lack of synergism/antagonism). Typically, three models are used:
                                                     <ul>
@@ -237,12 +245,23 @@
                                                         <li>Cell lysate – crude cell lysate without any purification step</li>
                                                         <li>Cell lysate (partial purification) – host cells containing expressed toxin were subjected to cell lysis followed by partial purification step</li>
                                                         <li>Inclusion bodies – inclusion bodies isolated from cell lysate</li>
-                                                        <li>Endospores and parasporal crystals – <i>Bacillus thuringiensis</i> spore-crystal suspension</li>
-                                                        <li>Parasporal crystals – protein crystals isolated from <i>Bacillus thuringiensis</i> spore-crystal suspension</li>
+                                                        <li>Endospores and parasporal crystals – <i>B. thuringiensis</i> spore-crystal suspension</li>
+                                                        <li>Parasporal crystals – protein crystals isolated from <i>B. thuringiensis</i> spore-crystal suspension</li>
                                                         <li>Purified proteins – toxin obtained with protocols including purification step (usually with a chromatographic method)</li>
                                                     </ul>
                                                 </li>
                                             </ul>
+													<ul>
+													REFERENCES:
+														<li>Ashford JR (1981) General Models for the Joint Action of Mixtures of Drugs. Biometrics 37:457. https://doi.org/10.2307/2530559</li> 
+														<li>Crickmore N, Zeigler DR, Feitelson J, et al (1998) Revision of the nomenclature for the <i>Bacillus thuringiensis</i> pesticidal crystal proteins. Microbiol Mol Biol Rev 62:807–813. doi: 1092-2172/98</li>
+														<li>Fernández-Luna MT, Tabashnik BE, Lanz-Mendoza H, et al (2010) Single concentration tests show synergism among <i>Bacillus thuringiensis</i> subsp. <i>israelensis</i> toxins against the malaria vector mosquito <i>Anopheles albimanus</i>. J Invertebr Pathol 104:231–233. doi: 10.1016/j.jip.2010.03.007</li>
+														<li>Frankenhuyzen K van (2009) Insecticidal activity of <i>Bacillus thuringiensis</i> crystal proteins. J Invertebr Pathol 101:1–16. doi: 10.1016/j.jip.2009.02.009</li>
+														<li>Kaikaew A, Promptmas C, Angsuthanasombat C (2016) Importance of Thr328 and Thr369 for functional maintenance of two receptor-binding β-hairpins of the <i>Bacillus thuringiensis</i> Cry4Ba toxin: Implications for synergistic interactions with Cyt2Aa2. Biochem Biophys Res Commun 469:698–703. doi: 10.1016/j.bbrc.2015.11.115</li>
+														<li>March BGE de, de March BGE (1987) Simple similar action and independent joint action - two similar models for the joint effects of toxicants applied as mixtures. Aquat Toxicol 9:291–304. https://doi.org/10.1016/0166-445x(87)90029-4</li>
+														<li>Roell KR, Reif DM, Motsinger-Reif AA (2017) An Introduction to Terminology and Methodology of Chemical Synergy—Perspectives from Across Disciplines. Front in Pharmacol 8.: https://doi.org/10.3389/fphar.2017.00158</li>
+														<li>Tabashnik BE (1992) Evaluation of synergism among <i>Bacillus thuringiensis</i> toxins. Appl Environ Microbiol 58:3343–3346</li>
+											</ul>
                                         </div>
                                     </div>
                                 </div>
