@@ -111,6 +111,12 @@ def __processJSTreeTaxonomyQuerysetToJSON(queryset, table):
             str(taxonomy.parent_id) if taxonomy.parent_id is not None else "#"
         )
         node_text = str(taxonomy)
+        if 'Cry6' in node_text:
+            alternative_name = node_text.replace('Cry6', 'App6')
+            node_text = f"{node_text} ({alternative_name})"
+        elif 'Cry55' in node_text:
+            alternative_name = node_text.replace('Cry55', 'Xpp54')
+            node_text = f"{node_text} ({alternative_name})"
         json_data.append(
             dict(id=node_id, parent=node_parent, text=node_text, entity=table)
         )
@@ -154,7 +160,15 @@ def __processDatatableToxinResearchToJSON(queryset):
 # ------------- BEGIN DataTable processing methods -----------------
 
 def __getDataTableFactors(activeFactors, pk):
-    return f"<a href={reverse('research_view', kwargs={'db_id':pk})}>{' + '.join([factor.fullname for factor in activeFactors])}<a/>"
+    namelist = [factor.fullname for factor in activeFactors]
+    for index, name in enumerate(namelist):
+        if 'Cry6' in name:
+            alternative_name = name.replace('Cry6', 'App6')
+            namelist[index] = f"{name} ({alternative_name})"
+        elif 'Cry55' in name:
+            alternative_name = name.replace('Cry55', 'Xpp54')
+            namelist[index] = f"{name} ({alternative_name})"
+    return f"<a href={reverse('research_view', kwargs={'db_id':pk})}>{' + '.join(namelist)}<a/>"
 
 def __getDataTableBioassayResult(results, expected=False):
     if expected:
