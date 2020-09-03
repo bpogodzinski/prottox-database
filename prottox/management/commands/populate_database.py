@@ -1,10 +1,20 @@
 import pandas as pd
 from tqdm import tqdm
 import re
+import numpy as np
+from scipy import stats
 
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.management.base import BaseCommand
 from prottox.models import *
+
+import sys
+from pprint import pprint as pp
+
+def calculate_percentile(data):
+    arr = np.array(data)
+    return stats.rankdata(arr, "average") / len(arr)
+
 
 class Command(BaseCommand):
     # ONE TIME USE CODE
@@ -15,19 +25,47 @@ class Command(BaseCommand):
     toxinRE = re.compile(r'([A-Za-z]{3})([0-9]+)([A-Z])([a-z])(\d+)?')
     factorsCreated = 0
     researchCreated = 0
-    taxInfo = pd.read_csv(r'/home/panda/Dokumenty/baza_danych/data/taksonomia.csv', sep=';', header=0, index_col=0)
+    taxInfo = pd.read_csv(r'/home/panda/Dokumenty/Development/licencjat/data/taksonomia.csv', sep=';', header=0, index_col=0)
+
+
 
     def handle(self, *args, **options):
-        data = pd.read_csv(r'/home/panda/Dokumenty/baza_danych/data/data.csv', sep=';', header=0, dtype=str)
+        data = pd.read_csv(r'/home/panda/Dokumenty/Development/licencjat/data/data.csv', sep=';', header=0, dtype=str)
+
+        SF_list = []
+        print('Created dataframe, calculating percentiles...')
+        for index, row in tqdm(data.iterrows(), total=len(data.index)):
+            if (pd.notnull(row['LC synergism factor (SF)'])) and (row['Interaction [SYN/IND/ANT](statistically significant)'] != 'IND'):
+                try:
+                    sf = float(row['LC synergism factor (SF)'].replace(',','.'))
+                except ValueError:
+                    continue
+                SF_list.append(tuple([index, row['Interaction [SYN/IND/ANT](statistically significant)'], sf]))
+
+        syn_list = [[x[0], x[2]] for x in SF_list if x[1] == 'SYN']
+        ant_list = [[x[0], x[2]] for x in SF_list if x[1] == 'ANT']
+        
+        percentile_syn_list = calculate_percentile([x[1] for x in syn_list])*100
+        percentile_ant_list = 100-(calculate_percentile([x[1] for x in ant_list])*100)
+        
+        for index in range(len(syn_list)):
+            syn_list[index][1] = percentile_syn_list[index]
+        for index in range(len(ant_list)):
+            ant_list[index][1] = percentile_ant_list[index]
+
+        complete_list = syn_list+ant_list
+
+        SF_dict = {index:percentile for index, percentile in complete_list}
+
         antiduplicate_set = set()
-        print('Created dataframe. Begin to populate ...')
+        print('Beginning to populate ...')
         for index, row in tqdm(data.iterrows(), total=len(data.index)):
             factors = self.make_active_factor(row)
             target = self.createTargetSpecies(row["Target species"], row['Target developmental stage'], row['Target species strain'], row['Recognised resistance in target species'])
             publication = self.make_publication(row['AUTHORS'], row['PMID (PubMed ID)'], row['Link (if PMID not available)'], row['PUBLICATION DATE'])
             toxin_distrib = self.make_toxin_distrib(row['Toxin distribution'])
             quantity = None if pd.isnull(row['Proportion_F 1']) else self.createToxinQuantity(row['Proportion_F 1':'Proportion_F 8'], row['Proportion unit'])
-            results = self.createResults(row['BIOASSAY TYPE':'Interaction estimation method'])
+            results = self.createResults(row['BIOASSAY TYPE':'Interaction estimation method'], index, SF_dict)
             label = row['Label']
             immutable_row = tuple([value for _, value in row.items()])
             if immutable_row not in antiduplicate_set:
@@ -76,6 +114,7 @@ class Command(BaseCommand):
                 active_factor = Active_factor.objects.create(display_name=display_name, is_toxin=is_toxin, NCBI_accession_number=NCBI_acc, factor_source=factor_source, isolation_source=factor_isolation_source, factor_form=factor_form, modification_description=modification, 
                 factor_expression_host=expression_host, kDa=kda, preparation=prep, is_chimeric=chimeric)
                 self.factorsCreated += 1
+
             except MultipleObjectsReturned:
                 #Chimeric proteins have both last ranks so get returns same chimeric protein twice
                 chimerics = Active_factor.objects.filter(display_name=display_name, is_toxin=is_toxin, NCBI_accession_number=NCBI_acc, factor_source=factor_source, isolation_source=factor_isolation_source, factor_form=factor_form, modification_description=modification, 
@@ -136,7 +175,7 @@ class Command(BaseCommand):
                 if pd.notna(row.iloc[self.F1_TYPE_INDEX + offset + i]):
                     rank, created = FactorTaxonomy.objects.get_or_create(name=row.iloc[self.F1_TYPE_INDEX + offset + i], parent=last_rank)
                     last_rank = rank
-                else: 
+                else:
                     break
             return last_rank, toxin
 
@@ -154,7 +193,7 @@ class Command(BaseCommand):
         strain = TargetSpeciesStrain.objects.get_or_create(strain=targetStrain)[0] if pd.notnull(targetStrain) else None
         factors = toxinResistance if pd.notnull(toxinResistance) else None
         target = Target.objects.get_or_create(target_organism_taxonomy=targetSpecies, larvae_stage=stage, target_species_strain=strain, factor_resistance=factors)[0]
-        return target            
+        return target
 
     def make_publication(self, author, pmid, link, date):
         pmid = '' if pd.isna(pmid) else int(pmid)
@@ -198,7 +237,7 @@ class Command(BaseCommand):
         
         return unit, measurement
    
-    def createResults(self, resultRow):
+    def createResults(self, resultRow, index, sf_dict):
         bio_type = Bioassay_type.objects.get_or_create(bioassay_type=resultRow['BIOASSAY TYPE'])[0]
         bio_result = resultRow['BIOASSAY RESULT OBSERVED']
         lcMIN = '' if pd.isna(resultRow['LC (FL95 lower)']) else resultRow['LC (FL95 lower)']
@@ -212,5 +251,6 @@ class Command(BaseCommand):
         syn_factor = '' if pd.isna(resultRow['LC synergism factor (SF)']) else resultRow['LC synergism factor (SF)']
         ant_factor = '' if pd.isna(resultRow['LC antagonism factor (AF)']) else resultRow['LC antagonism factor (AF)']
         est_method = '' if pd.isna(resultRow['Interaction estimation method']) else resultRow['Interaction estimation method']
+        percentile = sf_dict.get(index, None)
 
-        return Result.objects.get_or_create(bioassay_type=bio_type, bioassay_result=bio_result, bioassay_unit=unit, LC95min=lcMIN, LC95max=lcMAX, expected=bio_expected, interaction=interaction, synergism_factor=syn_factor, antagonism_factor=ant_factor, estimation_method=est_method, slopeLC=slLC, slopeSE=slSE, chi_square=chisq)[0]
+        return Result.objects.get_or_create(percentile=percentile, bioassay_type=bio_type, bioassay_result=bio_result, bioassay_unit=unit, LC95min=lcMIN, LC95max=lcMAX, expected=bio_expected, interaction=interaction, synergism_factor=syn_factor, antagonism_factor=ant_factor, estimation_method=est_method, slopeLC=slLC, slopeSE=slSE, chi_square=chisq)[0]

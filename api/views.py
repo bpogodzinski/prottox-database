@@ -8,8 +8,8 @@ from prottox.models import FactorTaxonomy, SpeciesTaxonomy, Toxin_research
 PUBMED_LINK_TEMPLATE = "https://www.ncbi.nlm.nih.gov/pubmed/{ID}"
 DATATABLE_VISIBLE_COLUMNS = ['Target species', 'Toxin', 'Toxin quantity', 'Toxicity measure', 'Observed toxicity', 'Interaction', 'Publication']
 DATATABLE_DATA_COLUMNS = ['Toxin', 'Target species', 'Target developmental stage', 'Recognised resistance in target species', 'Bioassay duration (days)', 'Toxin quantity', 'Toxin administration method', 'Toxicity measure', 'Observed toxicity', 'Expected toxicity', '95% Fiducial limits', 'Interaction', 'Synergism factor', 'Interaction estimation model', 'Single toxin / Combination', 'Publication']
-SYNERGISM_BADGE = '<span class="kt-badge kt-badge--success kt-badge--inline">Synergism</span>'
-ANTAGONISM_BADGE = '<span class="kt-badge kt-badge--danger kt-badge--inline">Antagonism</span>'
+SYNERGISM_BADGE = '<span class="kt-badge kt-badge--success kt-badge--inline {level}">Synergism ({percentile:.2f}%)</span>'
+ANTAGONISM_BADGE = '<span class="kt-badge kt-badge--danger kt-badge--inline {level}">Antagonism</span>'
 INDEPENDENT_BADGE = '<span class="kt-badge kt-badge--dark kt-badge--inline">Additive</span>'
 BADGE_DICT = {'SYN': SYNERGISM_BADGE, 'ANT':ANTAGONISM_BADGE, 'IND':INDEPENDENT_BADGE}
 
@@ -117,6 +117,9 @@ def __processJSTreeTaxonomyQuerysetToJSON(queryset, table):
         elif 'Cry55' in node_text:
             alternative_name = node_text.replace('Cry55', 'Xpp54')
             node_text = f"{node_text} ({alternative_name})"
+        elif 'Sip1A' in node_text:
+            alternative_name = node_text.replace('Sip1A', 'Mpp5A')
+            node_text = f"{node_text} ({alternative_name})"
         json_data.append(
             dict(id=node_id, parent=node_parent, text=node_text, entity=table)
         )
@@ -137,7 +140,7 @@ def __processDatatableToxinResearchToJSON(queryset):
         entry['Observed toxicity'] = __getDataTableBioassayResult(record.results) if record.results.bioassay_result else None
         entry['Expected toxicity'] = __getDataTableBioassayResult(record.results, expected=True) if record.results.expected else None
         entry['95% Fiducial limits'] = __getDataTableFiducialLimits(record.results)
-        entry['Interaction'] = BADGE_DICT.get(record.results.interaction, record.results.interaction)
+        entry['Interaction'] = BADGE_DICT.get(record.results.interaction, record.results.interaction).format(**__getBadgeFormat(record.results.synergism_factor, record.results.interaction, record.results.percentile))
         entry['Synergism factor'] = __roundOrEmptyString(record.results.synergism_factor, 2)
         entry['Interaction estimation model'] = record.results.estimation_method
         entry['Single toxin / Combination'] = record.label.split('(')[0]
@@ -154,6 +157,11 @@ def __processDatatableToxinResearchToJSON(queryset):
 
     return json
 
+def __getBadgeFormat(SF, interaction, percentile):
+    return_dict = {'level':'', 'percentile':''}
+
+    return return_dict
+
 # ------------- END JSON processing methods -----------------
 
 
@@ -168,6 +176,10 @@ def __getDataTableFactors(activeFactors, pk):
         elif 'Cry55' in name:
             alternative_name = name.replace('Cry55', 'Xpp54')
             namelist[index] = f"{name} ({alternative_name})"
+        elif 'Sip1A' in name:
+            alternative_name = name.replace('Sip1A', 'Mpp5A')
+            namelist[index] = f"{name} ({alternative_name})"
+
     return f"<a href={reverse('research_view', kwargs={'db_id':pk})}>{' + '.join(namelist)}<a/>"
 
 def __getDataTableBioassayResult(results, expected=False):
