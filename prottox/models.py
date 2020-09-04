@@ -205,6 +205,7 @@ class Result(models.Model):
         (ANTAGONISM, 'Antagonism'),
         (INDEPENDENT, 'Additive')
     )
+    percentile = models.PositiveIntegerField(blank=True, null=True)
     bioassay_type = models.ForeignKey(Bioassay_type, on_delete=models.CASCADE)
     bioassay_result = models.CharField(max_length=20)
     bioassay_unit = models.CharField(max_length=20, blank=True)
