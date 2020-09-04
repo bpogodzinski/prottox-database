@@ -6,10 +6,10 @@ from django.urls import reverse
 from prottox.models import FactorTaxonomy, SpeciesTaxonomy, Toxin_research
 
 PUBMED_LINK_TEMPLATE = "https://www.ncbi.nlm.nih.gov/pubmed/{ID}"
-DATATABLE_VISIBLE_COLUMNS = ['Target species', 'Toxin', 'Toxin quantity', 'Toxicity measure', 'Observed toxicity', 'Interaction', 'Publication']
-DATATABLE_DATA_COLUMNS = ['Toxin', 'Target species', 'Target developmental stage', 'Recognised resistance in target species', 'Bioassay duration (days)', 'Toxin quantity', 'Toxin administration method', 'Toxicity measure', 'Observed toxicity', 'Expected toxicity', '95% Fiducial limits', 'Interaction', 'Synergism factor', 'Interaction estimation model', 'Single toxin / Combination', 'Publication']
-SYNERGISM_BADGE = '<span class="kt-badge kt-badge--success kt-badge--inline {level}">Synergism {percentile}</span>'
-ANTAGONISM_BADGE = '<span class="kt-badge kt-badge--danger kt-badge--inline {level}">Antagonism {percentile}</span>'
+DATATABLE_VISIBLE_COLUMNS = ['Target species', 'Toxin', 'Toxin quantity', 'Toxicity measure', 'Observed toxicity', 'Interaction', 'Synergism factor (percentile)', 'Publication']
+DATATABLE_DATA_COLUMNS = ['Toxin', 'Target species', 'Target developmental stage', 'Recognised resistance in target species', 'Bioassay duration (days)', 'Toxin quantity', 'Toxin administration method', 'Toxicity measure', 'Observed toxicity', 'Expected toxicity', '95% Fiducial limits', 'Interaction', 'Synergism factor', 'Synergism factor (percentile)', 'Interaction estimation model', 'Single toxin / Combination', 'Publication']
+SYNERGISM_BADGE = '<span class="kt-badge kt-badge--success kt-badge--inline {level}">{level} SYN</span>'
+ANTAGONISM_BADGE = '<span class="kt-badge kt-badge--danger kt-badge--inline {level}">{level} ANT</span>'
 INDEPENDENT_BADGE = '<span class="kt-badge kt-badge--dark kt-badge--inline">Additive</span>'
 BADGE_DICT = {'SYN': SYNERGISM_BADGE, 'ANT':ANTAGONISM_BADGE, 'IND':INDEPENDENT_BADGE}
 
@@ -141,7 +141,7 @@ def __processDatatableToxinResearchToJSON(queryset):
         entry['Expected toxicity'] = __getDataTableBioassayResult(record.results, expected=True) if record.results.expected else None
         entry['95% Fiducial limits'] = __getDataTableFiducialLimits(record.results)
         entry['Interaction'] = BADGE_DICT.get(record.results.interaction, record.results.interaction).format(**__getBadgeFormat(record.results.synergism_factor, record.results.interaction, record.results.percentile))
-        entry['Synergism factor'] = __roundOrEmptyString(record.results.synergism_factor, 2)
+        entry['Synergism factor (percentile)'] = __getDataTableSynergismFactor(__roundOrEmptyString(record.results.synergism_factor, 2), record.results.percentile)
         entry['Interaction estimation model'] = record.results.estimation_method
         entry['Single toxin / Combination'] = record.label.split('(')[0]
         entry['Publication'] = __getDataTablePublication(record.publication)
@@ -158,28 +158,34 @@ def __processDatatableToxinResearchToJSON(queryset):
     return json
 
 def __getBadgeFormat(SF, interaction, percentile):
-    return_dict = {'level':'', 'percentile':''}
+    return_dict = {'level':''}
     if percentile:
         SF = float(SF.replace(',', '.'))
         if interaction == 'SYN':
-            return_dict['percentile'] = f"({percentile}%)"
             if 1 <= SF < 2:
-                return_dict['level'] = 'weak'
+                return_dict['level'] = 'Weak'
             elif 2 <= SF < 10:
-                return_dict['level'] = 'moderate'
+                return_dict['level'] = 'Moderate'
             elif 10 <= SF:
-                return_dict['level'] = 'strong'
+                return_dict['level'] = 'Strong'
         elif interaction == 'ANT':
-            return_dict['percentile'] = f"({percentile}%)"
             if 0.5 <= SF < 1:
-                return_dict['level'] = 'weak'
+                return_dict['level'] = 'Weak'
             elif 0.1 <= SF < 0.5:
-                return_dict['level'] = 'moderate'
+                return_dict['level'] = 'Moderate'
             elif 0 <= SF < 0.1:
-                return_dict['level'] = 'strong'
+                return_dict['level'] = 'Strong'
 
     return return_dict
 
+def __getDataTableSynergismFactor(SF, percentile):
+    string_percentile = ''
+    if SF:
+        if percentile:
+            string_percentile = f'({percentile}ᵗʰ)'
+        return f'{SF} {string_percentile}'
+    else:
+        return ''
 # ------------- END JSON processing methods -----------------
 
 
