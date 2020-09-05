@@ -8,8 +8,8 @@ from prottox.models import FactorTaxonomy, SpeciesTaxonomy, Toxin_research
 PUBMED_LINK_TEMPLATE = "https://www.ncbi.nlm.nih.gov/pubmed/{ID}"
 DATATABLE_VISIBLE_COLUMNS = ['Target species', 'Toxin', 'Toxin quantity', 'Toxicity measure', 'Observed toxicity', 'Interaction', 'Synergism factor (percentile)', 'Publication']
 DATATABLE_DATA_COLUMNS = ['Toxin', 'Target species', 'Target developmental stage', 'Recognised resistance in target species', 'Bioassay duration (days)', 'Toxin quantity', 'Toxin administration method', 'Toxicity measure', 'Observed toxicity', 'Expected toxicity', '95% Fiducial limits', 'Interaction', 'Synergism factor', 'Synergism factor (percentile)', 'Interaction estimation model', 'Single toxin / Combination', 'Publication']
-SYNERGISM_BADGE = '<span class="kt-badge kt-badge--success kt-badge--inline {level}">{level} SYN</span>'
-ANTAGONISM_BADGE = '<span class="kt-badge kt-badge--danger kt-badge--inline {level}">{level} ANT</span>'
+SYNERGISM_BADGE = '<span class="kt-badge kt-badge--success kt-badge--inline">{level} SYN</span>'
+ANTAGONISM_BADGE = '<span class="kt-badge kt-badge--danger kt-badge--inline">{level} ANT</span>'
 INDEPENDENT_BADGE = '<span class="kt-badge kt-badge--dark kt-badge--inline">Additive</span>'
 BADGE_DICT = {'SYN': SYNERGISM_BADGE, 'ANT':ANTAGONISM_BADGE, 'IND':INDEPENDENT_BADGE}
 
